@@ -36,11 +36,11 @@
     },
     "prayzzz.Common": "1.0.0-*",
     "FlatMate.Module.Account": "1.0.0-*",
-    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21"      
+    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21"    
   },
 
   "tools": {
-    "UniversalDbUpdater": "2016.10.8.1186",
+    "UniversalDbUpdater": "2016.10.15.1208",
     "BundlerMinifier.Core": "2.2.281",
     "Microsoft.AspNetCore.Razor.Tools": "1.0.0-preview2-final",
     "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final",
