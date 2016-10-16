@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+    "Microsoft.AspNetCore.Cryptography.KeyDerivation": "1.0.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21",
+    "NETStandard.Library": "1.6.0",
+    "prayzzz.Common": "1.0.0-*"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

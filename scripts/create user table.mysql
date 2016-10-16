@@ -1,0 +1,13 @@
+CREATE TABLE `account.user` (
+	`Id` INT(11) NOT NULL AUTO_INCREMENT,
+	`Username` VARCHAR(50) NOT NULL,
+	`Name` VARCHAR(50) NOT NULL,
+	`LastName` VARCHAR(50) NULL DEFAULT NULL,
+	`Email` VARCHAR(100) NOT NULL,
+	`PasswordHash` VARCHAR(255) NOT NULL,
+	`Salt` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`Id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;

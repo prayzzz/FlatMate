@@ -1,0 +1,14 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/account/login.css",
+    "inputFile": "wwwroot/css/account/login.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/shared/navigation.css",
+    "inputFile": "wwwroot/css/shared/navigation.scss"
+  }
+]

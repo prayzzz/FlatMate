@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>769b55ec-b765-45a8-a7d5-6a9aa4f63d48</ProjectGuid>
+    <ProjectGuid>05a2dd96-6451-4f7d-bf87-5374a22fc0ad</ProjectGuid>
     <RootNamespace>FlatMate.Web</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

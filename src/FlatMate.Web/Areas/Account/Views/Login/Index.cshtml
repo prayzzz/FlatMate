@@ -1,0 +1,24 @@
+﻿@model FlatMate.Web.Areas.Account.Data.LoginViewModel
+
+@{
+    Layout = "_LayoutBlank";
+}
+
+<section class="container login">
+    <div style="width: 100%;">
+        <h1 style="text-align: center">FlatMate</h1>
+        <form asp-area="Account" asp-controller="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+            <fieldset>
+                <label asp-for="User.UserName"></label>
+                <input asp-for="User.UserName" value="UserName" />
+
+                <label asp-for="User.Password"></label>
+                <input asp-for="User.Password" value="asd" />
+
+                <div class="pull-right">
+                    <input class="button-primary" type="submit" value="Send">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlatMate</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+        <link rel="stylesheet" asp-href-include="~/lib/css/**/*.min.css"/>
+        <link rel="stylesheet" asp-href-include="~/css/**/*.min.css"/>
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <main class="wrapper">
+        @RenderBody()
+    </main>
+</body>
+</html>
