@@ -1,0 +1,64 @@
+--
+-- Script
+--
+
+CREATE TABLE `Lists_ItemList` (
+	`Id` INT(11) NOT NULL AUTO_INCREMENT,
+	`CreationDate` DATETIME NOT NULL,
+	`Description` TEXT NULL,
+	`IsPublic` BIT(1) NOT NULL,
+	`LastModified` DATETIME NOT NULL,
+	`Name` VARCHAR(100) NOT NULL,
+	`User` INT(11) NOT NULL,
+	PRIMARY KEY (`Id`),
+	INDEX `FK_ItemList_User` (`User`),
+	CONSTRAINT `FK_ItemList_User` FOREIGN KEY (`User`) REFERENCES `Account_User` (`Id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `Lists_ItemListGroup` (
+	`Id` INT(11) NOT NULL AUTO_INCREMENT,
+	`CreationDate` DATETIME NOT NULL,
+	`ItemList` INT(11) NOT NULL,
+	`LastModified` DATETIME NOT NULL,
+	`Name` VARCHAR(100) NOT NULL,
+	`User` INT(11) NOT NULL,
+	PRIMARY KEY (`Id`),
+	INDEX `FK_ItemListGroup_User` (`User`),
+	INDEX `FK_ItemListGroup_ItemList` (`ItemList`),
+	CONSTRAINT `FK_ItemListGroup_User` FOREIGN KEY (`User`) REFERENCES `Account_User` (`Id`),
+	CONSTRAINT `FK_ItemListGroup_ItemList` FOREIGN KEY (`ItemList`) REFERENCES `Lists_ItemList` (`Id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `Lists_Item` (
+	`Id` INT(11) NOT NULL AUTO_INCREMENT,
+	`CreationDate` DATETIME NOT NULL,
+	`ItemList` INT(11) NOT NULL,
+	`ItemListGroup` INT(11) NOT NULL,	
+	`LastModified` DATETIME NOT NULL,
+	`User` INT(11) NOT NULL,
+	`Value` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`Id`),
+	INDEX `FK_Item_User` (`User`),
+	INDEX `FK_Item_ItemListGroup` (`ItemListGroup`),
+	INDEX `FK_Item_ItemList` (`ItemList`),
+	CONSTRAINT `FK_Item_User` FOREIGN KEY (`User`) REFERENCES `Account_User` (`Id`),
+	CONSTRAINT `FK_Item_ItemListGroup` FOREIGN KEY (`ItemListGroup`) REFERENCES `Lists_ItemListGroup` (`Id`),
+	CONSTRAINT `FK_Item_ItemList` FOREIGN KEY (`ItemList`) REFERENCES `Lists_ItemList` (`Id`)
+)
+ENGINE=InnoDB
+;
+
+
+--
+-- Update Info
+--
+
+
+INSERT INTO  `infrastructure.dbscripts` (`Date`, `Name`, `Description`) 
+VALUES ('2016-10-17T09:09:35', 'create list tables', '');

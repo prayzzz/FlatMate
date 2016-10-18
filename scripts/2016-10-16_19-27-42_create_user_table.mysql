@@ -2,7 +2,7 @@
 -- Script
 --
 
-CREATE TABLE `account.user` (
+CREATE TABLE `Account_User` (
 	`Id` INT(11) NOT NULL AUTO_INCREMENT,
 	`Username` VARCHAR(50) NOT NULL,
 	`Name` VARCHAR(50) NOT NULL,

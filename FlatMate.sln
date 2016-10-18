@@ -17,6 +17,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FlatMate.Web", "src\FlatMat
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FlatMate.Module.Account", "src\FlatMate.Module\FlatMate.Module.Account\FlatMate.Module.Account.xproj", "{2C6E180B-F926-47A7-AC6F-799C0898208D}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FlatMate.Module.Lists", "src\FlatMate.Module\FlatMate.Module.Lists\FlatMate.Module.Lists.xproj", "{799B9D98-368A-4FAC-93E8-867AAC8AF3D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{2C6E180B-F926-47A7-AC6F-799C0898208D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C6E180B-F926-47A7-AC6F-799C0898208D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C6E180B-F926-47A7-AC6F-799C0898208D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{799B9D98-368A-4FAC-93E8-867AAC8AF3D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{799B9D98-368A-4FAC-93E8-867AAC8AF3D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{799B9D98-368A-4FAC-93E8-867AAC8AF3D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{799B9D98-368A-4FAC-93E8-867AAC8AF3D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,5 +49,6 @@ Global
 		{02DC310F-A588-4A80-A082-5742261BADB7} = {84D874C0-114F-46C2-944D-306EC11CFC1A}
 		{05A2DD96-6451-4F7D-BF87-5374A22FC0AD} = {84D874C0-114F-46C2-944D-306EC11CFC1A}
 		{2C6E180B-F926-47A7-AC6F-799C0898208D} = {84D874C0-114F-46C2-944D-306EC11CFC1A}
+		{799B9D98-368A-4FAC-93E8-867AAC8AF3D6} = {84D874C0-114F-46C2-944D-306EC11CFC1A}
 	EndGlobalSection
 EndGlobal

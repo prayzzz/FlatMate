@@ -35,7 +35,12 @@
       "type": "build"
     },
     "prayzzz.Common": "1.0.0-*",
-    "FlatMate.Module.Account": "1.0.0-*",
+    "FlatMate.Module.Account": {
+      "target": "project"
+    },
+    "FlatMate.Module.Lists": {
+      "target": "project"
+    },
     "MySql.Data.EntityFrameworkCore": "7.0.5-IR21"    
   },
 

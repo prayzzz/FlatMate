@@ -10,14 +10,13 @@ namespace FlatMate.Module.Account
         {
         }
 
+        public DbSet<UserDbo> User { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UserDbo>().ToTable("account.user");
+            builder.Entity<UserDbo>().ToTable("account_user");
         }
-
-        public DbSet<UserDbo> User { get; set; }
-
     }
 }
