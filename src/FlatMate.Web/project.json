@@ -41,7 +41,9 @@
     "FlatMate.Module.Lists": {
       "target": "project"
     },
-    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21"    
+    "MySql.Data.EntityFrameworkCore": "7.0.5-IR21",
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "Swashbuckle": "6.0.0-beta902"    
   },
 
   "tools": {

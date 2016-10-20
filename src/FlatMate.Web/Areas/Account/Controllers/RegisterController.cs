@@ -8,7 +8,6 @@ using prayzzz.Common.Mvc;
 namespace FlatMate.Web.Areas.Account.Controllers
 {
     [Area("Account")]
-    [Authorize]
     public class RegisterController : Controller
     {
         private readonly IRegisterService _service;

@@ -1,4 +1,5 @@
-﻿using FlatMate.Module.Lists.Models;
+﻿using System.Linq;
+using FlatMate.Module.Lists.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlatMate.Module.Lists
@@ -10,16 +11,16 @@ namespace FlatMate.Module.Lists
         {
         }
 
-        public DbSet<ItemListDbo> List { get; set; }
-
-        public DbSet<ItemDbo> ListEntry { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
-
-            builder.Entity<ItemListDbo>().ToTable("lists_list");
-            builder.Entity<ItemDbo>().ToTable("lists_listentry");
+            modelBuilder.Entity<ItemDbo>().ToTable("Lists_Item");
+            modelBuilder.Entity<ItemListDbo>().ToTable("Lists_ItemList");
+            modelBuilder.Entity<ItemListGroupDbo>().ToTable("Lists_ItemListGroup");
         }
+
+        public DbSet<ItemListDbo> ItemLists { get; set; }
+
+        public IQueryable<ItemListDbo> ItemListsFull => ItemLists.Include(x => x.Items)
+                                                                 .Include(x => x.ListGroups).ThenInclude(x => x.Items);
     }
 }

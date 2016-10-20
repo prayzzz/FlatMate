@@ -1,15 +1,24 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using FlatMate.Web.Common.Filter;
+using FlatMate.Web.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using prayzzz.Common.Mapping;
 
 namespace FlatMate.Web
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _env;
+
         public Startup(IHostingEnvironment env)
         {
+            _env = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -26,11 +35,28 @@ namespace FlatMate.Web
 
         public IConfigurationRoot Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             Module.Account.Module.ConfigureServices(services, Configuration);
+            Module.Lists.Module.ConfigureServices(services, Configuration);
 
             services.AddMvc();
+
+            services.AddSingleton<IRequestResultService, RequestResultService>();
+            services.AddSingleton<ApiResultFilter, ApiResultFilter>();
+            services.AddSingleton<MvcResultFilter, MvcResultFilter>();
+
+            if (_env.IsDevelopment())
+            {
+                services.AddSwaggerGen();
+            }
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Mapper>().As<IMapper>().As<IMapperConfiguration>().SingleInstance();
+            builder.Populate(services);
+
+            var container = builder.Build();
+            return container.Resolve<IServiceProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -42,12 +68,15 @@ namespace FlatMate.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUi();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            
+
             app.UseStaticFiles();
 
             Module.Account.Module.Configure(app);
