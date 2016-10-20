@@ -19,24 +19,20 @@
     </environment>
 </head>
 <body>
+
+    <input id="menu-checkbox" type="checkbox" />
+    <label class="menu-toggle icon-burger" for="menu-checkbox"></label>
+
     <nav>
-        <label for="navigation-state">
-            <div class="navigation-button">
-                <div class="icon-burger"></div>
-            </div>
-        </label>
-        <input id="navigation-state" type="checkbox" class="navigation-state" />
-        <div class="navigation-wrapper">
-            <div class="navigation">
-                <ul>
-                    <li>Dashboard</li>
-                    <li>Lists</li>
-                    <li>Offers</li>
-                </ul>
-            </div>
-        </div>
+        <span class="title">FlatMate</span>
+        <ul>
+            <li><a asp-area="" asp-controller="Dashboard">Dashboard</a></li>
+            <li><a asp-area="Lists" asp-controller="Home" asp-action="">Lists</a></li>
+            <li><a href="#">Offers</a></li>
+        </ul>
     </nav>
-    <main class="wrapper">
+
+    <main>
         @RenderBody()
     </main>
 </body>

@@ -2,11 +2,14 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FlatMate.Web.Common.Filter;
+using FlatMate.Web.Common.Json;
 using FlatMate.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using prayzzz.Common.Mapping;
 
@@ -40,7 +43,10 @@ namespace FlatMate.Web
             Module.Account.Module.ConfigureServices(services, Configuration);
             Module.Lists.Module.ConfigureServices(services, Configuration);
 
-            services.AddMvc();
+            services.AddMvc().AddControllersAsServices()
+                             .AddJsonOptions(o => { o.SerializerSettings.ContractResolver = FlatMateContractResolver.Instance; });
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IRequestResultService, RequestResultService>();
             services.AddSingleton<ApiResultFilter, ApiResultFilter>();

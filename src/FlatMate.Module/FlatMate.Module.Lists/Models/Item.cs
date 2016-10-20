@@ -7,17 +7,19 @@ namespace FlatMate.Module.Lists.Models
 {
     public class Item
     {
+        [Editable(false)]
         public DateTime CreationDate { get; set; }
-
-        public int UserId { get; set; }
 
         public int Id { get; set; }
 
-        public int? ItemListId { get; set; }
-
         public int? ItemListGroupId { get; set; }
 
+        public int? ItemListId { get; set; }
+
+        [Editable(false)]
         public DateTime LastModified { get; set; }
+
+        public int UserId { get; set; }
 
         public string Value { get; set; }
     }
@@ -25,8 +27,6 @@ namespace FlatMate.Module.Lists.Models
     public class ItemDbo
     {
         public DateTime CreationDate { get; set; }
-
-        public int UserId { get; set; }
 
         [Key]
         public int Id { get; set; }
@@ -41,7 +41,10 @@ namespace FlatMate.Module.Lists.Models
 
         public int? ItemListId { get; set; }
 
+        [Editable(false)]
         public DateTime LastModified { get; set; }
+
+        public int UserId { get; set; }
 
         [Required]
         public string Value { get; set; }

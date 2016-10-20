@@ -9,6 +9,7 @@ namespace FlatMate.Module.Lists.Models
 {
     public class ItemListGroup
     {
+        [Editable(false)]
         public DateTime CreationDate { get; set; }
 
         public int Id { get; set; }
@@ -18,6 +19,8 @@ namespace FlatMate.Module.Lists.Models
 
         public List<Item> Items { get; set; } = new List<Item>();
 
+
+        [Editable(false)]
         public DateTime LastModified { get; set; }
 
         [Required]

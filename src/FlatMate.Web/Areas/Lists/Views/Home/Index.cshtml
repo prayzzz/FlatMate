@@ -1,0 +1,34 @@
+﻿@model FlatMate.Web.Areas.Lists.Data.HomeViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<section class="container">
+    <h1>My Lists</h1>
+
+    <a asp-area="Lists" asp-controller="ItemList" asp-action="Create" class="btn">Create</a>
+
+    <table cellspacing="0" cellpadding="0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="centered">Entries</th>
+                <th class="centered">Public</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var itemList in Model.ItemLists.OrderBy(x => x.LastModified))
+            {
+                <tr>
+                    <td><a asp-controller="List" asp-action="Edit">@itemList.Name</a></td>
+                    <td class="centered">@itemList.Items.Count</td>
+                    <td class="centered"><input type="checkbox" value="@itemList.IsPublic" disabled /></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</section>

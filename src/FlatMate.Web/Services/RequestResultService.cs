@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Services
@@ -28,11 +27,8 @@ namespace FlatMate.Web.Services
     /// </summary>
     public class RequestResultService : IRequestResultService
     {
-        private readonly IStringLocalizer _localizer;
-
         public RequestResultService()
         {
-            //_localizer = localizer;
         }
 
         /// <summary>
@@ -74,9 +70,9 @@ namespace FlatMate.Web.Services
                 case ErrorType.SqlError:
                     return new StatusCodeResult(500);
                 case ErrorType.NotFound:
-                    return new NotFoundObjectResult(_localizer[result.ErrorMessage, result.ErrorMessageArgs].Value);
+                    return new NotFoundObjectResult(string.Format(result.ErrorMessage, result.ErrorMessageArgs));
                 case ErrorType.ValidationError:
-                    return new BadRequestObjectResult(_localizer[result.ErrorMessage, result.ErrorMessageArgs].Value);
+                    return new BadRequestObjectResult(string.Format(result.ErrorMessage, result.ErrorMessageArgs));
                 case ErrorType.Unauthorized:
                     return new UnauthorizedResult();
                 default:

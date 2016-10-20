@@ -26,10 +26,16 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
     justify-content: flex-end;
 }
 
-.wrapper {
-    width: 100vw;
-    height: 100vh;
+main {
+    width: 100%;
+    min-height: 100vh;
     position: relative;
     display: block;
     overflow: hidden;
+    z-index: 2;
+    background-color: white;
+
+    .container {
+        padding: 0 1rem;
+    }
 }

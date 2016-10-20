@@ -9,24 +9,27 @@ namespace FlatMate.Module.Lists.Models
 {
     public class ItemList
     {
+        [Editable(false)]
         public DateTime CreationDate { get; set; }
-
-        public int UserId { get; set; }
 
         public string Description { get; set; } = string.Empty;
 
         public int Id { get; set; }
-        
+
         public bool IsPublic { get; set; }
 
         public List<Item> Items { get; set; } = new List<Item>();
 
+
+        [Editable(false)]
         public DateTime LastModified { get; set; }
 
         public List<ItemListGroup> ListGroups { get; set; } = new List<ItemListGroup>();
 
         [Required]
         public string Name { get; set; }
+
+        public int UserId { get; set; }
     }
 
     public class ItemListDbo
@@ -75,11 +78,11 @@ namespace FlatMate.Module.Lists.Models
                 ListGroups = listModel.ListGroups.Select(group => ctx.Mapper.Map<ItemListGroupDbo>(@group)).ToList(),
                 Name = listModel.Name
             };
-            
+
             return listDbo;
         }
 
-       private static ItemList MapToModel(ItemListDbo dbo, MappingCtx ctx)
+        private static ItemList MapToModel(ItemListDbo dbo, MappingCtx ctx)
         {
             var itemList = new ItemList
             {

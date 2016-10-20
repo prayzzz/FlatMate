@@ -15,9 +15,9 @@ namespace FlatMate.Web.Areas.Account.Controllers
     [Area("Account")]
     public class LoginController : Controller
     {
-        private readonly ILoginService _loginService;
         private readonly CookieAuthenticationOptions _cookieOptions;
         private readonly ILogger _logger;
+        private readonly ILoginService _loginService;
 
         public LoginController(ILoggerFactory loggerFactory, ILoginService loginService, IOptions<CookieAuthenticationOptions> cookieOptions)
         {

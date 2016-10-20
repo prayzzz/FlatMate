@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
@@ -14,16 +13,18 @@ namespace FlatMate.Module.Lists.Services
     {
         Task<Result<ItemList>> Create(ItemList itemlist);
         Result<List<ItemList>> GetAll();
+        Result<List<ItemList>> GetAllByUser(int userId);
         Task<Result<ItemList>> AddItemToList(int listId, Item item);
         Task<Result<ItemList>> AddGroupToList(int listId, ItemListGroup item);
         Task<Result<ItemList>> AddItemToGroup(int listId, int groupId, Item item);
+        Result<List<ItemList>> GetAllPublicByUser(int userId);
     }
 
     public class ListService : IListService
     {
         private readonly ListsContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger<ListService> _logger;
+        private readonly IMapper _mapper;
 
         public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper)
         {
@@ -56,6 +57,16 @@ namespace FlatMate.Module.Lists.Services
             return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
         }
 
+        public Result<List<ItemList>> GetAllByUser(int userId)
+        {
+            return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Where(x => x.UserId == userId).Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
+        }
+
+        public Result<List<ItemList>> GetAllPublicByUser(int userId)
+        {
+            return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Where(x => x.UserId == userId && x.IsPublic).Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
+        }
+
         public async Task<Result<ItemList>> AddItemToList(int listId, Item item)
         {
             var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
@@ -67,17 +78,8 @@ namespace FlatMate.Module.Lists.Services
 
             var itemDbo = _mapper.Map<ItemDbo>(item);
             listDbo.Items.Add(itemDbo);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return new SuccessResult<ItemList>(_mapper.Map<ItemList>(listDbo));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(0, ex, "Failed saving entity.");
-                return new ErrorResult<ItemList>(ex, "Failed saving entity.");
-            }
+            
+            return await Save(listDbo);
         }
 
         public async Task<Result<ItemList>> AddGroupToList(int listId, ItemListGroup item)
@@ -91,17 +93,8 @@ namespace FlatMate.Module.Lists.Services
 
             var groupDbo = _mapper.Map<ItemListGroupDbo>(item);
             listDbo.ListGroups.Add(groupDbo);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return new SuccessResult<ItemList>(_mapper.Map<ItemList>(listDbo));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(0, ex, "Failed saving entity.");
-                return new ErrorResult<ItemList>(ex, "Failed saving entity.");
-            }
+            
+            return await Save(listDbo);
         }
 
         public async Task<Result<ItemList>> AddItemToGroup(int listId, int groupId, Item item)
@@ -121,6 +114,11 @@ namespace FlatMate.Module.Lists.Services
             var itemDbo = _mapper.Map<ItemDbo>(item);
             groupDbo.Items.Add(itemDbo);
 
+            return await Save(listDbo);
+        }
+
+        private async Task<Result<ItemList>> Save(ItemListDbo listDbo)
+        {
             try
             {
                 await _context.SaveChangesAsync();

@@ -5,8 +5,8 @@ using FlatMate.Module.Lists.Models;
 using FlatMate.Module.Lists.Services;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using prayzzz.Common.Mvc;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
@@ -17,7 +17,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
     {
         private readonly IListService _listService;
 
-        public ItemListApiController(IListService listService)
+        public ItemListApiController(IHttpContextAccessor context, IListService listService) : base(context)
         {
             _listService = listService;
         }
@@ -27,7 +27,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         public Task<Result<ItemList>> CreateList([FromBody] ItemList itemlist)
         {
             itemlist.Id = 0;
-            itemlist.UserId = UserId;
+            itemlist.UserId = CurrentUserId;
 
             var now = DateTime.Now;
             itemlist.CreationDate = now;
@@ -56,7 +56,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         [Produces(typeof(ItemList))]
         public Task<Result<ItemList>> AddItemToList(int listId, [FromBody] Item item)
         {
-            item.UserId = UserId;
+            item.UserId = CurrentUserId;
             item.ItemListId = listId;
             item.ItemListGroupId = null;
 
@@ -71,7 +71,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         [Produces(typeof(ItemList))]
         public Task<Result<ItemList>> AddGroupToList(int listId, [FromBody] ItemListGroup group)
         {
-            group.UserId = UserId;
+            group.UserId = CurrentUserId;
             group.ItemListId = listId;
 
             var now = DateTime.Now;
@@ -85,7 +85,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         [Produces(typeof(ItemList))]
         public Task<Result<ItemList>> AddItemToGroup(int listId, int groupId, [FromBody] Item item)
         {
-            item.UserId = UserId;
+            item.UserId = CurrentUserId;
             item.ItemListId = listId;
             item.ItemListGroupId = groupId;
 
@@ -97,11 +97,22 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         }
 
         [HttpGet]
-        [ValidationFilter]
         [Produces(typeof(List<ItemList>))]
         public Result<List<ItemList>> GetAll()
         {
             return _listService.GetAll();
+        }
+
+        [HttpGet]
+        [Produces(typeof(List<ItemList>))]
+        public Result<List<ItemList>> GetAllByUser(int userId)
+        {
+            if (CurrentUserId == userId)
+            {
+                return _listService.GetAllByUser(userId);
+            }
+
+            return _listService.GetAllPublicByUser(userId);
         }
     }
 }
