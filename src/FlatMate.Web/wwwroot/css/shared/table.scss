@@ -1,5 +1,32 @@
-﻿th, td {
+﻿@import '../colors.scss';
+
+th, td {
     &.centered {
         text-align: center;
+    }
+
+    &.icon {
+        width: 32px;
+        padding: 0;
+        text-align: center;
+    }
+
+    &.show-large {
+        display: none;
+    }
+}
+
+td {
+    input {
+        margin-bottom: 0;
+    }
+}
+
+/* desktop */
+@media all and (min-width: 769px) {
+    th, td {
+        &.show-large {
+            display: table-cell;
+        }
     }
 }

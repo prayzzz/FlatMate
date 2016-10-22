@@ -18,6 +18,7 @@ namespace FlatMate.Module.Lists.Services
         Task<Result<ItemList>> AddGroupToList(int listId, ItemListGroup item);
         Task<Result<ItemList>> AddItemToGroup(int listId, int groupId, Item item);
         Result<List<ItemList>> GetAllPublicByUser(int userId);
+        Result<ItemList> GetById(int id);
     }
 
     public class ListService : IListService
@@ -67,6 +68,18 @@ namespace FlatMate.Module.Lists.Services
             return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Where(x => x.UserId == userId && x.IsPublic).Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
         }
 
+        public Result<ItemList> GetById(int id)
+        {
+            var dbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == id);
+
+            if (dbo == null)
+            {
+                return new ErrorResult<ItemList>(ErrorType.NotFound, $"Entity {id} not found");
+            }
+
+            return new SuccessResult<ItemList>(_mapper.Map<ItemList>(dbo));
+        }
+
         public async Task<Result<ItemList>> AddItemToList(int listId, Item item)
         {
             var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
@@ -78,7 +91,7 @@ namespace FlatMate.Module.Lists.Services
 
             var itemDbo = _mapper.Map<ItemDbo>(item);
             listDbo.Items.Add(itemDbo);
-            
+
             return await Save(listDbo);
         }
 
@@ -93,7 +106,7 @@ namespace FlatMate.Module.Lists.Services
 
             var groupDbo = _mapper.Map<ItemListGroupDbo>(item);
             listDbo.ListGroups.Add(groupDbo);
-            
+
             return await Save(listDbo);
         }
 

@@ -6,7 +6,7 @@
     <title>FlatMate</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,700">
 
         <link rel="stylesheet" asp-href-include="~/lib/css/**/*.min.css" />
         <link rel="stylesheet" asp-href-include="~/css/**/*.min.css" />
@@ -21,7 +21,7 @@
 <body>
 
     <input id="menu-checkbox" type="checkbox" />
-    <label class="menu-toggle icon-burger" for="menu-checkbox"></label>
+    <label class="menu-toggle icon-32 icon-burger" for="menu-checkbox"></label>
 
     <nav>
         <span class="title">FlatMate</span>
@@ -35,5 +35,15 @@
     <main>
         @RenderBody()
     </main>
+
+    <environment names="Development">
+        <script src="~/node_modules/vue/dist/vue.js"></script>
+        <script src="~/js/flatmate.js"></script>
+        
+    </environment>
+
+    @await RenderSectionAsync("viewData", false)
+    @await RenderSectionAsync("vueInit", false)
+
 </body>
 </html>

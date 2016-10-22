@@ -104,6 +104,25 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(ItemList))]
+        public Result<ItemList> GetById(int id)
+        {
+            var result = _listService.GetById(id);
+
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
+            if (!result.Data.IsPublic && result.Data.UserId != CurrentUserId)
+            {
+                return new ErrorResult<ItemList>(ErrorType.Unauthorized, "You are now allowed to view this.");
+            }
+
+            return result;
+        }
+
+        [HttpGet]
         [Produces(typeof(List<ItemList>))]
         public Result<List<ItemList>> GetAllByUser(int userId)
         {

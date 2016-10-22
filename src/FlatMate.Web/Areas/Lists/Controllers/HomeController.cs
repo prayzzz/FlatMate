@@ -20,7 +20,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var model = new HomeViewModel();
+            var model = new HomeIndexVm();
 
             var itemListResult = _itemListApi.GetAllByUser(CurrentUserId);
             if (!itemListResult.IsSuccess)

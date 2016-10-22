@@ -1,0 +1,81 @@
+﻿@model FlatMate.Web.Areas.Lists.Data.ItemListEditVm
+
+@{
+    Layout = "_Layout";
+}
+
+
+<section class="container">
+    <h1>Edit ItemList #@Model.ItemList.Id</h1>
+
+    <form>
+        <fieldset>
+            <label asp-for="ItemList.Name"></label>
+            <input asp-for="ItemList.Name" />
+
+            <label asp-for="ItemList.Description"></label>
+            <input asp-for="ItemList.Description" />
+
+            <label asp-for="ItemList.IsPublic"></label>
+            <input asp-for="ItemList.IsPublic" />
+
+            <div class="pull-right">
+                <input type="submit" value="Save">
+            </div>
+
+            <hr />
+
+            <item-list-editor></item-list-editor>
+
+        </fieldset>
+    </form>
+
+</section>
+
+<script type="text/x-template" id="item-list-editor-template">
+    <table cellspacing="0" cellpadding="0">
+
+        <tbody is="item-list-group" v-for="g in model.itemList.listGroups" v-bind:group="g"></tbody>
+
+    </table>
+</script>
+
+<script type="text/x-template" id="item-list-group-template">
+    <tbody>
+        <tr>
+            <td><strong>{{group.name}} ({{group.items.length}})</strong></td>
+            <td class="icon"></td>
+            <td class="icon"></td>
+        </tr>
+
+        @*<item-list-group v-for="g in model.itemList.listGroups" v-bind:group="g"></item-list-group>*@
+
+        <tr v-for="item in group.items">
+            <td>{{item.value}}</td>
+            <td class="icon">
+                <a href="#" class="icon-24 icon-pen"></a>
+            </td>
+            <td class="icon">
+                <a href="#" class="icon-24 icon-cross-circle"></a>
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</script>
+
+@section viewData {
+    <script type="application/json" id="viewData">
+        @Html.Raw(JsonConvert.SerializeObject(Model.ItemList, Json.ViewSerializerSettings))
+    </script>
+}
+
+@section vueInit{
+    <script type="text/javascript">
+        flatMate.lists.init()
+    </script>
+}

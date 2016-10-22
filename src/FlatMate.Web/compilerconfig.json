@@ -26,5 +26,9 @@
   {
     "outputFile": "wwwroot/css/shared/table.css",
     "inputFile": "wwwroot/css/shared/table.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/icons.css",
+    "inputFile": "wwwroot/css/icons.scss"
   }
 ]

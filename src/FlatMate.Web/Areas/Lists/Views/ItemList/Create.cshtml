@@ -1,5 +1,27 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.HomeViewModel
+﻿@model FlatMate.Web.Areas.Lists.Data.ItemListCreateVm
 
 @{
     Layout = "_Layout";
 }
+
+<section class="container">
+    <h1>Create ItemList</h1>
+
+    <form asp-area="Lists" asp-controller="ItemList" asp-action="Create" method="post">
+        <fieldset>
+            <label asp-for="ItemList.Name"></label>
+            <input asp-for="ItemList.Name" />
+
+            <label asp-for="ItemList.Description"></label>
+            <input asp-for="ItemList.Description" />
+
+            <label asp-for="ItemList.IsPublic"></label>
+            <input asp-for="ItemList.IsPublic" />
+
+            <div class="pull-right">
+                <input type="submit" value="Save">
+            </div>
+        </fieldset>
+    </form>
+
+</section>

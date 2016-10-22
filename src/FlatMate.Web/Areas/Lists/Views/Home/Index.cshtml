@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.HomeViewModel
+﻿@model FlatMate.Web.Areas.Lists.Data.HomeIndexVm
 
 @{
     Layout = "_Layout";
@@ -12,23 +12,26 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
             <tr>
+                <th class="icon"></th>
+                <th class="icon show-large"></th>
                 <th>Name</th>
                 <th class="centered">Entries</th>
-                <th class="centered">Public</th>
+                <th class="centered show-large">Public</th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach (var itemList in Model.ItemLists.OrderBy(x => x.LastModified))
+            @foreach (var itemList in Model.ItemLists.OrderByDescending(x => x.LastModified))
             {
                 <tr>
-                    <td><a asp-controller="List" asp-action="Edit">@itemList.Name</a></td>
+                    <td class="icon"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen"></a></td>
+                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle"></a></td>
+                    <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
                     <td class="centered">@itemList.Items.Count</td>
-                    <td class="centered"><input type="checkbox" value="@itemList.IsPublic" disabled /></td>
+                    <td class="centered show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled /></td>
                 </tr>
             }
         </tbody>
-
     </table>
 
 </section>

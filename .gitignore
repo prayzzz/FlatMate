@@ -243,4 +243,9 @@ ModelManifest.xml
 
 
 # FlatMate
+*.lock
+typings/
+
 src/FlatMate.Web/wwwroot/css/**/*.css
+/src/FlatMate.Web/wwwroot/js/**/*.js.map
+/src/FlatMate.Web/wwwroot/js/**/*.js

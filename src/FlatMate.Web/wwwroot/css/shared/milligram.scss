@@ -18,7 +18,7 @@ body {
     color: #606c76;
     font-family: "Roboto", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     font-size: 1.6em;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.01em;
     line-height: 1.6;
 }
@@ -238,9 +238,6 @@ input[type='text'],
 input[type='url'],
 textarea,
 select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
     background-color: transparent;
     border: 0.1rem solid #d1d1d1;
     border-radius: 0.4rem;
@@ -648,7 +645,6 @@ h6 {
 }
 
 .clearfix {
-    *zoom: 1;
 }
 
 .clearfix:after, .clearfix:before {
