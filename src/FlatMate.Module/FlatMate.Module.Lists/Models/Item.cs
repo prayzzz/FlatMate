@@ -58,18 +58,15 @@ namespace FlatMate.Module.Lists.Models
             mapper.Configure<Item, ItemDbo>(MapToDbo);
         }
 
-        private static ItemDbo MapToDbo(Item model, MappingCtx ctx)
+        private static ItemDbo MapToDbo(Item model, ItemDbo itemDbo, MappingCtx ctx)
         {
-            var itemDbo = new ItemDbo
-            {
-                CreationDate = model.CreationDate,
-                Id = model.Id,
-                ItemListId = model.ItemListId,
-                ItemListGroupId = model.ItemListGroupId,
-                LastModified = model.LastModified,
-                UserId = model.UserId,
-                Value = model.Value
-            };
+            itemDbo.CreationDate = model.CreationDate;
+            itemDbo.Id = model.Id;
+            itemDbo.ItemListId = model.ItemListId;
+            itemDbo.ItemListGroupId = model.ItemListGroupId;
+            itemDbo.LastModified = model.LastModified;
+            itemDbo.UserId = model.UserId;
+            itemDbo.Value = model.Value;
 
             return itemDbo;
         }
@@ -86,7 +83,7 @@ namespace FlatMate.Module.Lists.Models
                 UserId = itemDbo.UserId,
                 Value = itemDbo.Value
             };
-            
+
             return group;
         }
     }

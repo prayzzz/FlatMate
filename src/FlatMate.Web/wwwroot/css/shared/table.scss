@@ -30,3 +30,35 @@ td {
         }
     }
 }
+
+div.table {
+    display: table;
+    width: 100%;
+
+    .body {
+        display: table-row-group;
+    }
+
+    .row {
+        display: table-row;
+        width: 100%;
+
+        .cell {
+            display: table-cell;
+            border-bottom: .1rem solid $color-border;
+            padding: 1.2rem 1.5rem;
+            vertical-align: middle;
+
+            &.icon {
+                width: 32px;
+                padding: 1.2rem 0;
+                text-align: center;
+            }
+        }
+    }
+
+
+    input {
+        margin-bottom: 0;
+    }
+}

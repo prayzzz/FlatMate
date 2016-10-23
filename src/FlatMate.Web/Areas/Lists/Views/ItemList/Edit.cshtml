@@ -22,50 +22,72 @@
             <div class="pull-right">
                 <input type="submit" value="Save">
             </div>
-
-            <hr />
-
-            <item-list-editor></item-list-editor>
-
         </fieldset>
     </form>
+
+    <hr />
+
+    <item-list-editor></item-list-editor>
 
 </section>
 
 <script type="text/x-template" id="item-list-editor-template">
-    <table cellspacing="0" cellpadding="0">
 
-        <tbody is="item-list-group" v-for="g in model.itemList.listGroups" v-bind:group="g"></tbody>
+    <div class="table">
+        <item-list-group v-for="g in itemList.listGroups" v-bind:group="g" :key="g.id"></item-list-group>
 
-    </table>
+        <div class="row">
+            <div class="cell">
+                <input type="text" placeholder="Add new group" v-el:itemvalue v-model.trim="newGroupName" v-on:keyup.enter="saveNewGroup" />
+            </div>
+            <div class="cell icon">
+                <a class="icon-24 icon-plus-circle" v-on:click="saveNewGroup"></a>
+            </div>
+            <div class="cell icon"></div>
+        </div>
+    </div>
+
 </script>
 
 <script type="text/x-template" id="item-list-group-template">
-    <tbody>
-        <tr>
-            <td><strong>{{group.name}} ({{group.items.length}})</strong></td>
-            <td class="icon"></td>
-            <td class="icon"></td>
-        </tr>
 
-        @*<item-list-group v-for="g in model.itemList.listGroups" v-bind:group="g"></item-list-group>*@
+    <div class="body">
+        <div class="row">
+            <div class="cell"><strong>{{group.name}} ({{group.items.length}})</strong></div>
+            <div class="cell icon"></div>
+            <div class="cell icon">
+                <a class="icon-24 icon-cross-circle" v-on:click="deleteGroup"></a>
+            </div>
+        </div>
 
-        <tr v-for="item in group.items">
-            <td>{{item.value}}</td>
-            <td class="icon">
-                <a href="#" class="icon-24 icon-pen"></a>
-            </td>
-            <td class="icon">
-                <a href="#" class="icon-24 icon-cross-circle"></a>
-            </td>
-        </tr>
+        <item-list-item v-for="i in group.items" v-bind:item="i" :key="i.id"></item-list-item>
 
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
+        <div class="row">
+            <div class="cell" style="padding-left:3rem">
+                <input type="text" placeholder="Add new item" v-model.trim="newItemValue" v-on:keyup.enter="saveNewItem" />
+            </div>
+            <div class="cell icon">
+                <a class="icon-24 icon-plus-circle" v-on:click="saveNewItem"></a>
+            </div>
+            <div class="cell icon"></div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/x-template" id="item-list-item-template">
+
+    <div class="row">
+        <div class="cell" style="padding-left:3rem" v-on:click="enterEditMode">
+            <span v-if="!isEditMode">{{item.value}}</span>
+            <input type="text" v-model="item.value" v-if="isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="saveItem" />
+        </div>
+        <div class="cell icon"></div>
+        <div class="cell icon">
+            <a class="icon-24 icon-cross-circle" v-on:click="deleteItem"></a>
+        </div>
+    </div>
+
 </script>
 
 @section viewData {
@@ -76,6 +98,6 @@
 
 @section vueInit{
     <script type="text/javascript">
-        flatMate.lists.init()
+        FlatMate.Lists.init()
     </script>
 }

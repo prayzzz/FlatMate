@@ -1,4 +1,4 @@
-﻿namespace flatMate.lists {
+﻿namespace FlatMate.Lists {
     export interface ItemList {
         creationDate: Date;
         id: number;
@@ -11,19 +11,22 @@
     }
 
     export interface ItemListGroup {
-        creationDate: Date;
-        id: number;
-        items: Item[];
-        lastModified: Date;
+        creationDate?: Date;
+        id?: number;
+        items?: Item[];
+        itemListId?: number;
+        lastModified?: Date;
         name: string;
-        userId: number;
+        userId?: number;
     }
 
     export interface Item {
-        creationDate: Date;
-        id: number;
-        lastModified: Date;
-        userId: number;
+        creationDate?: Date;
+        id?: number;
+        itemListId?: number;
+        itemListGroupId?: number;
+        lastModified?: Date;
+        userId?: number;
         value: string;
     }
 }

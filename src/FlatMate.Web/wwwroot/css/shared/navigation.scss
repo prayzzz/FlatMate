@@ -89,7 +89,7 @@ nav {
 }
 
 .menu-toggle {
-    position: absolute;
+    position: fixed;
     top: 1rem;
     left: 1rem;
     cursor: pointer;
@@ -103,6 +103,7 @@ nav {
 
 main {
     padding-top: calc(2rem + #{$icon-burger-size});
+    padding-bottom: calc(2rem + #{$icon-burger-size});
     transition: margin-left .25s ease-out, width .25s ease-out;
 }
 

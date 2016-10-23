@@ -54,7 +54,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
         [HttpPost("{listId}/item")]
         [Produces(typeof(ItemList))]
-        public Task<Result<ItemList>> AddItemToList(int listId, [FromBody] Item item)
+        public Task<Result<Item>> AddItemToList(int listId, [FromBody] Item item)
         {
             item.UserId = CurrentUserId;
             item.ItemListId = listId;
@@ -69,7 +69,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
         [HttpPost("{listId}/group")]
         [Produces(typeof(ItemList))]
-        public Task<Result<ItemList>> AddGroupToList(int listId, [FromBody] ItemListGroup group)
+        public Task<Result<ItemListGroup>> AddGroupToList(int listId, [FromBody] ItemListGroup group)
         {
             group.UserId = CurrentUserId;
             group.ItemListId = listId;
@@ -83,7 +83,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
         [HttpPost("{listId}/group/{groupId}/item")]
         [Produces(typeof(ItemList))]
-        public Task<Result<ItemList>> AddItemToGroup(int listId, int groupId, [FromBody] Item item)
+        public Task<Result<Item>> AddItemToGroup(int listId, int groupId, [FromBody] Item item)
         {
             item.UserId = CurrentUserId;
             item.ItemListId = listId;
@@ -96,6 +96,38 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return _listService.AddItemToGroup(listId, groupId, item);
         }
 
+        [HttpPut("{listId}/group/{groupId}/item/{itemId}")]
+        [Produces(typeof(ItemList))]
+        public Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, [FromBody] Item item)
+        {
+            item.UserId = CurrentUserId;
+            item.Id = itemId;
+            item.ItemListGroupId = groupId;
+            item.ItemListId = listId;
+
+            item.LastModified = DateTime.Now;
+
+            return _listService.UpdateItemInGroup(listId, groupId, itemId, item);
+        }
+
+        [HttpDelete("{listId}/group/{groupId}/item/{itemId}")]
+        public Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
+        {
+            return _listService.DeleteItemFromGroup(listId, groupId, itemId);
+        }
+
+        [HttpDelete("{listId}/group/{groupId}")]
+        public Task<Result> DeleteGroupFromList(int listId, int groupId)
+        {
+            return _listService.DeleteGroupFromList(listId, groupId);
+        }
+
+        [HttpDelete("{listId}")]
+        public Task<Result> UpdateItemInGroup(int listId)
+        {
+            return _listService.DeletList(listId);
+        }
+
         [HttpGet]
         [Produces(typeof(List<ItemList>))]
         public Result<List<ItemList>> GetAll()
@@ -103,9 +135,9 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return _listService.GetAll();
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         [Produces(typeof(ItemList))]
-        public Result<ItemList> GetById(int id)
+        public Result<ItemList> GetById(int id, [FromQuery]int user = 0)
         {
             var result = _listService.GetById(id);
 
@@ -122,8 +154,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return result;
         }
 
-        [HttpGet]
-        [Produces(typeof(List<ItemList>))]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public Result<List<ItemList>> GetAllByUser(int userId)
         {
             if (CurrentUserId == userId)
