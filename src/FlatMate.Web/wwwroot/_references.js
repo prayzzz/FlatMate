@@ -7,3 +7,4 @@
 /// <reference path="js/lists/models.js" />
 /// <reference path="js/site.min.js" />
 /// <reference path="lib/js/atomic.min.js" />
+/// <reference path="lib/js/vue.js" />

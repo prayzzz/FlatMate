@@ -6,7 +6,7 @@
 
 
 <section class="container">
-    <h1>Edit ItemList #@Model.ItemList.Id</h1>
+    <h1>Edit @Model.ItemList.Name</h1>
 
     <form>
         <fieldset>
@@ -31,64 +31,7 @@
 
 </section>
 
-<script type="text/x-template" id="item-list-editor-template">
-
-    <div class="table">
-        <item-list-group v-for="g in itemList.listGroups" v-bind:group="g" :key="g.id"></item-list-group>
-
-        <div class="row">
-            <div class="cell">
-                <input type="text" placeholder="Add new group" v-el:itemvalue v-model.trim="newGroupName" v-on:keyup.enter="saveNewGroup" />
-            </div>
-            <div class="cell icon">
-                <a class="icon-24 icon-plus-circle" v-on:click="saveNewGroup"></a>
-            </div>
-            <div class="cell icon"></div>
-        </div>
-    </div>
-
-</script>
-
-<script type="text/x-template" id="item-list-group-template">
-
-    <div class="body">
-        <div class="row">
-            <div class="cell"><strong>{{group.name}} ({{group.items.length}})</strong></div>
-            <div class="cell icon"></div>
-            <div class="cell icon">
-                <a class="icon-24 icon-cross-circle" v-on:click="deleteGroup"></a>
-            </div>
-        </div>
-
-        <item-list-item v-for="i in group.items" v-bind:item="i" :key="i.id"></item-list-item>
-
-        <div class="row">
-            <div class="cell" style="padding-left:3rem">
-                <input type="text" placeholder="Add new item" v-model.trim="newItemValue" v-on:keyup.enter="saveNewItem" />
-            </div>
-            <div class="cell icon">
-                <a class="icon-24 icon-plus-circle" v-on:click="saveNewItem"></a>
-            </div>
-            <div class="cell icon"></div>
-        </div>
-    </div>
-
-</script>
-
-<script type="text/x-template" id="item-list-item-template">
-
-    <div class="row">
-        <div class="cell" style="padding-left:3rem" v-on:click="enterEditMode">
-            <span v-if="!isEditMode">{{item.value}}</span>
-            <input type="text" v-model="item.value" v-if="isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="saveItem" />
-        </div>
-        <div class="cell icon"></div>
-        <div class="cell icon">
-            <a class="icon-24 icon-cross-circle" v-on:click="deleteItem"></a>
-        </div>
-    </div>
-
-</script>
+@await Html.PartialAsync("ItemListVue")
 
 @section viewData {
     <script type="application/json" id="viewData">

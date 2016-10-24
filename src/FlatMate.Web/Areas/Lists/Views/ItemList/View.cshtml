@@ -1,0 +1,28 @@
+﻿@model FlatMate.Web.Areas.Lists.Data.ItemListViewVm
+
+@{
+    Layout = "_Layout";
+}
+
+
+<section class="container">
+    <h2>@Model.ItemList.Name</h2>
+
+    <item-list-editor></item-list-editor>
+
+</section>
+
+@await Html.PartialAsync("ItemListVue")
+
+
+@section viewData {
+    <script type="application/json" id="viewData">
+        @Html.Raw(JsonConvert.SerializeObject(Model.ItemList, Json.ViewSerializerSettings))
+    </script>
+}
+
+@section vueInit{
+    <script type="text/javascript">
+        FlatMate.Lists.init()
+    </script>
+}

@@ -52,5 +52,21 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             model.ItemList = result.Data;
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult View(int id)
+        {
+            var model = new ItemListViewVm();
+
+            var result = _itemListApi.GetById(id);
+            if (!result.IsSuccess)
+            {
+                model.ErrorMessage = result.ErrorMessage;
+                return View(model);
+            }
+
+            model.ItemList = result.Data;
+            return View(model);
+        }
     }
 }

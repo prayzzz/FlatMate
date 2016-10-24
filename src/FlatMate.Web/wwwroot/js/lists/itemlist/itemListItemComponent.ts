@@ -2,6 +2,7 @@
 
     class ItemListItemComponentModel {
         public isEditMode = false;
+        public oldValue = '';
     }
 
     export class ItemListItemComponent extends Vue {
@@ -18,7 +19,6 @@
         public methods = {
             enterEditMode: this.enterEditMode,
             leaveEditMode: this.leaveEditMode,
-            saveItem: this.saveItem,
             deleteItem: this.deleteItem
         }
 
@@ -30,6 +30,7 @@
             const self = this;
 
             this.$data.isEditMode = true;
+            this.$data.oldValue = this.item.value;
 
             Vue.nextTick(() => {
                 self.$els.iteminput.focus();
@@ -38,6 +39,18 @@
 
         private leaveEditMode(): void {
             this.$data.isEditMode = false;
+
+            if (this.$data.oldValue === this.item.value)
+            {
+                // value not changed
+                return;
+            }
+
+            // set oldvalue to prevent multiple requests
+            this.$data.oldValue = this.item.value;
+            
+            const client = new FlatMate.shared.ApiClient();
+            client.put(`lists/itemlist/${this.item.itemListId}/group/${this.item.itemListGroupId}/item/${this.item.id}`, this.item)
         }
 
         private deleteItem(): void {
@@ -49,18 +62,6 @@
 
             const client = new FlatMate.shared.ApiClient();
             client.delete(`lists/itemlist/${this.item.itemListId}/group/${this.item.itemListGroupId}/item/${this.item.id}`, done)
-        }
-
-        private saveItem(): void {
-            const self = this;
-
-            const done = (data: Item) => {
-                self.item = data;
-                self.leaveEditMode();
-            }
-
-            const client = new FlatMate.shared.ApiClient();
-            client.put(`lists/itemlist/${this.item.itemListId}/group/${this.item.itemListGroupId}/item/${this.item.id}`, this.item, done)
         }
     }
 }
