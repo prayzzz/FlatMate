@@ -10,6 +10,14 @@ properties {
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
     $version = "$date.$seconds"
 
+    # MySql Database    
+    $dbhost = "localhost"
+    $dbport = 3306    
+    $dbuser = "root"
+    $dbpassword = "admin"
+    $dbname = "ci_$branch"
+    $dbtype = "mysql"
+
     $isTeamcity = $env:TEAMCITY_VERSION
     if ($isTeamCity) { TeamCity-SetBuildNumber $version }
 
@@ -41,6 +49,10 @@ task Test -depends Dotnet-Test {
 }
 
 task Publish -depends Zip-Dotnet-Publish {
+}
+
+task Update-Database -depends Dotnet-DbUpdate {
+    # Invoke-psake .\build\psakefile.ps1 Update-Database -parameters @{"branch"="master"}
 }
 
 # Tasks
@@ -116,6 +128,27 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
 
         Compress-Archive -Path $Source -DestinationPath $destinationPath
     }
+}
+
+task Dotnet-DbUpdate -depends Dotnet-Restore {
+    $cwd = Get-Location
+    Set-Location "src/FlatMate.Web/"
+
+    # check for database
+    mysql --user=$dbuser --password=$dbpassword -e "`"USE $dbname"`"
+        
+    # create database
+    if ($lastexitcode -ne 0) {
+        Write-Host "Creating database $dbname"
+        exec { mysql --user=$dbuser --password=$dbpassword -e "`"CREATE DATABASE $dbname;"`" }
+
+        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "..\..\scripts" }
+    }
+    
+    # executing scripts
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "..\..\scripts" }
+
+    Set-Location $cwd
 }
 
 function Apply-Version ($file) {
