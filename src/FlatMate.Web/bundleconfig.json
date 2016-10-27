@@ -2,8 +2,7 @@
   {
     "outputFileName": "wwwroot/css/flatmate.min.css",
     "inputFiles": [
-      "wwwroot/lib/css/**/*.min.css",
-      "wwwroot/css/**/*.min.css"
+      "wwwroot/css/**/*.css"
     ],
     "minify": {
       "enabled": true

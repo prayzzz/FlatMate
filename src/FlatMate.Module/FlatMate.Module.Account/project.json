@@ -8,7 +8,7 @@
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "MySql.Data.EntityFrameworkCore": "7.0.5-IR21",
     "NETStandard.Library": "1.6.0",
-    "prayzzz.Common": "1.0.0-*"
+    "prayzzz.Common": "2016.10.27.928"
   },
 
   "frameworks": {

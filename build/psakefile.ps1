@@ -1,7 +1,7 @@
 properties {
     Import-Module psake-contrib/teamcity.psm1
 
-    $config = "Debug"
+    $config =  $env:CONFIGURATION
 
     $date = Get-Date -Format yyyy.MM.dd;
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
