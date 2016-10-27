@@ -2,6 +2,9 @@ properties {
     Import-Module psake-contrib/teamcity.psm1
 
     $config =  $env:CONFIGURATION
+    if (!$config -or $config -eq "") {
+        $config = "Debug"
+    }
 
     $date = Get-Date -Format yyyy.MM.dd;
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
@@ -12,6 +15,9 @@ properties {
 
     # Change to root directory
     Set-Location "../"
+
+    Write-Host "Configuration: $config"
+    Write-Host "Version: $date"
 }
 
 FormatTaskName {
@@ -108,8 +114,7 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
             Remove-item $destinationPath
         }
 
-        Add-Type -assembly "system.io.compression.filesystem"
-        [io.compression.zipfile]::CreateFromDirectory($Source, $destinationPath)
+        Compress-Archive -Path $Source -DestinationPath $destinationPath
     }
 }
 
