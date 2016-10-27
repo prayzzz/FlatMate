@@ -1,17 +1,25 @@
 ﻿[
   {
-    "outputFileName": "wwwroot/css/site.min.css",
-    "inputFiles": [ "wwwroot/lib/css/**/*.min.css", "wwwroot/css/**/*.min.css" ]
+    "outputFileName": "wwwroot/css/flatmate.min.css",
+    "inputFiles": [
+      "wwwroot/lib/css/**/*.min.css",
+      "wwwroot/css/**/*.min.css"
+    ],
+    "minify": {
+      "enabled": true
+    }
   },
   {
-    "outputFileName": "wwwroot/js/site.min.js",
-    "inputFiles": [ "wwwroot/js/site.js" ],
-    // Optionally specify minification options
+    "outputFileName": "wwwroot/js/flatmate.min.js",
+    "inputFiles": [
+      "wwwroot/lib/js/atomic.min.js",
+      "wwwroot/lib/js/vue.min.js",
+      "wwwroot/js/flatmate.js"
+    ],
     "minify": {
       "enabled": true,
       "renameLocals": true
     },
-    // Optinally generate .map file
     "sourceMap": false
   }
 ]

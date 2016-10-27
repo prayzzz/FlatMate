@@ -12,7 +12,7 @@ $icon-burger-size: 32px;
         width: $nav-width;
     }
 
-    main {
+    #menu-checkbox:not(:checked) ~ main {
         margin-left: $nav-width;
         width: calc(100% - #{$nav-width});
     }
@@ -29,7 +29,7 @@ $icon-burger-size: 32px;
         width: $nav-width-small;
     }
 
-    main {
+    #menu-checkbox:not(:checked) ~ main {
         margin-left: 0px;
     }
 
@@ -101,9 +101,8 @@ nav {
     }
 }
 
-main {
+nav + main {
     padding-top: calc(2rem + #{$icon-burger-size});
     padding-bottom: calc(2rem + #{$icon-burger-size});
     transition: margin-left .25s ease-out, width .25s ease-out;
 }
-

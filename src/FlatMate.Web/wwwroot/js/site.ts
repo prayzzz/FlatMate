@@ -1,7 +1,7 @@
 ﻿window.addEventListener("load", () => {
-    var vm = new Vue({
+    new Vue({
         el: 'main',
         data: {
         }
-    })
+    });
 });

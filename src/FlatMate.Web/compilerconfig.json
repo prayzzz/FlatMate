@@ -16,10 +16,6 @@
     "inputFile": "wwwroot/css/account/register.scss"
   },
   {
-    "outputFile": "wwwroot/css/shared/milligram/milligram.css",
-    "inputFile": "wwwroot/css/shared/milligram/milligram.sass"
-  },
-  {
     "outputFile": "wwwroot/css/shared/milligram.css",
     "inputFile": "wwwroot/css/shared/milligram.scss"
   },

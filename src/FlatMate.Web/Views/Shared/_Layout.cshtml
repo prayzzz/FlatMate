@@ -12,10 +12,9 @@
         <link rel="stylesheet" asp-href-include="~/css/**/*.min.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+        <link rel="stylesheet" href="~/css/flatmate.min.css" asp-append-version="true" />
     </environment>
 </head>
 <body>
@@ -26,7 +25,7 @@
     <nav>
         <span class="title">FlatMate</span>
         <ul>
-            <li><a asp-area="" asp-controller="Dashboard">Dashboard</a></li>
+            <li><a asp-area="" asp-controller="Dashboard" asp-action="">Dashboard</a></li>
             <li><a asp-area="Lists" asp-controller="Home" asp-action="">Lists</a></li>
             <li><a href="#">Offers</a></li>
         </ul>
@@ -36,11 +35,14 @@
         @RenderBody()
     </main>
 
-    <environment names="Development">        
+    <environment names="Development">
         <script src="~/lib/js/atomic.min.js"></script>
         <script src="~/lib/js/vue.js"></script>
         <script src="~/js/flatmate.js"></script>
-        
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/flatmate.min.js"></script>
     </environment>
 
     @await RenderSectionAsync("viewData", false)
