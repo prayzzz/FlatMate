@@ -22,5 +22,5 @@ ENGINE=InnoDB
 --
 
 
-INSERT INTO  `infrastructure.dbscripts` (`Date`, `Name`, `Description`) 
-VALUES ('2016-10-16T19:27:42', 'create user table', '');
+INSERT INTO  `infrastructure_dbscripts` (`FileName`) 
+VALUES ('2016-10-16_19-27-42_create_user_table');
