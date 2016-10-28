@@ -142,11 +142,11 @@ task Dotnet-DbUpdate -depends Dotnet-Restore {
         Write-Host "Creating database $dbname"
         exec { mysql --user=$dbuser --password=$dbpassword -e "`"CREATE DATABASE $dbname;"`" }
 
-        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "../../scripts" }
+        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
     }
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "../../scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
 
     Set-Location $cwd
 }

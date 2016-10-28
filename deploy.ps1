@@ -3,8 +3,8 @@ properties {
 
     # Project
     $mainProjectDir = "src/FlatMate.Web";
-    $artifactDir = "/opt/apps/artifacts/flatmate/"
-    $liveDir = "/opt/apps/live/flatmate/"
+    $artifactDir = "/opt/apps/artifacts/flatmate"
+    $liveDir = "/opt/apps/live/flatmate"
     $pidFile = "flatmate.pid"
 
     # MySql Database    
@@ -27,20 +27,20 @@ FormatTaskName {
 
 # Alias
 
-task Deploy -depends Dotnet-DbUpdate, Update-App, Start {
+task Deploy -depends Update-App, Update-AppSettings, Start {
 }
 
 # Task
 
 task Dotnet-DbUpdate {
     $cwd = Get-Location
-    Set-Location $mainProjectDir
+    Set-Location $liveDir
    
     # create backup
-    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./scripts" --backup "./scripts/backup" }
+    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" --backup "./_scripts/backup" }
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
 
     Set-Location $cwd
 }
@@ -81,7 +81,7 @@ task Update-App -depends Stop {
 
     # unzip
     Write-Host "Deploying $file"    
-    Expand-Archive $file $liveDir -Debug
+    Expand-Archive $file $liveDir
     
     Set-Location $cwd
 }
@@ -108,7 +108,7 @@ task Start {
     $app.Id | Out-File $pidFile
             
     Set-Location $cwd
-}
+}rm fl
 
 function Get-Value-Or-Default($value, $default) {
     if (!$value -or $value -eq "") {
