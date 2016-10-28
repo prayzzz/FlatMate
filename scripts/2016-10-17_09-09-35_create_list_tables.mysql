@@ -2,7 +2,7 @@
 -- Script
 --
 
-CREATE TABLE `Lists_ItemList` (
+CREATE TABLE `lists_itemlist` (
 	`Id` INT(11) NOT NULL AUTO_INCREMENT,
 	`CreationDate` DATETIME NOT NULL,
 	`Description` TEXT NULL,
@@ -12,13 +12,13 @@ CREATE TABLE `Lists_ItemList` (
 	`UserId` INT(11) NOT NULL,
 	PRIMARY KEY (`Id`),
 	INDEX `FK_ItemList_User` (`UserId`),
-	CONSTRAINT `FK_ItemList_User` FOREIGN KEY (`UserId`) REFERENCES `Account_User` (`Id`)
+	CONSTRAINT `FK_ItemList_User` FOREIGN KEY (`UserId`) REFERENCES `account_user` (`Id`)
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
-CREATE TABLE `Lists_ItemListGroup` (
+CREATE TABLE `lists_itemlistgroup` (
 	`Id` INT(11) NOT NULL AUTO_INCREMENT,
 	`CreationDate` DATETIME NOT NULL,
 	`ItemListId` INT(11) NOT NULL,
@@ -28,14 +28,14 @@ CREATE TABLE `Lists_ItemListGroup` (
 	PRIMARY KEY (`Id`),
 	INDEX `FK_ItemListGroup_User` (`UserId`),
 	INDEX `FK_ItemListGroup_ItemList` (`ItemListId`),
-	CONSTRAINT `FK_ItemListGroup_User` FOREIGN KEY (`UserId`) REFERENCES `Account_User` (`Id`),
-	CONSTRAINT `FK_ItemListGroup_ItemList` FOREIGN KEY (`ItemListId`) REFERENCES `Lists_ItemList` (`Id`)
+	CONSTRAINT `FK_ItemListGroup_User` FOREIGN KEY (`UserId`) REFERENCES `account_user` (`Id`),
+	CONSTRAINT `FK_ItemListGroup_ItemList` FOREIGN KEY (`ItemListId`) REFERENCES `lists_itemlist` (`Id`)
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
-CREATE TABLE `Lists_Item` (
+CREATE TABLE `lists_item` (
 	`Id` INT(11) NOT NULL AUTO_INCREMENT,
 	`CreationDate` DATETIME NOT NULL,
 	`ItemListId` INT(11) NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE `Lists_Item` (
 	INDEX `FK_Item_User` (`UserId`),
 	INDEX `FK_Item_ItemListGroup` (`ItemListGroupId`),
 	INDEX `FK_Item_ItemList` (`ItemListId`),
-	CONSTRAINT `FK_Item_User` FOREIGN KEY (`UserId`) REFERENCES `Account_User` (`Id`),
-	CONSTRAINT `FK_Item_ItemListGroup` FOREIGN KEY (`ItemListGroupId`) REFERENCES `Lists_ItemListGroup` (`Id`),
-	CONSTRAINT `FK_Item_ItemList` FOREIGN KEY (`ItemListId`) REFERENCES `Lists_ItemList` (`Id`)
+	CONSTRAINT `FK_Item_User` FOREIGN KEY (`UserId`) REFERENCES `account_user` (`Id`),
+	CONSTRAINT `FK_Item_ItemListGroup` FOREIGN KEY (`ItemListGroupId`) REFERENCES `lists_itemlistgroup` (`Id`),
+	CONSTRAINT `FK_Item_ItemList` FOREIGN KEY (`ItemListId`) REFERENCES `lists_itemlist` (`Id`)
 )
 ENGINE=InnoDB
 ;
