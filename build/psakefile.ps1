@@ -14,7 +14,7 @@ properties {
     $dbport = Get-Value-Or-Default $dbport 3306
     $dbuser = Get-Value-Or-Default $dbuser "root"
     $dbpassword = Get-Value-Or-Default $dbpassword "admin"
-    $dbname = "ci_$branch"
+    $dbname = "ci_flatmate_$branch"
 
     # Teamcity
     $isTeamcity = $env:TEAMCITY_VERSION
@@ -139,11 +139,11 @@ task Dotnet-DbUpdate -depends Dotnet-Restore {
         Write-Host "Creating database $dbname"
         exec { mysql --user=$dbuser --password=$dbpassword -e "`"CREATE DATABASE $dbname;"`" }
 
-        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "..\..\scripts" }
+        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "../../scripts" }
     }
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "..\..\scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "../../scripts" }
 
     Set-Location $cwd
 }
