@@ -54,6 +54,9 @@ task Update-Database -depends Dotnet-DbUpdate {
     # Invoke-psake .\build\psakefile.ps1 Update-Database -parameters @{"branch"="master"}
 }
 
+task CI-Build -depends Test, Update-Database {
+}
+
 # Tasks
 
 task Npm-Install {
