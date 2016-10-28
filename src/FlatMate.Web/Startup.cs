@@ -26,7 +26,7 @@ namespace FlatMate.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
+            
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();

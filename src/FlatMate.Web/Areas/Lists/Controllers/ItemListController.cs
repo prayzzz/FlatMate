@@ -62,7 +62,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             if (!result.IsSuccess)
             {
                 model.ErrorMessage = result.ErrorMessage;
-                return View(model);
+                return View(model); // TODO NullPointer in View
             }
 
             model.ItemList = result.Data;
