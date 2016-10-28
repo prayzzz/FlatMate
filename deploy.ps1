@@ -78,7 +78,7 @@ task Update-App -depends Stop {
 
     # unzip and disable progressbar
     Write-Host "Deploying $file"
-    $ProgressPreference = 'SilentlyContinue'
+    $ProgressPreference = "SilentlyContinue"
     Expand-Archive $file $liveDir
     
     Set-Location $cwd
