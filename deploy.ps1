@@ -14,9 +14,6 @@ properties {
     $dbuser = Get-Value-Or-Default $dbuser "root"
     $dbpassword = Get-Value-Or-Default $dbpassword "admin"
     $dbname = "flatmate"
-
-    # Disable Progressbar
-    $ProgressPreference = 'SilentlyContinue'
 }
 
 FormatTaskName {
@@ -79,8 +76,9 @@ task Update-App -depends Stop {
     $files = Get-ChildItem $artifactDir -Filter *.zip
     $file = $artifactDir + "/" + $files[-1]
 
-    # unzip
-    Write-Host "Deploying $file"    
+    # unzip and disable progressbar
+    Write-Host "Deploying $file"
+    $ProgressPreference = 'SilentlyContinue'
     Expand-Archive $file $liveDir
     
     Set-Location $cwd
