@@ -114,7 +114,7 @@ task Dotnet-Publish -depends Dotnet-Bundle, Dotnet-Test {
 }
 
 task Zip-Dotnet-Publish -depends Dotnet-Publish {    
-    $source = "$mainProjectDir/bin/$config/netcoreapp1.0/publish"
+    $source = "$mainProjectDir/bin/$config/netcoreapp1.0/publish/*"
     $destinationFolder = "dist/"
     $destinationFile = "flatmate-$version.zip"
     $destinationPath = $destinationFolder + $destinationFile
@@ -127,7 +127,7 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
         Remove-item $destinationPath
     }
 
-    Compress-Archive -Path $Source -DestinationPath $destinationPath    
+    Compress-Archive -Path $Source -DestinationPath $destinationPath
 }
 
 task Dotnet-DbUpdate -depends Dotnet-Restore {
