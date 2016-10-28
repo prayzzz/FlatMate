@@ -1,23 +1,22 @@
 properties {
     Import-Module psake-contrib/teamcity.psm1
 
-    $config =  $env:CONFIGURATION
-    if (!$config -or $config -eq "") {
-        $config = "Debug"
-    }
-
     $date = Get-Date -Format yyyy.MM.dd;
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
     $version = "$date.$seconds"
 
-    # MySql Database    
-    $dbhost = "localhost"
-    $dbport = 3306    
-    $dbuser = "root"
-    $dbpassword = "admin"
-    $dbname = "ci_$branch"
-    $dbtype = "mysql"
+    $config = Get-Value-Or-Default $env:CONFIGURATION "Debug"
+    $mainProjectDir = "src/FlatMate.Web";
 
+    # MySql Database    
+    $dbtype = Get-Value-Or-Default $dbtype "mysql"
+    $dbhost = Get-Value-Or-Default $dbhost "localhost"
+    $dbport = Get-Value-Or-Default $dbport 3306
+    $dbuser = Get-Value-Or-Default $dbuser "root"
+    $dbpassword = Get-Value-Or-Default $dbpassword "admin"
+    $dbname = "ci_$branch"
+
+    # Teamcity
     $isTeamcity = $env:TEAMCITY_VERSION
     if ($isTeamCity) { TeamCity-SetBuildNumber $version }
 
@@ -25,7 +24,7 @@ properties {
     Set-Location "../"
 
     Write-Host "Configuration: $config"
-    Write-Host "Version: $date"
+    Write-Host "Version: $version"
 }
 
 FormatTaskName {
@@ -60,7 +59,7 @@ task Update-Database -depends Dotnet-DbUpdate {
 task Npm-Install {
     exec {
         $cwd = Get-Location
-        Set-Location "src/FlatMate.Web/wwwroot/"
+        Set-Location "$mainProjectDir/wwwroot/"
 
         yarn
 
@@ -73,17 +72,17 @@ task Dotnet-Restore {
 }
 
 task Compile-Typescript -depends Npm-Install {
-    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/tsc -p "src/FlatMate.Web/wwwroot/" }
+    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/tsc -p "$mainProjectDir/wwwroot/" }
 }
 
 task Compile-Sass -depends Npm-Install {
-    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/node-sass "src/FlatMate.Web/wwwroot/css/" -o  "src/FlatMate.Web/wwwroot/css/" }
+    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/node-sass "$mainProjectDir/wwwroot/css/" -o  "$mainProjectDir/wwwroot/css/" }
 }
 
 task Dotnet-Bundle -depends Dotnet-Restore, Compile-Typescript, Compile-Sass {
     exec {
         $cwd = Get-Location
-        Set-Location "src/FlatMate.Web/"
+        Set-Location $mainProjectDir
 
         dotnet bundle
 
@@ -92,12 +91,12 @@ task Dotnet-Bundle -depends Dotnet-Restore, Compile-Typescript, Compile-Sass {
 }
 
 task Set-Version {
-    Apply-Version("src/FlatMate.Web/project.json")
-    Apply-Version("src/FlatMate.Web/appsettings.json")
+    Insert-Version "$mainProjectDir/project.json"
+    Insert-Version "$mainProjectDir/appsettings.json"
 }
 
 task Dotnet-Build -depends Dotnet-Restore, Set-Version {
-    exec { dotnet build "src/FlatMate.Web/" --configuration $config }
+    exec { dotnet build $mainProjectDir --configuration $config }
 }
 
 task Dotnet-Test -depends Dotnet-Build {
@@ -108,33 +107,31 @@ task Dotnet-Test -depends Dotnet-Build {
 }
 
 task Dotnet-Publish -depends Dotnet-Bundle, Dotnet-Test {
-    exec { dotnet publish "src/FlatMate.Web/" --configuration $config --no-build }
+    exec { dotnet publish $mainProjectDir --configuration $config --no-build }
 }
 
-task Zip-Dotnet-Publish -depends Dotnet-Publish {
-    exec {
-        $source = "src/FlatMate.Web/bin/$config/netcoreapp1.0/publish"
-        $destinationFolder = "dist/"
-        $destinationFile = "flatmate-$version.zip"
-        $destinationPath = $destinationFolder + $destinationFile
+task Zip-Dotnet-Publish -depends Dotnet-Publish {    
+    $source = "$mainProjectDir/bin/$config/netcoreapp1.0/publish"
+    $destinationFolder = "dist/"
+    $destinationFile = "flatmate-$version.zip"
+    $destinationPath = $destinationFolder + $destinationFile
 
-        If(!(Test-path $destinationFolder)) {
-            mkdir $destinationFolder
-        }
-
-        If(Test-path $destinationPath) {
-            Remove-item $destinationPath
-        }
-
-        Compress-Archive -Path $Source -DestinationPath $destinationPath
+    if(!(Test-path $destinationFolder)) {
+        mkdir $destinationFolder
     }
+
+    if(Test-path $destinationPath) {
+        Remove-item $destinationPath
+    }
+
+    Compress-Archive -Path $Source -DestinationPath $destinationPath    
 }
 
 task Dotnet-DbUpdate -depends Dotnet-Restore {
     $cwd = Get-Location
-    Set-Location "src/FlatMate.Web/"
+    Set-Location $mainProjectDir
 
-    # check for database
+    # check for database, no exec{} to continued execution and create missing db
     mysql --user=$dbuser --password=$dbpassword -e "`"USE $dbname"`"
         
     # create database
@@ -151,12 +148,14 @@ task Dotnet-DbUpdate -depends Dotnet-Restore {
     Set-Location $cwd
 }
 
-function Apply-Version ($file) {
+# Inserts the current version into the given json file.
+function Insert-Version ($file) {
     $project = ConvertFrom-Json -InputObject (Gc $file -Raw)
     $project.version = $version
     $project | ConvertTo-Json -depth 100 | Out-File $file
 }
 
+# Runs the tests in the given project
 function Run-Test ($project) {
     if ($isTeamCity) {
         TeamCity-TestSuiteStarted $project
@@ -167,4 +166,12 @@ function Run-Test ($project) {
     if ($isTeamCity) {
         TeamCity-TestSuiteFinished $project
     }
+}
+
+function Get-Value-Or-Default($value, $default) {
+    if (!$value -or $value -eq "") {
+        return $default
+    }
+
+    return $value;
 }
