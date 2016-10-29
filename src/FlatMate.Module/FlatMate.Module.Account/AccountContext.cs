@@ -16,7 +16,7 @@ namespace FlatMate.Module.Account
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UserDbo>().ToTable("account_user");
+            builder.Entity<UserDbo>().ToTable("Account_User");
         }
     }
 }

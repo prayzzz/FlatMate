@@ -35,7 +35,7 @@ FormatTaskName {
 
 # Alias
 
-task Restore -depends Npm-Install, Dotnet-Restore {
+task Restore -depends Yarn, Dotnet-Restore {
 }
 
 task Bundle -depends Dotnet-Bundle {
@@ -59,7 +59,7 @@ task CI-Build -depends Test, Update-Database {
 
 # Tasks
 
-task Npm-Install {
+task Yarn {
     exec {
         $cwd = Get-Location
         Set-Location "$mainProjectDir/wwwroot/"
@@ -74,11 +74,11 @@ task Dotnet-Restore {
     exec { dotnet restore }
 }
 
-task Compile-Typescript -depends Npm-Install {
+task Compile-Typescript -depends Yarn {
     exec { src/FlatMate.Web/wwwroot/node_modules/.bin/tsc -p "$mainProjectDir/wwwroot/" }
 }
 
-task Compile-Sass -depends Npm-Install {
+task Compile-Sass -depends Yarn {
     exec { src/FlatMate.Web/wwwroot/node_modules/.bin/node-sass "$mainProjectDir/wwwroot/css/" -o  "$mainProjectDir/wwwroot/css/" }
 }
 

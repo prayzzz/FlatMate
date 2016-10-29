@@ -34,7 +34,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Edit", result.Data.Id);
+            return RedirectToAction("Edit", new { id = result.Data.Id });
         }
 
         [HttpGet]

@@ -35,7 +35,6 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 task Update-Database {    
     $cwd = Get-Location
     Set-Location $mainProjectDir
-    Write-Host $cwd
     Write-Host "Working directory: " (Get-Location)
         
     exec { dotnet restore }
@@ -52,7 +51,6 @@ task Update-Database {
 task Stop {
     $cwd = Get-Location
     Set-Location $liveDir
-    Write-Host "cwd: $cwd"
     Write-Host "Working directory: " (Get-Location)
     
     # check for pid file
@@ -65,9 +63,7 @@ task Stop {
     $appId = Get-Content $pidFile
 
     # check for process
-    if (Get-Process -Id $appId) {
-        Stop-Process $appId
-    }
+    Get-Process -Id $appId -ErrorAction SilentlyContinue | Stop-Process -PassThru
 
     # remove pid file
     Remove-Item $pidFile
