@@ -60,5 +60,5 @@ ENGINE=InnoDB
 --
 
 
-INSERT INTO  `infrastructure_dbscripts` (`FileName`) 
+INSERT INTO  `Infrastructure_DbScripts` (`FileName`) 
 VALUES ('2016-10-17_09-09-35_create_list_tables');

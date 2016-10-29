@@ -47,7 +47,6 @@ task Update-Database {
     exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
 
     Set-Location $cwd
-    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Stop {
@@ -74,7 +73,6 @@ task Stop {
     Remove-Item $pidFile
     
     Set-Location $cwd
-    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Update-App -depends Stop {
@@ -95,7 +93,6 @@ task Update-App -depends Stop {
     Expand-Archive $file $liveDir
     
     Set-Location $cwd
-    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Update-AppSettings -depends Update-App {
@@ -103,12 +100,11 @@ task Update-AppSettings -depends Update-App {
     Set-Location $liveDir 
     Write-Host "Working directory: " (Get-Location)
 
-    $settings = Get-Content "appsettings.production.json"
+    $settings = Get-Content "appsettings.Production.json"
     $settings = $settings -replace "##dbuser##", $dbuser -replace "##dbpassword##", $dbpassword
-    $settings | Out-File "appsettings.production.json"
+    $settings | Out-File "appsettings.Production.json"
     
     Set-Location $cwd
-    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Start {
@@ -123,7 +119,6 @@ task Start {
     $app.Id | Out-File $pidFile
             
     Set-Location $cwd
-    Write-Host "Finish directory: " (Get-Location)
 }
 
 function Get-Value-Or-Default($value, $default) {
