@@ -35,6 +35,7 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 task Update-Database {    
     $cwd = Get-Location
     Set-Location $mainProjectDir
+    Write-Host $cwd
     Write-Host "Working directory: " (Get-Location)
         
     exec { dotnet restore }
@@ -46,15 +47,18 @@ task Update-Database {
     exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
 
     Set-Location $cwd
+    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Stop {
     $cwd = Get-Location
     Set-Location $liveDir
+    Write-Host "cwd: $cwd"
     Write-Host "Working directory: " (Get-Location)
     
     # check for pid file
     if(!(Test-path $pidFile)) {
+        Set-Location $cwd
         return
     }
 
@@ -70,6 +74,7 @@ task Stop {
     Remove-Item $pidFile
     
     Set-Location $cwd
+    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Update-App -depends Stop {
@@ -90,6 +95,7 @@ task Update-App -depends Stop {
     Expand-Archive $file $liveDir
     
     Set-Location $cwd
+    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Update-AppSettings -depends Update-App {
@@ -102,6 +108,7 @@ task Update-AppSettings -depends Update-App {
     $settings | Out-File "appsettings.production.json"
     
     Set-Location $cwd
+    Write-Host "Finish directory: " (Get-Location)
 }
 
 task Start {
@@ -116,6 +123,7 @@ task Start {
     $app.Id | Out-File $pidFile
             
     Set-Location $cwd
+    Write-Host "Finish directory: " (Get-Location)
 }
 
 function Get-Value-Or-Default($value, $default) {
