@@ -24,12 +24,12 @@ FormatTaskName {
 
 # Alias
 
-task Deploy -depends Update-App, Update-AppSettings, Start {
+task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 }
 
 # Task
 
-task Dotnet-DbUpdate {
+task Update-Database {
     $cwd = Get-Location
     Set-Location $liveDir
    
