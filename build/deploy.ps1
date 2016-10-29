@@ -14,6 +14,9 @@ properties {
     $dbuser = Get-Value-Or-Default $dbuser "root"
     $dbpassword = Get-Value-Or-Default $dbpassword "admin"
     $dbname = "flatmate"
+
+    # Change to root directory
+    Set-Location "../"
 }
 
 FormatTaskName {
@@ -32,7 +35,7 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 task Update-Database {    
     $cwd = Get-Location
     Set-Location $mainProjectDir
-    Write-Host "Working directory: " + Get-Location
+    Write-Host "Working directory: " (Get-Location)
         
     exec { dotnet restore }
    
@@ -48,7 +51,7 @@ task Update-Database {
 task Stop {
     $cwd = Get-Location
     Set-Location $liveDir
-    Write-Host "Working directory: " + Get-Location
+    Write-Host "Working directory: " (Get-Location)
     
     # check for pid file
     if(!(Test-path $pidFile)) {
@@ -72,7 +75,7 @@ task Stop {
 task Update-App -depends Stop {
     $cwd = Get-Location
     Set-Location $liveDir
-    Write-Host "Working directory: " + Get-Location
+    Write-Host "Working directory: " (Get-Location)
     
     # remove items in directory
     Remove-Item "./*" -recurse
@@ -91,7 +94,8 @@ task Update-App -depends Stop {
 
 task Update-AppSettings -depends Update-App {
     $cwd = Get-Location
-    Set-Location $liveDir
+    Set-Location $liveDir 
+    Write-Host "Working directory: " (Get-Location)
 
     $settings = Get-Content "appsettings.production.json"
     $settings = $settings -replace "##dbuser##", $dbuser -replace "##dbpassword##", $dbpassword
@@ -103,6 +107,7 @@ task Update-AppSettings -depends Update-App {
 task Start {
     $cwd = Get-Location
     Set-Location $liveDir
+    Write-Host "Working directory: " (Get-Location)
 
     # start app
     $app = Start-Process dotnet "FlatMate.Web.dll" -passthru
