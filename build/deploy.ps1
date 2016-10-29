@@ -108,7 +108,7 @@ task Start {
     $app.Id | Out-File $pidFile
             
     Set-Location $cwd
-}rm fl
+}
 
 function Get-Value-Or-Default($value, $default) {
     if (!$value -or $value -eq "") {
