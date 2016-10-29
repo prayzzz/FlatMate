@@ -30,10 +30,11 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 # Task
 
 task Update-Database {    
-    exec { dotnet restore }
-
     $cwd = Get-Location
-    Set-Location $liveDir
+    Set-Location $mainProjectDir
+    Write-Host "Working directory: " + Get-Location
+        
+    exec { dotnet restore }
    
     # create backup
     exec { dotnet dbupdate backup --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" --backup "./_scripts/backup" }
@@ -47,6 +48,7 @@ task Update-Database {
 task Stop {
     $cwd = Get-Location
     Set-Location $liveDir
+    Write-Host "Working directory: " + Get-Location
     
     # check for pid file
     if(!(Test-path $pidFile)) {
@@ -70,6 +72,7 @@ task Stop {
 task Update-App -depends Stop {
     $cwd = Get-Location
     Set-Location $liveDir
+    Write-Host "Working directory: " + Get-Location
     
     # remove items in directory
     Remove-Item "./*" -recurse
