@@ -29,7 +29,9 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 
 # Task
 
-task Update-Database {
+task Update-Database {    
+    exec { dotnet restore }
+
     $cwd = Get-Location
     Set-Location $liveDir
    
