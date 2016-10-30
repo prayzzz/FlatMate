@@ -5,9 +5,9 @@
 }
 
 <section class="container">
-    <h1>My Lists</h1>
+    <h1>Meine Listen</h1>
 
-    <a asp-area="Lists" asp-controller="ItemList" asp-action="Create" class="btn">Create</a>
+    <a asp-area="Lists" asp-controller="ItemList" asp-action="Create" class="btn">Erstellen</a>
 
     <table cellspacing="0" cellpadding="0">
         <thead>
@@ -15,8 +15,8 @@
                 <th class="icon"></th>
                 <th class="icon show-large"></th>
                 <th>Name</th>
-                <th class="centered">Entries</th>
-                <th class="centered show-large">Public</th>
+                <th class="centered">Einträge</th>
+                <th class="centered show-large">Öffentlich</th>
             </tr>
         </thead>
 
@@ -24,11 +24,11 @@
             @foreach (var itemList in Model.ItemLists.OrderByDescending(x => x.LastModified))
             {
                 <tr>
-                    <td class="icon"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen"></a></td>
-                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle"></a></td>
+                    <td class="icon"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
+                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle" title="Löschen"></a></td>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
                     <td class="centered">@itemList.Items.Count</td>
-                    <td class="centered show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled /></td>
+                    <td class="centered show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="öffentlich"/></td>
                 </tr>
             }
         </tbody>

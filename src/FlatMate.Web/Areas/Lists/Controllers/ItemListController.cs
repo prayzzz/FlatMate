@@ -37,6 +37,21 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return RedirectToAction("Edit", new { id = result.Data.Id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [FromForm]ItemListEditVm model)
+        {
+            var result = await _itemListApi.UpdateItemList(id, model.ItemList);
+
+            if (!result.IsSuccess)
+            {
+                model.ErrorMessage = result.ErrorMessage;
+                return View(model);
+            }
+
+            model.ItemList = result.Data;
+            return View(model);
+        }
+
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -51,6 +66,19 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
             model.ItemList = result.Data;
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _itemListApi.Delete(id);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

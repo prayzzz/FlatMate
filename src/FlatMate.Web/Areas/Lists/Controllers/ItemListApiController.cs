@@ -32,6 +32,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             var now = DateTime.Now;
             itemlist.CreationDate = now;
             itemlist.LastModified = now;
+
             itemlist.ListGroups.ForEach(group =>
             {
                 group.CreationDate = now;
@@ -43,6 +44,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
                     item.LastModified = now;
                 });
             });
+
             itemlist.Items.ForEach(item =>
             {
                 item.CreationDate = now;
@@ -94,6 +96,17 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.LastModified = now;
 
             return _listService.AddItemToGroup(listId, groupId, item);
+        }
+
+        [HttpPut("{listId}")]
+        [Produces(typeof(ItemList))]
+        public Task<Result<ItemList>> UpdateItemList(int listId, [FromBody]ItemList itemList)
+        {
+            itemList.UserId = CurrentUserId;
+            itemList.Id = listId;
+            itemList.LastModified = DateTime.Now;
+
+            return _listService.UpdateItemList(listId, itemList);
         }
 
         [HttpPut("{listId}/group/{groupId}/item/{itemId}")]
@@ -163,6 +176,11 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             return _listService.GetAllPublicByUser(userId);
+        }
+
+        public Task<Result> Delete(int id)
+        {
+            return _listService.DeleteItemList(id);
         }
     }
 }

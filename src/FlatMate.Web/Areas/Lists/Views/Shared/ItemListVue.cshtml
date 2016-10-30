@@ -5,7 +5,7 @@
 
         <div class="row">
             <div class="cell">
-                <input type="text" placeholder="Add new group" v-el:itemvalue v-model.trim="newGroupName" v-on:keyup.enter="saveNewGroup" />
+                <input type="text" placeholder="Neue Gruppe hinzufügen" v-el:itemvalue v-model.trim="newGroupName" v-on:keyup.enter="saveNewGroup" />
             </div>
             <div class="cell icon">
                 <a class="icon-24 icon-plus-circle" v-on:click="saveNewGroup"></a>
@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="cell" style="padding-left:3rem">
-                <input type="text" placeholder="Add new item" v-model.trim="newItemValue" v-on:keyup.enter="saveNewItem" />
+                <input type="text" placeholder="Neuen Eintrag hinzufügen" v-model.trim="newItemValue" v-on:keyup.enter="saveNewItem" />
             </div>
             <div class="cell icon">
                 <a class="icon-24 icon-plus-circle" v-on:click="saveNewItem"></a>

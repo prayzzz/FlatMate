@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
@@ -23,6 +24,8 @@ namespace FlatMate.Module.Lists.Services
         Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId);
         Task<Result> DeleteGroupFromList(int listId, int groupId);
         Task<Result> DeletList(int listId);
+        Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList);
+        Task<Result> DeleteItemList(int id);
     }
 
     public class ListService : IListService
@@ -82,6 +85,26 @@ namespace FlatMate.Module.Lists.Services
             }
 
             return new SuccessResult<ItemList>(_mapper.Map<ItemList>(dbo));
+        }
+
+        public async Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList)
+        {
+            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
+            if (listDbo == null)
+            {
+                return new ErrorResult<ItemList>(ErrorType.NotFound, $"ItemList {listId} not found");
+            }
+
+            listDbo = _mapper.Map(itemList, listDbo);
+            return await Save<ItemList, ItemListDbo>(listDbo);
+        }
+
+        public async Task<Result> DeleteItemList(int id)
+        {
+            var itemListDbo = new ItemListDbo { Id = id };
+            _context.Entry(itemListDbo).State = EntityState.Deleted;
+
+            return await Save();
         }
 
         public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)

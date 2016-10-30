@@ -10,25 +10,33 @@ namespace FlatMate.Module.Lists.Models
     public class ItemList
     {
         [Editable(false)]
-        public DateTime CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
 
-        public string Description { get; set; } = string.Empty;
-
-        public int Id { get; set; }
-
-        public bool IsPublic { get; set; }
-
-        public List<Item> Items { get; set; } = new List<Item>();
-
+        public string Description { get; set; }
 
         [Editable(false)]
-        public DateTime LastModified { get; set; }
+        public int Id { get; set; }
 
+        [Required]
+        public bool IsPublic { get; set; }
+
+        /// <summary>
+        /// Is ignored, if empty
+        /// </summary>
+        public List<Item> Items { get; set; } = new List<Item>();
+
+        [Editable(false)]
+        public DateTime? LastModified { get; set; }
+
+        /// <summary>
+        /// Is ignored, if empty
+        /// </summary>
         public List<ItemListGroup> ListGroups { get; set; } = new List<ItemListGroup>();
 
         [Required]
         public string Name { get; set; }
 
+        [Editable(false)]
         public int UserId { get; set; }
     }
 
@@ -64,20 +72,18 @@ namespace FlatMate.Module.Lists.Models
             mapper.Configure<ItemList, ItemListDbo>(MapToDbo);
         }
 
-        private static ItemListDbo MapToDbo(ItemList listModel, MappingCtx ctx)
+        private static ItemListDbo MapToDbo(ItemList listModel, ItemListDbo listDbo, MappingCtx ctx)
         {
-            var listDbo = new ItemListDbo
-            {
-                CreationDate = listModel.CreationDate,
-                UserId = listModel.UserId,
-                Description = listModel.Description,
-                Id = listModel.Id,
-                IsPublic = listModel.IsPublic,
-                Items = listModel.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList(),
-                LastModified = listModel.LastModified,
-                ListGroups = listModel.ListGroups.Select(group => ctx.Mapper.Map<ItemListGroupDbo>(@group)).ToList(),
-                Name = listModel.Name
-            };
+            listDbo.UserId = listModel.UserId;
+            listDbo.Id = listModel.Id;
+            listDbo.IsPublic = listModel.IsPublic;
+            listDbo.Name = listModel.Name;
+
+            if (listModel.CreationDate.HasValue) listDbo.CreationDate = listModel.CreationDate.Value;
+            if (listModel.Description != null) listDbo.Description = listModel.Description;
+            if (listModel.Items.Any()) listDbo.Items = listModel.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
+            if (listModel.LastModified.HasValue) listDbo.LastModified = listModel.LastModified.Value;
+            if (listModel.ListGroups.Any()) listDbo.ListGroups = listModel.ListGroups.Select(group => ctx.Mapper.Map<ItemListGroupDbo>(group)).ToList();
 
             return listDbo;
         }
@@ -98,6 +104,14 @@ namespace FlatMate.Module.Lists.Models
             };
 
             return itemList;
+        }
+
+        private static void MapIf(Func<bool> condition, Action action)
+        {
+            if (condition())
+            {
+                action();
+            }
         }
     }
 }
