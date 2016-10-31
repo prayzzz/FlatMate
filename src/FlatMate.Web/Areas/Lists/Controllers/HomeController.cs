@@ -1,4 +1,5 @@
-﻿using FlatMate.Web.Areas.Lists.Data;
+﻿using System.Linq;
+using FlatMate.Web.Areas.Lists.Data;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,8 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         public IActionResult Index()
         {
             var model = new HomeIndexVm();
-
-            var itemListResult = _itemListApi.GetAll(userId: CurrentUserId);
-            var publicLists = _itemListApi.GetAll(isPublic: true, limit: 10);
-
-            model.OwnItemLists = itemListResult;
-            model.PublicItemLists = publicLists;
+            model.OwnItemLists = _itemListApi.GetAll(userId: CurrentUserId).ToList();
+            model.PublicItemLists = _itemListApi.GetAll(isPublic: true).Where(x => x.UserId != CurrentUserId).Take(10).ToList();
 
             return View(model);
         }

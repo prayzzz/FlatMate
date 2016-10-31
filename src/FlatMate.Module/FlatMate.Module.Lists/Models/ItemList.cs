@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using prayzzz.Common.Linq;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
@@ -13,7 +14,15 @@ namespace FlatMate.Module.Lists.Models
 
         public int? UserId { get; set; }
 
-        public int? Limit { get; set; }
+        public ItemListQueryOrder Order { get; set; } = ItemListQueryOrder.None;
+
+        public OrderingDirection Direction { get; set; } = OrderingDirection.Asc;
+    }
+
+    public enum ItemListQueryOrder
+    {
+        None,
+        LastModified
     }
 
     public class ItemList

@@ -168,8 +168,8 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet]
-        [Produces(typeof(List<ItemList>))]
-        public List<ItemList> GetAll(bool? isPublic = null, [FromQuery]int? userId = null, [FromQuery]int? limit = null)
+        [Produces(typeof(IEnumerable<ItemList>))]
+        public IEnumerable<ItemList> GetAll(bool? isPublic = null, [FromQuery]int? userId = null, [FromQuery]int? limit = null)
         {
             // show all, if requesting own lists
             if (isPublic == null && CurrentUserId != userId)
@@ -181,10 +181,16 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             {
                 IsPublic = isPublic,
                 UserId = userId,
-                Limit = limit
             };
 
-            return _listService.GetAll(query);
+            var all = _listService.GetAll(query);
+
+            if (limit != null)
+            {
+                all = all.Take(limit.Value);
+            }
+
+            return all;
         }
 
         public Task<Result> Delete(int id)

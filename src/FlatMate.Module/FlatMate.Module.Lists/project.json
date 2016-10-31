@@ -5,6 +5,7 @@
     "FlatMate.Module.Account": "1.0.0-*",
     "Microsoft.EntityFrameworkCore": "1.0.1",
     "Microsoft.EntityFrameworkCore.Relational": "1.0.1",
+    "MySql.Data.EntityFrameworkCore": "7.0.6-IR31",
     "NETStandard.Library": "1.6.0"
   },
 

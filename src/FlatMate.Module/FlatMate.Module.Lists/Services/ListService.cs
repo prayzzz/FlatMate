@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
+using prayzzz.Common.Linq;
 
 namespace FlatMate.Module.Lists.Services
 {
     public interface IListService
     {
         Task<Result<ItemList>> Create(ItemList itemlist);
-        List<ItemList> GetAll(ItemListQuery query);
+        IEnumerable<ItemList> GetAll(ItemListQuery query);
         Task<Result<Item>> AddItemToList(int listId, Item item);
         Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item);
         Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item);
@@ -58,7 +59,7 @@ namespace FlatMate.Module.Lists.Services
             }
         }
 
-        public List<ItemList> GetAll(ItemListQuery query)
+        public IEnumerable<ItemList> GetAll(ItemListQuery query)
         {
             var all = _context.ItemListsFull;
 
@@ -66,10 +67,11 @@ namespace FlatMate.Module.Lists.Services
             {
                 if (query.IsPublic.HasValue) all = all.Where(x => x.IsPublic == query.IsPublic.Value);
                 if (query.UserId.HasValue) all = all.Where(x => x.UserId == query.UserId.Value);
+                if (query.Order == ItemListQueryOrder.LastModified) all = all.OrderBy(x => x.LastModified, query.Direction);
                 //if (query.Limit.HasValue) all = all.Take(query.Limit.Value); // TODO add if supported by mysql
             }
 
-            return all.Select(itemList => _mapper.Map<ItemList>(itemList)).ToList();
+            return all.Select(itemList => _mapper.Map<ItemList>(itemList));
         }
 
         public Result<ItemList> GetById(int id)
