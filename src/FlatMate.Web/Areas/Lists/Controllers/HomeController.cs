@@ -1,7 +1,6 @@
 ﻿using FlatMate.Web.Areas.Lists.Data;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
@@ -22,14 +21,12 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         {
             var model = new HomeIndexVm();
 
-            var itemListResult = _itemListApi.GetAllByUser(CurrentUserId);
-            if (!itemListResult.IsSuccess)
-            {
-                model.ErrorResult = itemListResult;
-                return View(model);
-            }
+            var itemListResult = _itemListApi.GetAll(userId: CurrentUserId);
+            var publicLists = _itemListApi.GetAll(isPublic: true, limit: 10);
 
-            model.ItemLists = itemListResult.Data;
+            model.OwnItemLists = itemListResult;
+            model.PublicItemLists = publicLists;
+
             return View(model);
         }
     }

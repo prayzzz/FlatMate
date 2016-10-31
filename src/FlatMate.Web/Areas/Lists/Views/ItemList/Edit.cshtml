@@ -6,7 +6,9 @@
 
 
 <section class="container">
-    <h2>@Model.ItemList.Name bearbeiten</h2>
+    <div class="title">
+        <h2>@Model.ItemList.Name bearbeiten</h2>
+    </div>
 
     <form asp-area="Lists" asp-controller="ItemList" asp-action="Edit" method="post">
         <fieldset>

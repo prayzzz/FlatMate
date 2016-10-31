@@ -45,14 +45,13 @@ button,
 input[type='button'],
 input[type='reset'],
 input[type='submit'] {
+    outline: 0;
     background-color: $color-primary;
     border: 0px;
-    border-radius: 0.4rem;
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.2rem;
     height: 3.8rem;
     letter-spacing: 0.1rem;
     line-height: 3.8rem;
@@ -61,21 +60,25 @@ input[type='submit'] {
     text-decoration: none;
     text-transform: uppercase;
     white-space: nowrap;
+    transition: background-color linear 0.1s;
 }
 
-.btn:hover, .btn:focus,
+.btn:hover,
 button:hover,
-button:focus,
 input[type='button']:hover,
-input[type='button']:focus,
 input[type='reset']:hover,
-input[type='reset']:focus,
-input[type='submit']:hover,
-input[type='submit']:focus {
-    background-color: #606c76;
-    border-color: #606c76;
+input[type='submit']:hover {
+    background-color: darken($color-primary, 5%);
     color: #fff;
-    outline: 0;
+}
+
+.btn:focus,
+button:focus,
+input[type='button']:focus,
+input[type='reset']:focus,
+input[type='submit']:focus {
+    box-shadow: inset 0 1px 10px rgba(0, 0, 0, .3);
+    color: #fff;
 }
 
 .btn.btn-disabled, .btn[disabled],
@@ -240,7 +243,7 @@ input[type='url'],
 textarea,
 select {
     background-color: transparent;
-    border: 0.1rem solid #d1d1d1;
+    border: 0.1rem solid darken($color-border, 10%);
     border-radius: 0.4rem;
     box-shadow: none;
     height: 3.8rem;
@@ -472,12 +475,12 @@ input[type='radio'] {
 }
 
 a {
-    color: #9b4dca;
+    color: $color-primary;
     text-decoration: none;
 }
 
 a:hover {
-    color: #606c76;
+    color: darken($color-primary, 10%);
 }
 
 dl,

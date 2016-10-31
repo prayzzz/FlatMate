@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
 using FlatMate.Module.Lists.Services;
@@ -141,13 +142,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return _listService.DeletList(listId);
         }
 
-        [HttpGet]
-        [Produces(typeof(List<ItemList>))]
-        public Result<List<ItemList>> GetAll()
-        {
-            return _listService.GetAll();
-        }
-
         [HttpGet("{id}")]
         [Produces(typeof(ItemList))]
         public Result<ItemList> GetById(int id, [FromQuery]int user = 0)
@@ -167,15 +161,30 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return result;
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public Result<List<ItemList>> GetAllByUser(int userId)
+        /// <summary> 
+        /// </summary>
+        /// <param name="isPublic">Can only be set, if called from code</param>
+        /// <param name="userId"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Produces(typeof(List<ItemList>))]
+        public List<ItemList> GetAll(bool? isPublic = null, [FromQuery]int? userId = null, [FromQuery]int? limit = null)
         {
-            if (CurrentUserId == userId)
+            // show all, if requesting own lists
+            if (isPublic == null && CurrentUserId != userId)
             {
-                return _listService.GetAllByUser(userId);
+                isPublic = true;
             }
 
-            return _listService.GetAllPublicByUser(userId);
+            var query = new ItemListQuery
+            {
+                IsPublic = isPublic,
+                UserId = userId,
+                Limit = limit
+            };
+
+            return _listService.GetAll(query);
         }
 
         public Task<Result> Delete(int id)

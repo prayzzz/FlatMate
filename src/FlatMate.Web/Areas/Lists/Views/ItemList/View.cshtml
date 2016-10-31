@@ -6,7 +6,12 @@
 
 
 <section class="container">
-    <h2>@Model.ItemList.Name</h2>
+    <div class="title">
+        <h2>@Model.ItemList.Name</h2>
+        <div>
+            <a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@Model.ItemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a>
+        </div>
+    </div>
 
     <item-list-editor></item-list-editor>
 

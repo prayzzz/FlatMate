@@ -13,12 +13,10 @@ namespace FlatMate.Module.Lists.Services
     public interface IListService
     {
         Task<Result<ItemList>> Create(ItemList itemlist);
-        Result<List<ItemList>> GetAll();
-        Result<List<ItemList>> GetAllByUser(int userId);
+        List<ItemList> GetAll(ItemListQuery query);
         Task<Result<Item>> AddItemToList(int listId, Item item);
         Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item);
         Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item);
-        Result<List<ItemList>> GetAllPublicByUser(int userId);
         Result<ItemList> GetById(int id);
         Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item);
         Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId);
@@ -60,19 +58,18 @@ namespace FlatMate.Module.Lists.Services
             }
         }
 
-        public Result<List<ItemList>> GetAll()
+        public List<ItemList> GetAll(ItemListQuery query)
         {
-            return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
-        }
+            var all = _context.ItemListsFull;
 
-        public Result<List<ItemList>> GetAllByUser(int userId)
-        {
-            return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Where(x => x.UserId == userId).Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
-        }
+            if (query != null)
+            {
+                if (query.IsPublic.HasValue) all = all.Where(x => x.IsPublic == query.IsPublic.Value);
+                if (query.UserId.HasValue) all = all.Where(x => x.UserId == query.UserId.Value);
+                //if (query.Limit.HasValue) all = all.Take(query.Limit.Value); // TODO add if supported by mysql
+            }
 
-        public Result<List<ItemList>> GetAllPublicByUser(int userId)
-        {
-            return new SuccessResult<List<ItemList>>(_context.ItemListsFull.Where(x => x.UserId == userId && x.IsPublic).Select(itemList => _mapper.Map<ItemList>(itemList)).ToList());
+            return all.Select(itemList => _mapper.Map<ItemList>(itemList)).ToList();
         }
 
         public Result<ItemList> GetById(int id)

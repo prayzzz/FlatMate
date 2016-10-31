@@ -7,17 +7,28 @@ using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
 {
+    public class ItemListQuery
+    {
+        public bool? IsPublic { get; set; }
+
+        public int? UserId { get; set; }
+
+        public int? Limit { get; set; }
+    }
+
     public class ItemList
     {
         [Editable(false)]
         public DateTime? CreationDate { get; set; }
 
+        [Display(Name = "Beschreibung")]
         public string Description { get; set; }
 
         [Editable(false)]
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "Öffentlich?")]
         public bool IsPublic { get; set; }
 
         /// <summary>
@@ -34,6 +45,7 @@ namespace FlatMate.Module.Lists.Models
         public List<ItemListGroup> ListGroups { get; set; } = new List<ItemListGroup>();
 
         [Required]
+        [Display(Name = "Name")]
         public string Name { get; set; }
 
         [Editable(false)]
