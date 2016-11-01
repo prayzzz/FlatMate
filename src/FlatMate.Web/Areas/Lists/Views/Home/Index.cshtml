@@ -14,16 +14,16 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
             <tr>
-                <th>Name</th>
-                <th class="centered show-large">Einträge</th>
+                <th width="40%">Name</th>
+                <th width="25%" class="centered show-large">Einträge</th>
                 <th class="centered show-large">Öffentlich?</th>
-                <th class="icon  show-large"></th>
+                <th class="icon show-large"></th>
                 <th class="icon show-large"></th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach (var itemList in Model.OwnItemLists.OrderByDescending(x => x.LastModified))
+            @foreach (var itemList in Model.OwnItemLists)
             {
                 <tr>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
@@ -45,21 +45,21 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
             <tr>
-                <th>Name</th>
-                <th class="centered show-large">Einträge</th>
-                <th class="centered show-large">Öffentlich?</th>
+                <th width="40%">Name</th>
+                <th width="25%" class="centered show-large">Einträge</th>
+                <th class="centered show-large">Author</th>
                 <th class="icon  show-large"></th>
                 <th class="icon show-large"></th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach (var itemList in Model.PublicItemLists.OrderByDescending(x => x.LastModified))
+            @foreach (var itemList in Model.PublicItemLists)
             {
                 <tr>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
                     <td class="centered show-large">@itemList.Items.Count</td>
-                    <td class="centered show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?" /></td>
+                    <td class="centered show-large">@itemList.UserId</td>
                     <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
                     <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle" title="Löschen"></a></td>
                 </tr>

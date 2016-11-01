@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Result;
+using prayzzz.Common.Enums;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
 {
@@ -163,13 +164,26 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
         /// <summary> 
         /// </summary>
-        /// <param name="isPublic">Can only be set, if called from code</param>
         /// <param name="userId"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet]
         [Produces(typeof(IEnumerable<ItemList>))]
-        public IEnumerable<ItemList> GetAll(bool? isPublic = null, [FromQuery]int? userId = null, [FromQuery]int? limit = null)
+        public IEnumerable<ItemList> GetAll([FromQuery]int? userId = null, [FromQuery]int? limit = null)
+        {
+            return GetAll(null, userId, limit);
+        }
+
+        /// <summary> 
+        /// </summary>
+        /// <param name="isPublic">Can only be set, if called from code</param>
+        /// <param name="userId"></param>
+        /// <param name="limit"></param>
+        /// <param name="orderField"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IEnumerable<ItemList> GetAll(bool? isPublic, int? userId = null, int? limit = null, ItemListQueryOrder orderField = ItemListQueryOrder.None, OrderingDirection order = OrderingDirection.Asc)
         {
             // show all, if requesting own lists
             if (isPublic == null && CurrentUserId != userId)
@@ -181,6 +195,8 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             {
                 IsPublic = isPublic,
                 UserId = userId,
+                Order = orderField,
+                Direction = order
             };
 
             var all = _listService.GetAll(query);
@@ -193,6 +209,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             return all;
         }
 
+        [HttpDelete]
         public Task<Result> Delete(int id)
         {
             return _listService.DeleteItemList(id);

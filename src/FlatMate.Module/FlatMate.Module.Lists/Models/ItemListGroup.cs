@@ -59,7 +59,7 @@ namespace FlatMate.Module.Lists.Models
             mapper.Configure<ItemListGroup, ItemListGroupDbo>(MapToDbo);
         }
 
-        private static ItemListGroupDbo MapToDbo(ItemListGroup model, MappingCtx ctx)
+        private static ItemListGroupDbo MapToDbo(ItemListGroup model, MappingContext ctx)
         {
             var groupDbo = new ItemListGroupDbo
             {
@@ -75,7 +75,7 @@ namespace FlatMate.Module.Lists.Models
             return groupDbo;
         }
 
-        private static ItemListGroup MapToModel(ItemListGroupDbo groupDbo, MappingCtx ctx)
+        private static ItemListGroup MapToModel(ItemListGroupDbo groupDbo, MappingContext ctx)
         {
             var group = new ItemListGroup
             {

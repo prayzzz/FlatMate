@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using prayzzz.Common.Enums;
 using prayzzz.Common.Linq;
 using prayzzz.Common.Mapping;
 
@@ -93,7 +94,7 @@ namespace FlatMate.Module.Lists.Models
             mapper.Configure<ItemList, ItemListDbo>(MapToDbo);
         }
 
-        private static ItemListDbo MapToDbo(ItemList listModel, ItemListDbo listDbo, MappingCtx ctx)
+        private static ItemListDbo MapToDbo(ItemList listModel, ItemListDbo listDbo, MappingContext ctx)
         {
             listDbo.UserId = listModel.UserId;
             listDbo.Id = listModel.Id;
@@ -109,7 +110,7 @@ namespace FlatMate.Module.Lists.Models
             return listDbo;
         }
 
-        private static ItemList MapToModel(ItemListDbo dbo, MappingCtx ctx)
+        private static ItemList MapToModel(ItemListDbo dbo, MappingContext ctx)
         {
             var itemList = new ItemList
             {
