@@ -1,15 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using prayzzz.Common.Dbo;
+using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Account.Models
 {
     public class User
     {
-        public string Email { get; set; }
         public int Id { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Name { get; set; }
 
         public string UserName { get; set; }
     }
@@ -47,12 +44,9 @@ namespace FlatMate.Module.Account.Models
         public string UserName { get; set; }
     }
 
-    public class UserDbo
+    public class UserDbo : BaseDbo
     {
         public string Email { get; set; }
-
-        [Key]
-        public int Id { get; set; }
 
         public string LastName { get; set; }
 
@@ -63,5 +57,24 @@ namespace FlatMate.Module.Account.Models
         public string Salt { get; set; }
 
         public string UserName { get; set; }
+    }
+
+    public class UserMapper : IDboMapper
+    {
+        public void Configure(IMapperConfiguration mapper)
+        {
+            mapper.Configure<UserDbo, User>(MapToUserModel);
+        }
+
+        private static User MapToUserModel(UserDbo userDbo, MappingContext ctx)
+        {
+            var model = new User
+            {
+                Id = userDbo.Id,
+                UserName = userDbo.UserName
+            };
+
+            return model;
+        }
     }
 }

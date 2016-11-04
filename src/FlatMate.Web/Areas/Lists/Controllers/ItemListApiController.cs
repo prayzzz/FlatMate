@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
@@ -8,8 +7,8 @@ using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using prayzzz.Common.Result;
 using prayzzz.Common.Enums;
+using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
 {
@@ -31,27 +30,13 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             itemlist.Id = 0;
             itemlist.UserId = CurrentUserId;
 
-            var now = DateTime.Now;
-            itemlist.CreationDate = now;
-            itemlist.LastModified = now;
-
             itemlist.ListGroups.ForEach(group =>
             {
-                group.CreationDate = now;
-                group.LastModified = now;
-
-                group.Items.ForEach(item =>
-                {
-                    item.CreationDate = now;
-                    item.LastModified = now;
-                });
+                group.UserId = CurrentUserId;
+                group.Items.ForEach(item => item.UserId = CurrentUserId);
             });
 
-            itemlist.Items.ForEach(item =>
-            {
-                item.CreationDate = now;
-                item.LastModified = now;
-            });
+            itemlist.Items.ForEach(item => item.UserId = CurrentUserId);
 
             return _listService.Create(itemlist);
         }
@@ -64,10 +49,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.ItemListId = listId;
             item.ItemListGroupId = null;
 
-            var now = DateTime.Now;
-            item.CreationDate = now;
-            item.LastModified = now;
-
             return _listService.AddItemToList(listId, item);
         }
 
@@ -77,10 +58,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         {
             group.UserId = CurrentUserId;
             group.ItemListId = listId;
-
-            var now = DateTime.Now;
-            group.CreationDate = now;
-            group.LastModified = now;
 
             return _listService.AddGroupToList(listId, group);
         }
@@ -93,10 +70,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.ItemListId = listId;
             item.ItemListGroupId = groupId;
 
-            var now = DateTime.Now;
-            item.CreationDate = now;
-            item.LastModified = now;
-
             return _listService.AddItemToGroup(listId, groupId, item);
         }
 
@@ -106,7 +79,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         {
             itemList.UserId = CurrentUserId;
             itemList.Id = listId;
-            itemList.LastModified = DateTime.Now;
 
             return _listService.UpdateItemList(listId, itemList);
         }
@@ -119,8 +91,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.Id = itemId;
             item.ItemListGroupId = groupId;
             item.ItemListId = listId;
-
-            item.LastModified = DateTime.Now;
 
             return _listService.UpdateItemInGroup(listId, groupId, itemId, item);
         }

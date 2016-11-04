@@ -1,4 +1,5 @@
-﻿using FlatMate.Web.Common.Filter;
+﻿using FlatMate.Module.Account.Models;
+using FlatMate.Web.Filter;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Common.Base
@@ -13,5 +14,7 @@ namespace FlatMate.Web.Common.Base
         public Result ErrorResult { get; set; }
 
         public bool HasError => ErrorResult != null || !string.IsNullOrEmpty(ErrorMessage);
+        
+        public User CurrentUser { get; set; }
     }
 }

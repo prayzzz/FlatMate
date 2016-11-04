@@ -1,6 +1,6 @@
 ﻿window.addEventListener("load", () => {
     new Vue({
-        el: 'main',
+        el: 'body',
         data: {
         }
     });

@@ -30,7 +30,7 @@ $icon-burger-size: 32px;
     }
 
     #menu-checkbox:not(:checked) ~ main {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     #menu-checkbox:checked ~ main {
@@ -44,7 +44,7 @@ nav {
     overflow: hidden;
     background-color: $color-background;
     border-right: 1px solid $color-border;
-    box-shadow: 0px 0px 5px $color-border;
+    box-shadow: 0 0 5px $color-border;
     z-index: 1;
 
     .title {

@@ -14,9 +14,9 @@ namespace FlatMate.Module.Lists
         {
             services.AddScoped<IListService, ListService>();
 
-            services.AddSingleton<IDboMapper, ItemMapper>();
-            services.AddSingleton<IDboMapper, ItemListMapper>();
-            services.AddSingleton<IDboMapper, ItemListGroupMapper>();
+            services.AddScoped<IDboMapper, ItemMapper>();
+            services.AddScoped<IDboMapper, ItemListMapper>();
+            services.AddScoped<IDboMapper, ItemListGroupMapper>();
 
             services.AddDbContext<ListsContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection")));
         }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Repository;
+using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
@@ -19,18 +22,17 @@ namespace FlatMate.Module.Lists.Models
         [Editable(false)]
         public DateTime LastModified { get; set; }
 
+        [Editable(false)]
         public int UserId { get; set; }
+
+        [Editable(false)]
+        public User User { get; set; }
 
         public string Value { get; set; }
     }
 
-    public class ItemDbo
+    public class ItemDbo : OwnedDbo
     {
-        public DateTime CreationDate { get; set; }
-
-        [Key]
-        public int Id { get; set; }
-
         [ForeignKey("ItemListId")]
         public ItemListDbo ItemList { get; set; }
 
@@ -41,17 +43,19 @@ namespace FlatMate.Module.Lists.Models
 
         public int? ItemListId { get; set; }
 
-        [Editable(false)]
-        public DateTime LastModified { get; set; }
-
-        public int UserId { get; set; }
-
         [Required]
         public string Value { get; set; }
     }
 
     public class ItemMapper : IDboMapper
     {
+        private readonly UserRepository _userRepository;
+
+        public ItemMapper(UserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         public void Configure(IMapperConfiguration mapper)
         {
             mapper.Configure<ItemDbo, Item>(MapToModel);
@@ -71,20 +75,19 @@ namespace FlatMate.Module.Lists.Models
             return itemDbo;
         }
 
-        private static Item MapToModel(ItemDbo itemDbo, MappingContext ctx)
+        private Item MapToModel(ItemDbo itemDbo, MappingContext ctx)
         {
-            var group = new Item
-            {
-                CreationDate = itemDbo.CreationDate,
-                Id = itemDbo.Id,
-                ItemListId = itemDbo.ItemListId,
-                ItemListGroupId = itemDbo.ItemListGroupId,
-                LastModified = itemDbo.LastModified,
-                UserId = itemDbo.UserId,
-                Value = itemDbo.Value
-            };
+            var item = new Item();
+            item.CreationDate = itemDbo.CreationDate;
+            item.Id = itemDbo.Id;
+            item.ItemListId = itemDbo.ItemListId;
+            item.ItemListGroupId = itemDbo.ItemListGroupId;
+            item.LastModified = itemDbo.LastModified;
+            item.User = ctx.Mapper.Map<User>(_userRepository.GetById(itemDbo.UserId));
+            item.UserId = itemDbo.UserId;
+            item.Value = itemDbo.Value;
 
-            return group;
+            return item;
         }
     }
 }

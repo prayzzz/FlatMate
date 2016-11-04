@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FlatMate.Module.Account.Models;
+﻿using FlatMate.Module.Account.Models;
 
 namespace FlatMate.Web.Areas.Account.Data
 {

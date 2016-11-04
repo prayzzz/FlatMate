@@ -4,7 +4,7 @@ using FlatMate.Module.Account.Services;
 using FlatMate.Web.Areas.Account.Data;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using prayzzz.Common.Mvc;
+using prayzzz.Common.Mvc.Filters;
 
 namespace FlatMate.Web.Areas.Account.Controllers
 {
@@ -29,18 +29,17 @@ namespace FlatMate.Web.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(LoginViewModel model)
         {
+            var userIdResult = await _loginService.LoginAllowed(model.User);
 
-            var result = await _loginService.LoginAllowed(model.User);
-
-            if (!result.IsSuccess)
+            if (!userIdResult.IsSuccess)
             {
-                ModelState.AddModelError(string.Empty, result.ErrorMessage);
+                ModelState.AddModelError(string.Empty, userIdResult.ErrorMessage);
                 return View(model);
             }
 
             var identity = new ClaimsIdentity("Basic");
             identity.AddClaim(new Claim(ClaimTypes.Name, model.User.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.Sid, result.Data.ToString()));
+            identity.AddClaim(new Claim(ClaimTypes.Sid, userIdResult.Data.ToString()));
 
             var principal = new ClaimsPrincipal();
             principal.AddIdentity(identity);

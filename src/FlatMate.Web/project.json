@@ -30,8 +30,13 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "MySql.Data.EntityFrameworkCore": "7.0.6-IR31",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "MySql.Data.EntityFrameworkCore": "7.0.6-IR31",
+    "Serilog": "2.3.0",
+    "Serilog.Extensions.Logging": "1.2.0",
+    "Serilog.Sinks.File": "3.1.0",
+    "Serilog.Sinks.Literate": "2.0.0",
+    "Serilog.Settings.Configuration": "2.1.0",
     "Swashbuckle": "6.0.0-beta902",
     "prayzzz.Common": "1.0.*",
     "FlatMate.Module.Account": {

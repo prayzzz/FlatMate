@@ -5,6 +5,8 @@ namespace FlatMate.Web.Areas.Lists.Data
 {
     public class ItemListViewVm : BaseViewModel
     {
+        public bool IsEditable { get; set; }
+
         public ItemList ItemList { get; set; }
     }
 }

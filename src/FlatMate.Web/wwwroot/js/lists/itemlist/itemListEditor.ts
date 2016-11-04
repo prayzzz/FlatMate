@@ -1,12 +1,12 @@
 ﻿namespace FlatMate.Lists.ItemLists {
     class ItemListEditorModel {
         public itemList: ItemList;
-        public newGroupName = '';
+        public newGroupName = "";
     }
 
     export class ItemListEditor extends Vue {
-        public name = 'item-list-editor';
-        public template = '#item-list-editor-template';
+        public name = "item-list-editor";
+        public template = "#item-list-editor-template";
 
         public data = () => this.initHeroPickerModel();
         public $data: ItemListEditorModel;
@@ -16,17 +16,16 @@
         }
 
         public events = {
-            'group-deleted': this.deleteGroup
+            "group-deleted": this.deleteGroup
         }
 
-        public mounted = this.onReady;
+        public created = this.onCreated;
 
         constructor(options?: vuejs.ComponentOption) {
             super(options);
         }
 
-        private onReady(): void {
-            console.log("ready")
+        public onCreated(): void {
         }
 
         private deleteGroup(group: ItemListGroup): void {
@@ -38,16 +37,20 @@
         }
 
         private saveNewGroup(): void {
+            if (this.$data.newGroupName === "") {
+                return;
+            }
+
             const itemGroup: ItemListGroup = {
                 name: this.$data.newGroupName
             };
 
             const done = (data: ItemListGroup) => {
                 this.$data.itemList.listGroups.push(data);
-                this.$data.newGroupName = '';
+                this.$data.newGroupName = "";
             }
 
-            const client = new FlatMate.shared.ApiClient();
+            const client = new FlatMate.Shared.ApiClient();
             client.post(`lists/itemlist/${this.$data.itemList.id}/group/`, itemGroup, done)
         }
 

@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using FlatMate.Module.Account.Services;
 using FlatMate.Web.Areas.Account.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using prayzzz.Common.Mvc;
+using prayzzz.Common.Mvc.Filters;
 
 namespace FlatMate.Web.Areas.Account.Controllers
 {

@@ -1,8 +1,8 @@
-﻿using FlatMate.Web.Common.Base;
+using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace FlatMate.Web.Common.Filter
+namespace FlatMate.Web.Filter
 {
     public class MvcResultFilter : ActionFilterAttribute
     {

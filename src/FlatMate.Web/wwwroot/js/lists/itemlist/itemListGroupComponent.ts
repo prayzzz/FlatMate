@@ -2,31 +2,54 @@
 
     class ItemListGroupComponentModel {
         public newItemValue = '';
+        public isEditable = false;
     }
 
     export class ItemListGroupComponent extends Vue {
         public name = 'item-list-group';
         public template = '#item-list-group-template';
         public group: ItemListGroup;
+        public itemlistOwner: number;
 
-        public props = ['group'];
+        public props = ['group', 'itemlistOwner'];
         public data = () => new ItemListGroupComponentModel();
         public $data: ItemListGroupComponentModel;
 
         public methods = {
             saveNewItem: this.saveNewItem,
             deleteGroup: this.deleteGroup,
+            showOwner: this.showOwner
         }
 
         public events = {
-            'item-deleted': this.deleteItem
+            'item-deleted': this.onItemDeleted
         }
+        
+        public created = this.onCreated;
 
         constructor(options?: vuejs.ComponentOption) {
             super(options);
         }
 
-        private deleteItem(item: Item): void {
+        public onCreated(): void {
+            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
+
+            if (this.group.userId === currentUser.id) {
+                this.$data.isEditable = true;
+            }
+        }
+
+        public showOwner(): boolean {
+            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
+
+            if (currentUser.id === this.itemlistOwner || currentUser.id === this.group.userId || this.itemlistOwner === this.group.userId) {
+                return false;
+            }
+
+            return true;
+        }
+
+        private onItemDeleted(item: Item): void {
             if (!this.group.items) {
                 return;
             }
@@ -35,13 +58,17 @@
         }
 
         private deleteGroup(item: Item): void {
+            if (!this.$data.isEditable) {
+                return;
+            }
+
             const self = this;
 
             const done = () => {
                 this.$dispatch('group-deleted', self.group);
             }
 
-            const client = new FlatMate.shared.ApiClient();
+            const client = new FlatMate.Shared.ApiClient();
             client.delete(`lists/itemlist/${this.group.itemListId}/group/${this.group.id}`, done)
         }
 
@@ -63,7 +90,7 @@
                 this.$data.newItemValue = '';
             }
 
-            const client = new FlatMate.shared.ApiClient();
+            const client = new FlatMate.Shared.ApiClient();
             client.post(`lists/itemlist/${this.group.itemListId}/group/${this.group.id}/item`, item, done)
         }
     }

@@ -1,38 +1,35 @@
-﻿using System.Linq;
-using FlatMate.Module.Account.Models;
+﻿using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Repository;
+using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Account.Services
 {
     public interface IUserService
-    {}
+    {
+        Result<User> GetUser(int id);
+    }
 
     public class UserService : IUserService
     {
-        private readonly AccountContext _context;
+        private readonly UserRepository _repository;
+        private readonly IMapper _mapper;
 
-        public UserService(AccountContext context)
+        public UserService(UserRepository repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         public Result<User> GetUser(int id)
         {
-            var userDbo = _context.User.FirstOrDefault(x => x.Id == id);
-
+            var userDbo = _repository.GetById(id);
             if (userDbo == null)
             {
                 return new ErrorResult<User>($"No entity with id {id}");
             }
 
-            var user = new User
-            {
-                UserName = userDbo.UserName,
-                Name = userDbo.Name,
-                LastName = userDbo.LastName,
-                Email = userDbo.Email,
-            };
-
+            var user = _mapper.Map<User>(userDbo);
             return new SuccessResult<User>(user);
         }
     }

@@ -47,7 +47,7 @@ input[type='reset'],
 input[type='submit'] {
     outline: 0;
     background-color: $color-primary;
-    border: 0px;
+    border: 0;
     color: #fff;
     cursor: pointer;
     display: inline-block;
@@ -260,8 +260,21 @@ input[type='text']:focus,
 input[type='url']:focus,
 textarea:focus,
 select:focus {
-    border: 0.1rem solid $color-primary;
+    border-color:$color-primary;
     outline: 0;
+}
+
+input[type='email']:disabled,
+input[type='number']:disabled,
+input[type='password']:disabled,
+input[type='search']:disabled,
+input[type='tel']:disabled,
+input[type='text']:disabled,
+input[type='url']:disabled,
+textarea:disabled,
+select:disabled {    
+    background-color: #F8F8F8;
+    color: #999;
 }
 
 select {

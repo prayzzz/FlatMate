@@ -8,6 +8,7 @@
         lastModified: Date;
         name: string;
         userId: number;
+        user: Account.User;
     }
 
     export interface ItemListGroup {
@@ -18,6 +19,7 @@
         lastModified?: Date;
         name: string;
         userId?: number;
+        user?: Account.User;
     }
 
     export interface Item {
@@ -27,6 +29,7 @@
         itemListGroupId?: number;
         lastModified?: Date;
         userId?: number;
+        user?: Account.User;
         value: string;
     }
 }

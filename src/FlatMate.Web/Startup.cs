@@ -1,8 +1,8 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using FlatMate.Web.Common.Filter;
 using FlatMate.Web.Common.Json;
+using FlatMate.Web.Filter;
 using FlatMate.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
+using Serilog;
 
 namespace FlatMate.Web
 {
@@ -22,11 +24,10 @@ namespace FlatMate.Web
         public Startup(IHostingEnvironment env)
         {
             _env = env;
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            
+            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
+                                                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                                                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();
@@ -34,6 +35,10 @@ namespace FlatMate.Web
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            Log.Logger = new LoggerConfiguration().ReadFrom
+                                                  .Configuration(Configuration)
+                                                  .CreateLogger();
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -43,12 +48,14 @@ namespace FlatMate.Web
             Module.Account.Module.ConfigureServices(services, Configuration);
             Module.Lists.Module.ConfigureServices(services, Configuration);
 
-            services.AddMvc().AddControllersAsServices()
-                             .AddJsonOptions(o => { o.SerializerSettings.ContractResolver = FlatMateContractResolver.Instance; });
+            services.AddMvc()
+                    .AddControllersAsServices()
+                    .AddJsonOptions(o => { o.SerializerSettings.ContractResolver = FlatMateContractResolver.Instance; });
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IJsonService, JsonService>();
+            services.AddSingleton<IOwnerCheck, OwnerCheck>();
 
             services.AddSingleton<IRequestResultService, RequestResultService>();
             services.AddSingleton<ApiResultFilter, ApiResultFilter>();
@@ -69,8 +76,7 @@ namespace FlatMate.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddSerilog();
 
             if (env.IsDevelopment())
             {

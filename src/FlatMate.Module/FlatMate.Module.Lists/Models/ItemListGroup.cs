@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Repository;
+using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
@@ -26,16 +29,15 @@ namespace FlatMate.Module.Lists.Models
         [Required]
         public string Name { get; set; }
 
+        [Editable(false)]
         public int UserId { get; set; }
+
+        [Editable(false)]
+        public User User { get; set; }
     }
 
-    public class ItemListGroupDbo
+    public class ItemListGroupDbo : OwnedDbo
     {
-        public DateTime CreationDate { get; set; }
-
-        [Key]
-        public int Id { get; set; }
-
         [ForeignKey("ItemListId")]
         public ItemListDbo ItemList { get; set; }
 
@@ -44,15 +46,18 @@ namespace FlatMate.Module.Lists.Models
         [InverseProperty("ItemListGroup")]
         public List<ItemDbo> Items { get; set; } = new List<ItemDbo>();
 
-        public DateTime LastModified { get; set; }
-
         public string Name { get; set; }
-
-        public int UserId { get; set; }
     }
 
     public class ItemListGroupMapper : IDboMapper
     {
+        private readonly UserRepository _userRepository;
+
+        public ItemListGroupMapper(UserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         public void Configure(IMapperConfiguration mapper)
         {
             mapper.Configure<ItemListGroupDbo, ItemListGroup>(MapToModel);
@@ -61,32 +66,29 @@ namespace FlatMate.Module.Lists.Models
 
         private static ItemListGroupDbo MapToDbo(ItemListGroup model, MappingContext ctx)
         {
-            var groupDbo = new ItemListGroupDbo
-            {
-                CreationDate = model.CreationDate,
-                Id = model.Id,
-                ItemListId = model.ItemListId,
-                Items = model.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList(),
-                LastModified = model.LastModified,
-                Name = model.Name,
-                UserId = model.UserId
-            };
+            var groupDbo = new ItemListGroupDbo();
+            groupDbo.CreationDate = model.CreationDate;
+            groupDbo.Id = model.Id;
+            groupDbo.ItemListId = model.ItemListId;
+            groupDbo.Items = model.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
+            groupDbo.LastModified = model.LastModified;
+            groupDbo.Name = model.Name;
+            groupDbo.UserId = model.UserId;
 
             return groupDbo;
         }
 
-        private static ItemListGroup MapToModel(ItemListGroupDbo groupDbo, MappingContext ctx)
+        private ItemListGroup MapToModel(ItemListGroupDbo groupDbo, MappingContext ctx)
         {
-            var group = new ItemListGroup
-            {
-                CreationDate = groupDbo.CreationDate,
-                Id = groupDbo.Id,
-                ItemListId = groupDbo.ItemListId,
-                LastModified = groupDbo.LastModified,
-                Items = groupDbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList(),
-                Name = groupDbo.Name,
-                UserId = groupDbo.UserId
-            };
+            var group = new ItemListGroup();
+            group.CreationDate = groupDbo.CreationDate;
+            group.Id = groupDbo.Id;
+            group.ItemListId = groupDbo.ItemListId;
+            group.LastModified = groupDbo.LastModified;
+            group.Items = groupDbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList();
+            group.Name = groupDbo.Name;
+            group.UserId = groupDbo.UserId;
+            group.User = ctx.Mapper.Map<User>(_userRepository.GetById(groupDbo.UserId));
 
             return group;
         }

@@ -1,0 +1,18 @@
+--
+-- Script
+--
+
+ALTER TABLE `account_user`
+ADD COLUMN `CreationDate` DATETIME NOT NULL AFTER `Salt`,
+ADD COLUMN `LastModified` DATETIME NOT NULL AFTER `CreationDate`;
+
+UPDATE `account_user`
+SET `CreationDate` = now(), `LastModified` = now();
+
+--
+-- Update Info
+--
+
+
+INSERT INTO  `Infrastructure_DbScripts` (`FileName`) 
+VALUES ('2016-11-03_16-12-40_add_date_columns_to_user');

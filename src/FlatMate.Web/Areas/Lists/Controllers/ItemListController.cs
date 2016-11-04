@@ -49,6 +49,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             model.ItemList = result.Data;
+            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
 
@@ -65,6 +66,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             model.ItemList = result.Data;
+            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
 
@@ -94,6 +96,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             model.ItemList = result.Data;
+            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
     }

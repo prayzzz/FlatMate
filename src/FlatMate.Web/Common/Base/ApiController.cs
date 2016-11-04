@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
-using FlatMate.Web.Common.Filter;
+using FlatMate.Web.Filter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

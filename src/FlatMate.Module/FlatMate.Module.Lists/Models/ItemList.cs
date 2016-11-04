@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Repository;
+using prayzzz.Common.Dbo;
 using prayzzz.Common.Enums;
-using prayzzz.Common.Linq;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
 {
     public class ItemListQuery
     {
+        public OrderingDirection Direction { get; set; } = OrderingDirection.Asc;
         public bool? IsPublic { get; set; }
-
-        public int? UserId { get; set; }
 
         public ItemListQueryOrder Order { get; set; } = ItemListQueryOrder.None;
 
-        public OrderingDirection Direction { get; set; } = OrderingDirection.Asc;
+        public int? UserId { get; set; }
     }
 
     public enum ItemListQueryOrder
@@ -60,34 +61,36 @@ namespace FlatMate.Module.Lists.Models
 
         [Editable(false)]
         public int UserId { get; set; }
+        public User User { get; set; }
     }
 
-    public class ItemListDbo
+    public class ItemListDbo : OwnedDbo
     {
-        public DateTime CreationDate { get; set; }
-
         public string Description { get; set; }
-
-        [Key]
-        public int Id { get; set; }
 
         public bool IsPublic { get; set; }
 
         [InverseProperty("ItemList")]
         public List<ItemDbo> Items { get; set; } = new List<ItemDbo>();
 
-        public DateTime LastModified { get; set; }
 
         [InverseProperty("ItemList")]
         public List<ItemListGroupDbo> ListGroups { get; set; } = new List<ItemListGroupDbo>();
 
         public string Name { get; set; }
-
-        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
     }
 
     public class ItemListMapper : IDboMapper
     {
+        private readonly UserRepository _userRepository;
+
+        public ItemListMapper(UserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         public void Configure(IMapperConfiguration mapper)
         {
             mapper.Configure<ItemListDbo, ItemList>(MapToModel);
@@ -110,30 +113,21 @@ namespace FlatMate.Module.Lists.Models
             return listDbo;
         }
 
-        private static ItemList MapToModel(ItemListDbo dbo, MappingContext ctx)
+        private ItemList MapToModel(ItemListDbo dbo, MappingContext ctx)
         {
-            var itemList = new ItemList
-            {
-                CreationDate = dbo.CreationDate,
-                UserId = dbo.UserId,
-                Description = dbo.Description,
-                Id = dbo.Id,
-                IsPublic = dbo.IsPublic,
-                Items = dbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList(),
-                LastModified = dbo.LastModified,
-                ListGroups = dbo.ListGroups.Select(groupDbo => ctx.Mapper.Map<ItemListGroup>(groupDbo)).ToList(),
-                Name = dbo.Name
-            };
+            var itemList = new ItemList();
+            itemList.CreationDate = dbo.CreationDate;
+            itemList.Description = dbo.Description;
+            itemList.Id = dbo.Id;
+            itemList.IsPublic = dbo.IsPublic;
+            itemList.Items = dbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList();
+            itemList.LastModified = dbo.LastModified;
+            itemList.ListGroups = dbo.ListGroups.Select(groupDbo => ctx.Mapper.Map<ItemListGroup>(groupDbo)).ToList();
+            itemList.Name = dbo.Name;
+            itemList.UserId = dbo.UserId;
+            itemList.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId));
 
             return itemList;
-        }
-
-        private static void MapIf(Func<bool> condition, Action action)
-        {
-            if (condition())
-            {
-                action();
-            }
         }
     }
 }

@@ -8,7 +8,8 @@
     <environment names="Development">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,700">
 
-        <link rel="stylesheet" asp-href-include="~/css/flatmate.min.css" />
+        <link rel="stylesheet" asp-href-include="~/css/**/*.min.css" />
+        @*<link rel="stylesheet" asp-href-include="~/css/flatmate.min.css" />*@
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
@@ -17,7 +18,6 @@
     </environment>
 </head>
 <body>
-
     <input id="menu-checkbox" type="checkbox" />
     <label class="menu-toggle icon-32 icon-burger" for="menu-checkbox"></label>
 
@@ -31,9 +31,12 @@
     </nav>
 
     <main>
+        <notification-bar></notification-bar>
+
         @RenderBody()
     </main>
 
+    <!-- Scripts -->
     <environment names="Development">
         <script src="~/lib/js/atomic.min.js"></script>
         <script src="~/lib/js/vue.js"></script>
@@ -44,8 +47,40 @@
         <script src="~/js/flatmate.min.js"></script>
     </environment>
 
+    <!-- View Data -->
     @await RenderSectionAsync("viewData", false)
+
+    @if (Model != null)
+    {
+        <script type="application/json" id="userData">
+            @Html.Raw(JsonConvert.SerializeObject(Model.CurrentUser, Json.ViewSerializerSettings))
+        </script>
+    }
+
+    <!-- Vue Templates -->
+    @await RenderSectionAsync("vueTemplates", false)
+
+    <script type="application/json" id="notification-bar-template">
+        <section class="notification-row">
+            <notification v-for="n in notifications" :model="n"></notification>
+        </section>
+    </script>
+
+    <script type="application/json" id="notification-template">
+        <div class="notification {{model.TypeClass}}">
+            <div class="dismiss">
+                <a class="icon-24 icon-cross-circle" v-on:click="dismissNotification"></a>
+            </div>
+            {{model.Message}}
+        </div>
+    </script>
+
+    <!-- Vue Init-->
     @await RenderSectionAsync("vueInit", false)
 
+    <script type="text/javascript">
+        Vue.component("notification-bar", new FlatMate.Shared.NotificationBarComponent());
+        Vue.component("notification", new FlatMate.Shared.NotificationComponent());
+    </script>
 </body>
 </html>

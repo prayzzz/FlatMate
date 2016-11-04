@@ -7,8 +7,8 @@
 
 <section class="container">
     <div class="title">
-        <h2>@Model.ItemList.Name</h2>
-        <div>
+        <h2>@Model.ItemList.Name <small hide="@(Model.ItemList.UserId == Model.CurrentUser.Id)">von @Model.ItemList.User.UserName</small></h2>
+        <div hide="!Model.IsEditable">
             <a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@Model.ItemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a>
         </div>
     </div>
@@ -17,8 +17,9 @@
 
 </section>
 
-@await Html.PartialAsync("ItemListVue")
-
+@section vueTemplates {
+    @await Html.PartialAsync("ItemListVue")
+}
 
 @section viewData {
     <script type="application/json" id="viewData">

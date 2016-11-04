@@ -1,4 +1,4 @@
-﻿namespace FlatMate.shared {
+﻿namespace FlatMate.Shared {
     export interface IApiClient {
         get<TData>(path: string, doneCallback?: (d: TData) => void, failCallback?: (e: IApiError) => void): void;
         put<TData, TResult>(path: string, data: TData, doneCallback?: (d: TResult) => void, failCallback?: (e: IApiError) => void): void;
@@ -18,6 +18,7 @@
     export class ApiClient implements IApiClient {
         private static instance: ApiClient;
         private host = `${window.location.protocol}//${window.location.host}/api/v1/`;
+        private notificationService = new NotificationService();
         
         /**
          * Returns the singleton instance
@@ -45,7 +46,10 @@
             atomic.setContentType('application/json');
             atomic.delete(url)
                 .success(() => { if (doneCallback) doneCallback() })
-                .error((e: IApiError) => { if (failCallback) failCallback(e) });
+                .error((e: IApiError) => {
+                    this.notificationService.Add(NotificationType.Error, e.responseText);
+                    if (failCallback) failCallback(e)
+                });
         }
 
         public put<TData, TResult>(path: string, data: TData, doneCallback?: (d: TResult) => void, failCallback?: (e: IApiError) => void): void {

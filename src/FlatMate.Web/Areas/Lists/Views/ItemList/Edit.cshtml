@@ -10,20 +10,20 @@
         <h2>@Model.ItemList.Name bearbeiten</h2>
     </div>
 
-    <form asp-area="Lists" asp-controller="ItemList" asp-action="Edit" method="post">
-        <fieldset>
+    <form asp-area="Lists" asp-controller="ItemList" asp-action="Edit">
+        <fieldset disabled="@(!Model.IsEditable)">
             <input asp-for="ItemList.Id" type="hidden" />
 
             <label asp-for="ItemList.Name"></label>
-            <input asp-for="ItemList.Name"/>
+            <input asp-for="ItemList.Name" />
 
             <label asp-for="ItemList.Description"></label>
-            <input asp-for="ItemList.Description"/>
+            <input asp-for="ItemList.Description" />
 
             <label asp-for="ItemList.IsPublic"></label>
-            <input asp-for="ItemList.IsPublic"/>
+            <input asp-for="ItemList.IsPublic" />
 
-            <div class="pull-right">
+            <div class="pull-right" hide="!Model.IsEditable">
                 <input type="submit" value="Speichern">
             </div>
         </fieldset>
@@ -35,7 +35,9 @@
 
 </section>
 
-@await Html.PartialAsync("ItemListVue")
+@section vueTemplates {
+    @await Html.PartialAsync("ItemListVue")
+}
 
 @section viewData {
     <script type="application/json" id="viewData">

@@ -19,6 +19,8 @@ namespace FlatMate.Module.Account.Services
 
         public async Task<Result<int>> LoginAllowed(LoginUser model)
         {
+            await Task.FromResult(0); // TODO make real async
+
             var user = _context.User.FirstOrDefault(x => x.UserName == model.UserName);
             if (user == null)
             {

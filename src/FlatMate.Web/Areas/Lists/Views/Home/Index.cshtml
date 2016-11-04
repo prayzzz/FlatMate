@@ -14,9 +14,9 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
             <tr>
-                <th width="40%">Name</th>
-                <th width="25%" class="centered show-large">Einträge</th>
-                <th class="centered show-large">Öffentlich?</th>
+                <th width="50%">Name</th>
+                <th width="25%" class="show-large">Einträge</th>
+                <th class="show-large">Öffentlich?</th>
                 <th class="icon show-large"></th>
                 <th class="icon show-large"></th>
             </tr>
@@ -27,8 +27,8 @@
             {
                 <tr>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
-                    <td class="centered show-large">@itemList.Items.Count</td>
-                    <td class="centered show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?" /></td>
+                    <td class="show-large">@itemList.Items.Count</td>
+                    <td class="show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?" /></td>
                     <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
                     <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle" title="Löschen"></a></td>
                 </tr>
@@ -45,11 +45,9 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
             <tr>
-                <th width="40%">Name</th>
-                <th width="25%" class="centered show-large">Einträge</th>
-                <th class="centered show-large">Author</th>
-                <th class="icon  show-large"></th>
-                <th class="icon show-large"></th>
+                <th width="50%">Name</th>
+                <th width="25%" class="show-large">Einträge</th>
+                <th class="show-large">Author</th>
             </tr>
         </thead>
 
@@ -58,10 +56,8 @@
             {
                 <tr>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
-                    <td class="centered show-large">@itemList.Items.Count</td>
-                    <td class="centered show-large">@itemList.UserId</td>
-                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
-                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle" title="Löschen"></a></td>
+                    <td class="show-large">@itemList.Items.Count</td>
+                    <td class="show-large">@itemList.UserId</td>
                 </tr>
             }
         </tbody>

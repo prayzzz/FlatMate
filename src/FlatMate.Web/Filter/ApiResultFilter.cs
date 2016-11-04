@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using prayzzz.Common.Result;
 
-namespace FlatMate.Web.Common.Filter
+namespace FlatMate.Web.Filter
 {
     public class ApiResultFilter : ActionFilterAttribute
     {

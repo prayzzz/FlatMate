@@ -1,1 +1,5 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Newtonsoft.Json
+@using FlatMate.Web.Common.Json
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject IJsonService Json

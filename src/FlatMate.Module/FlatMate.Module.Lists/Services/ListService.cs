@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using prayzzz.Common.Dbo;
+using prayzzz.Common.Linq;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
-using prayzzz.Common.Linq;
 
 namespace FlatMate.Module.Lists.Services
 {
@@ -32,31 +33,23 @@ namespace FlatMate.Module.Lists.Services
         private readonly ListsContext _context;
         private readonly ILogger<ListService> _logger;
         private readonly IMapper _mapper;
+        private readonly IOwnerCheck _ownerCheck;
 
-        public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper)
+        public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper, IOwnerCheck ownerCheck)
         {
             _logger = loggerFactory.CreateLogger<ListService>();
             _context = context;
             _mapper = mapper;
+            _ownerCheck = ownerCheck;
         }
 
         public async Task<Result<ItemList>> Create(ItemList itemlist)
         {
-            var dbo = _mapper.Map<ItemListDbo>(itemlist);
+            var listDbo = _mapper.Map<ItemListDbo>(itemlist);
 
-            _context.Add(dbo);
+            _context.Add(listDbo);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                itemlist.Id = dbo.Id;
-                return new SuccessResult<ItemList>(itemlist);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(0, ex, "Failed saving entity.");
-                return new ErrorResult<ItemList>(ex, "Failed saving entity.");
-            }
+            return await Save<ItemList, ItemListDbo>(listDbo);
         }
 
         public IEnumerable<ItemList> GetAll(ItemListQuery query)
@@ -94,7 +87,13 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<ItemList>(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
+            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            {
+                return new ErrorResult<ItemList>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
             listDbo = _mapper.Map(itemList, listDbo);
+
             return await Save<ItemList, ItemListDbo>(listDbo);
         }
 
@@ -126,6 +125,11 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.NotFound, $"Item {itemId} not found in ItemListGroup {groupId} (ItemList {listId})");
             }
 
+            if (item.UserId != itemDbo.UserId)
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
             itemDbo = _mapper.Map(item, itemDbo);
             return await Save<Item, ItemDbo>(itemDbo);
         }
@@ -150,6 +154,11 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"Item {itemId} not found in ItemListGroup {groupId} (ItemList {listId})");
             }
 
+            if (!_ownerCheck.IsOwnedByCurrentUser(itemDbo))
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
             _context.Remove(itemDbo);
             return await Save();
         }
@@ -168,6 +177,13 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"ItemListGroup {groupId} not found in ItemList {listId}");
             }
 
+            if (!_ownerCheck.IsOwnedByCurrentUser(groupDbo))
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
+            listDbo.LastModified = DateTime.Now;
+
             _context.Remove(groupDbo);
             return await Save();
         }
@@ -180,6 +196,11 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
+            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
             _context.Remove(listDbo);
             return await Save();
         }
@@ -187,10 +208,14 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<Item>> AddItemToList(int listId, Item item)
         {
             var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-
             if (listDbo == null)
             {
                 return new ErrorResult<Item>(ErrorType.NotFound, $"ItemList {listId} not found");
+            }
+
+            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
 
             var itemDbo = _mapper.Map<ItemDbo>(item);
@@ -202,10 +227,14 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item)
         {
             var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-
             if (listDbo == null)
             {
                 return new ErrorResult<ItemListGroup>(ErrorType.NotFound, $"ItemList {listId} not found");
+            }
+
+            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            {
+                return new ErrorResult<ItemListGroup>(ErrorType.Unauthorized, "Unauthorized");
             }
 
             var groupDbo = _mapper.Map<ItemListGroupDbo>(item);
@@ -228,37 +257,62 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.NotFound, $"ItemListGroup {groupId} not found in ItemList {listId}");
             }
 
+            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            {
+                return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
+            }
+
             var itemDbo = _mapper.Map<ItemDbo>(item);
             groupDbo.Items.Add(itemDbo);
 
             return await Save<Item, ItemDbo>(itemDbo);
         }
 
+        private void ApplyDates()
+        {
+            var now = DateTime.Now;
+            foreach (var entry in _context.ChangeTracker.Entries().Where(x => x.State == EntityState.Added))
+            {
+                ((BaseDbo)entry.Entity).CreationDate = now;
+                ((BaseDbo)entry.Entity).LastModified = now;
+            }
+
+            foreach (var entry in _context.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified))
+            {
+                ((BaseDbo)entry.Entity).LastModified = now;
+            }
+        }
+
         private async Task<Result<TModel>> Save<TModel, TDbo>(TDbo dboToReturn) where TModel : class
         {
-            try
+            var result = await Save();
+            if (result.IsSuccess)
             {
-                await _context.SaveChangesAsync();
                 return new SuccessResult<TModel>(_mapper.Map<TModel>(dboToReturn));
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(0, ex, "Failed saving entity.");
-                return new ErrorResult<TModel>(ex, "Failed saving entity.");
-            }
+
+            return new ErrorResult<TModel>(result);
         }
 
         private async Task<Result> Save()
         {
-            try
+            ApplyDates();
+
+            using (var trans = _context.Database.BeginTransaction())
             {
-                await _context.SaveChangesAsync();
-                return new SuccessResult();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(0, ex, "Failed saving entity.");
-                return new ErrorResult(ex, "Failed saving entity.");
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    trans.Commit();
+                    return new SuccessResult();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+
+                    _logger.LogError(0, ex, "Failed saving entity.");
+                    return new ErrorResult(ex, "Failed saving entity.");
+                }
             }
         }
     }

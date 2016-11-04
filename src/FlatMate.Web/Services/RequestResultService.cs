@@ -27,10 +27,6 @@ namespace FlatMate.Web.Services
     /// </summary>
     public class RequestResultService : IRequestResultService
     {
-        public RequestResultService()
-        {
-        }
-
         /// <summary>
         ///     Creates a new <see cref="IActionResult" /> from the given <see cref="Result" />
         /// </summary>
