@@ -79,7 +79,7 @@ task Compile-Typescript -depends Yarn {
 }
 
 task Compile-Sass -depends Yarn {
-    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/node-sass "$mainProjectDir/wwwroot/css/" -o  "$mainProjectDir/wwwroot/css/" }
+    exec { src/FlatMate.Web/wwwroot/node_modules/.bin/node-sass "$mainProjectDir/wwwroot/css/" --output "$mainProjectDir/wwwroot/css/" --output-style "compressed" }
 }
 
 task Dotnet-Bundle -depends Dotnet-Restore, Compile-Typescript, Compile-Sass {
