@@ -2,11 +2,11 @@
 -- Script
 --
 
-ALTER TABLE `account_user`
+ALTER TABLE `Account_User`
 ADD COLUMN `CreationDate` DATETIME NOT NULL AFTER `Salt`,
 ADD COLUMN `LastModified` DATETIME NOT NULL AFTER `CreationDate`;
 
-UPDATE `account_user`
+UPDATE `Account_User`
 SET `CreationDate` = now(), `LastModified` = now();
 
 --
