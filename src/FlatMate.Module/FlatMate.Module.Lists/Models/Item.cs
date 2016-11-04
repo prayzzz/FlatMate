@@ -23,10 +23,10 @@ namespace FlatMate.Module.Lists.Models
         public DateTime LastModified { get; set; }
 
         [Editable(false)]
-        public int UserId { get; set; }
+        public User User { get; set; }
 
         [Editable(false)]
-        public User User { get; set; }
+        public int UserId { get; set; }
 
         public string Value { get; set; }
     }

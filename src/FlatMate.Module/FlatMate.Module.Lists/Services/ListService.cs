@@ -25,7 +25,6 @@ namespace FlatMate.Module.Lists.Services
         Task<Result> DeleteGroupFromList(int listId, int groupId);
         Task<Result> DeletList(int listId);
         Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList);
-        Task<Result> DeleteItemList(int id);
     }
 
     public class ListService : IListService
@@ -95,14 +94,6 @@ namespace FlatMate.Module.Lists.Services
             listDbo = _mapper.Map(itemList, listDbo);
 
             return await Save<ItemList, ItemListDbo>(listDbo);
-        }
-
-        public async Task<Result> DeleteItemList(int id)
-        {
-            var itemListDbo = new ItemListDbo { Id = id };
-            _context.Entry(itemListDbo).State = EntityState.Deleted;
-
-            return await Save();
         }
 
         public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)

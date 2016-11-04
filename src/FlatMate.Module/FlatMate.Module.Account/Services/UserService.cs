@@ -12,8 +12,8 @@ namespace FlatMate.Module.Account.Services
 
     public class UserService : IUserService
     {
-        private readonly UserRepository _repository;
         private readonly IMapper _mapper;
+        private readonly UserRepository _repository;
 
         public UserService(UserRepository repository, IMapper mapper)
         {

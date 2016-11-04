@@ -108,9 +108,9 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         }
 
         [HttpDelete("{listId}")]
-        public Task<Result> UpdateItemInGroup(int listId)
+        public Task<Result> Delete(int id)
         {
-            return _listService.DeletList(listId);
+            return _listService.DeletList(id);
         }
 
         [HttpGet("{id}")]
@@ -177,12 +177,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             return all;
-        }
-
-        [HttpDelete]
-        public Task<Result> Delete(int id)
-        {
-            return _listService.DeleteItemList(id);
         }
     }
 }

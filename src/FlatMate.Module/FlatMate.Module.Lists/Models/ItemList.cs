@@ -59,9 +59,10 @@ namespace FlatMate.Module.Lists.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
+        public User User { get; set; }
+
         [Editable(false)]
         public int UserId { get; set; }
-        public User User { get; set; }
     }
 
     public class ItemListDbo : OwnedDbo
@@ -78,6 +79,7 @@ namespace FlatMate.Module.Lists.Models
         public List<ItemListGroupDbo> ListGroups { get; set; } = new List<ItemListGroupDbo>();
 
         public string Name { get; set; }
+
         [ForeignKey("UserId")]
         public User User { get; set; }
     }

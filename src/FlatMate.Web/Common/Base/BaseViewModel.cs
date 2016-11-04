@@ -4,8 +4,13 @@ using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Common.Base
 {
+    public class EmptyViewModel : BaseViewModel
+    {}
+
     public abstract class BaseViewModel
     {
+        public User CurrentUser { get; set; }
+
         /// <summary>
         ///     Set by <see cref="ErrorResult" /> if <see cref="MvcResultFilter" /> is filled
         /// </summary>
@@ -14,7 +19,5 @@ namespace FlatMate.Web.Common.Base
         public Result ErrorResult { get; set; }
 
         public bool HasError => ErrorResult != null || !string.IsNullOrEmpty(ErrorMessage);
-        
-        public User CurrentUser { get; set; }
     }
 }

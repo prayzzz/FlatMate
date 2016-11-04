@@ -77,7 +77,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
             if (!result.IsSuccess)
             {
-                return BadRequest(result.ErrorMessage);
+                return View("Error", new EmptyViewModel { ErrorResult = result });
             }
 
             return RedirectToAction("Index", "Home");

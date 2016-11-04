@@ -30,10 +30,10 @@ namespace FlatMate.Module.Lists.Models
         public string Name { get; set; }
 
         [Editable(false)]
-        public int UserId { get; set; }
+        public User User { get; set; }
 
         [Editable(false)]
-        public User User { get; set; }
+        public int UserId { get; set; }
     }
 
     public class ItemListGroupDbo : OwnedDbo
