@@ -11,7 +11,7 @@
     </div>
 
     <form asp-area="Lists" asp-controller="ItemList" asp-action="Edit">
-        <fieldset disabled="@(!Model.IsEditable)">
+        <fieldset disabled="@(!Model.ItemList.Privileges.IsOwned)">
             <input asp-for="ItemList.Id" type="hidden" />
 
             <label asp-for="ItemList.Name"></label>
@@ -23,7 +23,7 @@
             <label asp-for="ItemList.IsPublic"></label>
             <input asp-for="ItemList.IsPublic" />
 
-            <div style="display:flex; justify-content:space-between" hide="!Model.IsEditable">
+            <div style="display:flex; justify-content:space-between" hide="@(!Model.ItemList.Privileges.IsEditable)">
                 <a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@Model.ItemList.Id" class="btn btn-danger" title="Löschen">Löschen</a>
                 <input type="submit" value="Speichern">
             </div>

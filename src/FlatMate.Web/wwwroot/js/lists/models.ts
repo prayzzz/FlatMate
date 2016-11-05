@@ -9,6 +9,7 @@
         name: string;
         userId: number;
         user: Account.User;
+        privileges?: Shared.PrivilegeModel;
     }
 
     export interface ItemListGroup {
@@ -20,6 +21,7 @@
         name: string;
         userId?: number;
         user?: Account.User;
+        privileges?: Shared.PrivilegeModel;
     }
 
     export interface Item {
@@ -31,5 +33,6 @@
         userId?: number;
         user?: Account.User;
         value: string;
+        privileges?: Shared.PrivilegeModel;
     }
 }

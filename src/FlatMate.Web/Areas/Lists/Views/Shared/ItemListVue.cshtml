@@ -1,7 +1,7 @@
 ﻿<script type="text/x-template" id="item-list-editor-template">
 
     <div class="table">
-        <item-list-group v-for="g in itemList.listGroups" :group="g" :itemlist-owner="itemList.userId" :key="g.id"></item-list-group>
+        <item-list-group v-for="g in itemList.listGroups" :group="g" :itemlist="itemList" :key="g.id"></item-list-group>
 
         <div class="row">
             <div class="cell">
@@ -29,11 +29,11 @@
             </div>
             <div class="cell icon"></div>
             <div class="cell icon">
-                <a class="icon-24 icon-cross-circle" v-on:click="deleteGroup" v-if="isEditable"></a>
+                <a class="icon-24 icon-cross-circle" v-on:click="deleteGroup" v-if="group.privileges.isDeletable"></a>
             </div>
         </div>
 
-        <item-list-item v-for="i in group.items" :item="i" :itemlist-owner="itemlistOwner" :key="i.id"></item-list-item>
+        <item-list-item v-for="i in group.items" :item="i" :itemlist="itemlist" :key="i.id"></item-list-item>
 
         <div class="row">
             <div class="cell" style="padding-left:3rem">
@@ -54,7 +54,7 @@
     <div class="row">
         <div class="cell" style="padding-left:3rem" v-on:click="enterEditMode">
             <span v-if="!isEditMode">{{item.value}}</span>
-            <input type="text" v-model="item.value" v-if="isEditable && isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="leaveEditMode" />
+            <input type="text" v-model="item.value" v-if="isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="leaveEditMode" />
         </div>
         <div class="cell">
             <div v-if="showOwner()">
@@ -63,7 +63,7 @@
         </div>
         <div class="cell icon"></div>
         <div class="cell icon">
-            <a class="icon-24 icon-cross-circle" v-on:click="deleteItem" v-if="isEditable"></a>
+            <a class="icon-24 icon-cross-circle" v-on:click="deleteItem" v-if="item.privileges.isDeletable"></a>
         </div>
     </div>
 

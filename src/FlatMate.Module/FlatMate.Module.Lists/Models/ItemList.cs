@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using FlatMate.Common;
 using FlatMate.Module.Account.Models;
 using FlatMate.Module.Account.Repository;
+using FlatMate.Module.Lists.Services;
 using prayzzz.Common.Dbo;
 using prayzzz.Common.Enums;
 using prayzzz.Common.Mapping;
@@ -27,7 +29,7 @@ namespace FlatMate.Module.Lists.Models
         LastModified
     }
 
-    public class ItemList
+    public class ItemList : PrivilegedModel
     {
         [Editable(false)]
         public DateTime? CreationDate { get; set; }
@@ -59,6 +61,7 @@ namespace FlatMate.Module.Lists.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
+        [Editable(false)]
         public User User { get; set; }
 
         [Editable(false)]
@@ -87,10 +90,12 @@ namespace FlatMate.Module.Lists.Models
     public class ItemListMapper : IDboMapper
     {
         private readonly UserRepository _userRepository;
+        private readonly ItemListPrivileger _privileger;
 
-        public ItemListMapper(UserRepository userRepository)
+        public ItemListMapper(UserRepository userRepository, ItemListPrivileger privileger)
         {
             _userRepository = userRepository;
+            _privileger = privileger;
         }
 
         public void Configure(IMapperConfiguration mapper)
@@ -99,20 +104,20 @@ namespace FlatMate.Module.Lists.Models
             mapper.Configure<ItemList, ItemListDbo>(MapToDbo);
         }
 
-        private static ItemListDbo MapToDbo(ItemList listModel, ItemListDbo listDbo, MappingContext ctx)
+        private static ItemListDbo MapToDbo(ItemList model, ItemListDbo dbo, MappingContext ctx)
         {
-            listDbo.UserId = listModel.UserId;
-            listDbo.Id = listModel.Id;
-            listDbo.IsPublic = listModel.IsPublic;
-            listDbo.Name = listModel.Name;
+            dbo.UserId = model.UserId;
+            dbo.Id = model.Id;
+            dbo.IsPublic = model.IsPublic;
+            dbo.Name = model.Name;
 
-            if (listModel.CreationDate.HasValue) listDbo.CreationDate = listModel.CreationDate.Value;
-            if (listModel.Description != null) listDbo.Description = listModel.Description;
-            if (listModel.Items.Any()) listDbo.Items = listModel.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
-            if (listModel.LastModified.HasValue) listDbo.LastModified = listModel.LastModified.Value;
-            if (listModel.ListGroups.Any()) listDbo.ListGroups = listModel.ListGroups.Select(group => ctx.Mapper.Map<ItemListGroupDbo>(group)).ToList();
+            if (model.CreationDate.HasValue) dbo.CreationDate = model.CreationDate.Value;
+            if (model.Description != null) dbo.Description = model.Description;
+            if (model.Items.Any()) dbo.Items = model.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
+            if (model.LastModified.HasValue) dbo.LastModified = model.LastModified.Value;
+            if (model.ListGroups.Any()) dbo.ListGroups = model.ListGroups.Select(group => ctx.Mapper.Map<ItemListGroupDbo>(group)).ToList();
 
-            return listDbo;
+            return dbo;
         }
 
         private ItemList MapToModel(ItemListDbo dbo, MappingContext ctx)
@@ -128,6 +133,7 @@ namespace FlatMate.Module.Lists.Models
             itemList.Name = dbo.Name;
             itemList.UserId = dbo.UserId;
             itemList.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId));
+            itemList.Privileges = _privileger.GetPrivileges(dbo);
 
             return itemList;
         }

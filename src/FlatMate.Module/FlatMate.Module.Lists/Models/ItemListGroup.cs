@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using FlatMate.Common;
 using FlatMate.Module.Account.Models;
 using FlatMate.Module.Account.Repository;
+using FlatMate.Module.Lists.Services;
 using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists.Models
 {
-    public class ItemListGroup
+    public class ItemListGroup : PrivilegedModel
     {
         [Editable(false)]
         public DateTime CreationDate { get; set; }
@@ -52,10 +54,12 @@ namespace FlatMate.Module.Lists.Models
     public class ItemListGroupMapper : IDboMapper
     {
         private readonly UserRepository _userRepository;
+        private readonly ItemListPrivileger _privileger;
 
-        public ItemListGroupMapper(UserRepository userRepository)
+        public ItemListGroupMapper(UserRepository userRepository, ItemListPrivileger privileger)
         {
             _userRepository = userRepository;
+            _privileger = privileger;
         }
 
         public void Configure(IMapperConfiguration mapper)
@@ -66,31 +70,32 @@ namespace FlatMate.Module.Lists.Models
 
         private static ItemListGroupDbo MapToDbo(ItemListGroup model, MappingContext ctx)
         {
-            var groupDbo = new ItemListGroupDbo();
-            groupDbo.CreationDate = model.CreationDate;
-            groupDbo.Id = model.Id;
-            groupDbo.ItemListId = model.ItemListId;
-            groupDbo.Items = model.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
-            groupDbo.LastModified = model.LastModified;
-            groupDbo.Name = model.Name;
-            groupDbo.UserId = model.UserId;
+            var dbo = new ItemListGroupDbo();
+            dbo.CreationDate = model.CreationDate;
+            dbo.Id = model.Id;
+            dbo.ItemListId = model.ItemListId;
+            dbo.Items = model.Items.Select(item => ctx.Mapper.Map<ItemDbo>(item)).ToList();
+            dbo.LastModified = model.LastModified;
+            dbo.Name = model.Name;
+            dbo.UserId = model.UserId;
 
-            return groupDbo;
+            return dbo;
         }
 
-        private ItemListGroup MapToModel(ItemListGroupDbo groupDbo, MappingContext ctx)
+        private ItemListGroup MapToModel(ItemListGroupDbo dbo, MappingContext ctx)
         {
-            var group = new ItemListGroup();
-            group.CreationDate = groupDbo.CreationDate;
-            group.Id = groupDbo.Id;
-            group.ItemListId = groupDbo.ItemListId;
-            group.LastModified = groupDbo.LastModified;
-            group.Items = groupDbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList();
-            group.Name = groupDbo.Name;
-            group.UserId = groupDbo.UserId;
-            group.User = ctx.Mapper.Map<User>(_userRepository.GetById(groupDbo.UserId));
+            var model = new ItemListGroup();
+            model.CreationDate = dbo.CreationDate;
+            model.Id = dbo.Id;
+            model.ItemListId = dbo.ItemListId;
+            model.LastModified = dbo.LastModified;
+            model.Items = dbo.Items.Select(itemDbo => ctx.Mapper.Map<Item>(itemDbo)).ToList();
+            model.Name = dbo.Name;
+            model.UserId = dbo.UserId;
+            model.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId));
+            model.Privileges = _privileger.GetPrivileges(dbo);
 
-            return group;
+            return model;
         }
     }
 }

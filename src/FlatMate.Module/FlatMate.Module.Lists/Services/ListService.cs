@@ -32,14 +32,14 @@ namespace FlatMate.Module.Lists.Services
         private readonly ListsContext _context;
         private readonly ILogger<ListService> _logger;
         private readonly IMapper _mapper;
-        private readonly IOwnerCheck _ownerCheck;
+        private readonly ItemListPrivileger _privileger;
 
-        public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper, IOwnerCheck ownerCheck)
+        public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper, ItemListPrivileger privileger)
         {
             _logger = loggerFactory.CreateLogger<ListService>();
             _context = context;
             _mapper = mapper;
-            _ownerCheck = ownerCheck;
+            _privileger = privileger;
         }
 
         public async Task<Result<ItemList>> Create(ItemList itemlist)
@@ -86,7 +86,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<ItemList>(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            if (!_privileger.IsOwned(listDbo))
             {
                 return new ErrorResult<ItemList>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -116,7 +116,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.NotFound, $"Item {itemId} not found in ItemListGroup {groupId} (ItemList {listId})");
             }
 
-            if (item.UserId != itemDbo.UserId)
+            if (!_privileger.IsEditable(itemDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -145,7 +145,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"Item {itemId} not found in ItemListGroup {groupId} (ItemList {listId})");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(itemDbo) && !_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            if (!_privileger.IsDeletable(itemDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -168,7 +168,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"ItemListGroup {groupId} not found in ItemList {listId}");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(groupDbo) && !_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            if (!_privileger.IsDeletable(groupDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -187,7 +187,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo))
+            if (!_privileger.IsOwned(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -204,7 +204,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            if (!_privileger.IsEditable(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -223,7 +223,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<ItemListGroup>(ErrorType.NotFound, $"ItemList {listId} not found");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            if (!_privileger.IsEditable(listDbo))
             {
                 return new ErrorResult<ItemListGroup>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -248,7 +248,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.NotFound, $"ItemListGroup {groupId} not found in ItemList {listId}");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(listDbo) && !listDbo.IsPublic)
+            if (!_privileger.IsEditable(groupDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }

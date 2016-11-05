@@ -1,7 +1,10 @@
-﻿@{
+﻿@model FlatMate.Web.Common.Base.BaseViewModel
+@{
     ViewData["Title"] = "Error";
 }
 
 <section class="container">
     <h1>Error :(</h1>
+
+    @Model.ErrorMessage
 </section>

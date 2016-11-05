@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
+using prayzzz.Common.Mvc.Services;
 using Serilog;
 
 namespace FlatMate.Web
@@ -56,10 +56,10 @@ namespace FlatMate.Web
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddTransient<IOwnerCheck, OwnerCheck>();
+            services.AddSingleton<IRequestService, RequestService>();
 
             services.AddSingleton<IJsonService, JsonService>();
-            
+
             services.AddSingleton<IRequestResultService, RequestResultService>();
             services.AddSingleton<ApiResultFilter, ApiResultFilter>();
             services.AddSingleton<MvcResultFilter, MvcResultFilter>();

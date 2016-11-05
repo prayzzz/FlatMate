@@ -3,15 +3,13 @@
     class ItemListItemComponentModel {
         public isEditMode = false;
         public oldValue = '';
-        public isEditable = false;
     }
 
     export class ItemListItemComponent extends Vue {
-        public data = () => new ItemListItemComponentModel()
         public item: Item;
-        public itemlistOwner: number;
+        public itemlist: ItemList;
         public name = 'item';
-        public props = ['item', 'itemlistOwner'];
+        public props = ['item', 'itemlist'];
         public template = '#item-list-item-template';
 
         public $data: ItemListItemComponentModel;
@@ -31,17 +29,11 @@
         }
 
         public onCreated(): void {
-            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
-
-            if (this.itemlistOwner === currentUser.id || this.item.userId === currentUser.id) {
-                this.$data.isEditable = true;
-            }
+            this.$data = new ItemListItemComponentModel();
         }
 
         public showOwner(): boolean {
-            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
-
-            if (currentUser.id === this.item.userId || this.itemlistOwner === this.item.userId) {
+            if ((this.item.privileges && this.item.privileges.isOwned) || (this.item.userId === this.itemlist.userId)) {
                 return false;
             }
 
@@ -49,7 +41,7 @@
         }
 
         private enterEditMode(): void {
-            if (!this.$data.isEditable) {
+            if (!this.item.privileges || !this.item.privileges.isEditable) {
                 return;
             }
 
@@ -84,7 +76,7 @@
         }
 
         private deleteItem(): void {
-            if (!this.$data.isEditable) {
+            if (!this.item.privileges || !this.item.privileges.isDeletable) {
                 return;
             }
 

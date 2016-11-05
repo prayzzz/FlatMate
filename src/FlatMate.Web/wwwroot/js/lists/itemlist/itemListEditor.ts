@@ -8,11 +8,11 @@
         public name = "item-list-editor";
         public template = "#item-list-editor-template";
 
-        public data = () => this.initHeroPickerModel();
         public $data: ItemListEditorModel;
 
         public methods = {
-            saveNewGroup: this.saveNewGroup
+            saveNewGroup: this.saveNewGroup,
+            initEditor: this.initEditor
         }
 
         public events = {
@@ -26,6 +26,7 @@
         }
 
         public onCreated(): void {
+            this.$data = this.initEditor();
         }
 
         private deleteGroup(group: ItemListGroup): void {
@@ -38,6 +39,11 @@
 
         private saveNewGroup(): void {
             if (this.$data.newGroupName === "") {
+                return;
+            }
+
+            // check privileges
+            if (!this.$data.itemList.privileges || !this.$data.itemList.privileges.isEditable) {
                 return;
             }
 
@@ -54,7 +60,7 @@
             client.post(`lists/itemlist/${this.$data.itemList.id}/group/`, itemGroup, done)
         }
 
-        private initHeroPickerModel(): ItemListEditorModel {
+        private initEditor(): ItemListEditorModel {
             const dataElement = document.getElementById("viewData");
             if (dataElement === null) {
                 throw "data missing";

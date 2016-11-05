@@ -49,7 +49,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             model.ItemList = result.Data;
-            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
 
@@ -66,7 +65,6 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             }
 
             model.ItemList = result.Data;
-            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
 
@@ -91,12 +89,10 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             var result = _itemListApi.GetById(id);
             if (!result.IsSuccess)
             {
-                model.ErrorMessage = result.ErrorMessage;
-                return View(model); // TODO NullPointer in View
+                return View("Error", new EmptyViewModel { ErrorResult = result });
             }
 
             model.ItemList = result.Data;
-            model.IsEditable = CurrentUserId == model.ItemList.UserId;
             return View(model);
         }
     }

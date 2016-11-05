@@ -2,17 +2,15 @@
 
     class ItemListGroupComponentModel {
         public newItemValue = '';
-        public isEditable = false;
     }
 
     export class ItemListGroupComponent extends Vue {
-        public name = 'item-list-group';
-        public template = '#item-list-group-template';
         public group: ItemListGroup;
-        public itemlistOwner: number;
+        public itemlist: ItemList;
+        public name = 'item-list-group';
+        public props = ['group', 'itemlist'];
+        public template = '#item-list-group-template';
 
-        public props = ['group', 'itemlistOwner'];
-        public data = () => new ItemListGroupComponentModel();
         public $data: ItemListGroupComponentModel;
 
         public methods = {
@@ -24,7 +22,7 @@
         public events = {
             'item-deleted': this.onItemDeleted
         }
-        
+
         public created = this.onCreated;
 
         constructor(options?: vuejs.ComponentOption) {
@@ -32,17 +30,11 @@
         }
 
         public onCreated(): void {
-            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
-
-            if (this.itemlistOwner === currentUser.id || this.group.userId === currentUser.id) {
-                this.$data.isEditable = true;
-            }
+            this.$data = new ItemListGroupComponentModel();
         }
 
         public showOwner(): boolean {
-            const currentUser = (new FlatMate.Account.UserService).CurrentUser;
-
-            if (currentUser.id === this.itemlistOwner || currentUser.id === this.group.userId || this.itemlistOwner === this.group.userId) {
+            if ((this.group.privileges && this.group.privileges.isOwned) || (this.group.userId === this.itemlist.userId)) {
                 return false;
             }
 
@@ -58,7 +50,7 @@
         }
 
         private deleteGroup(item: Item): void {
-            if (!this.$data.isEditable) {
+            if (!this.group.privileges || !this.group.privileges.isEditable) {
                 return;
             }
 
@@ -74,6 +66,10 @@
 
         private saveNewItem(): void {
             if (!this.$data.newItemValue || this.$data.newItemValue === "") {
+                return;
+            }
+
+            if (!this.group.privileges || !this.group.privileges.isEditable) {
                 return;
             }
 
