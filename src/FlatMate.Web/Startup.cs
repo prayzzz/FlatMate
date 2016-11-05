@@ -52,6 +52,8 @@ namespace FlatMate.Web
                     .AddControllersAsServices()
                     .AddJsonOptions(o => { o.SerializerSettings.ContractResolver = FlatMateContractResolver.Instance; });
 
+            services.AddMemoryCache();
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IJsonService, JsonService>();

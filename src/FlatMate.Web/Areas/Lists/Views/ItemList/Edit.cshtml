@@ -4,8 +4,8 @@
     Layout = "_Layout";
 }
 
-
 <section class="container">
+
     <div class="title">
         <h2>@Model.ItemList.Name bearbeiten</h2>
     </div>
@@ -23,7 +23,8 @@
             <label asp-for="ItemList.IsPublic"></label>
             <input asp-for="ItemList.IsPublic" />
 
-            <div class="pull-right" hide="!Model.IsEditable">
+            <div style="display:flex; justify-content:space-between" hide="!Model.IsEditable">
+                <a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@Model.ItemList.Id" class="btn btn-danger" title="Löschen">Löschen</a>
                 <input type="submit" value="Speichern">
             </div>
         </fieldset>

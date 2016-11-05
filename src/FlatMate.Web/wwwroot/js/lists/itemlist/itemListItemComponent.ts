@@ -71,6 +71,11 @@
                 return;
             }
 
+            if (this.item.value === "") {
+                this.item.value = this.$data.oldValue;
+                return;
+            }
+
             // set oldvalue to prevent multiple requests
             this.$data.oldValue = this.item.value;
 

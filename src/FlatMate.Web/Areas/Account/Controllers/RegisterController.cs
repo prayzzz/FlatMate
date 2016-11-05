@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using FlatMate.Module.Account.Services;
 using FlatMate.Web.Areas.Account.Data;
+using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Mvc.Filters;
 
 namespace FlatMate.Web.Areas.Account.Controllers
 {
     [Area("Account")]
-    public class RegisterController : Controller
+    public class RegisterController : MvcController
     {
         private readonly IRegisterService _service;
 

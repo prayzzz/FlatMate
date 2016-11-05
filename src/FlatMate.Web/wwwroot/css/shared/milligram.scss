@@ -61,6 +61,10 @@ input[type='submit'] {
     text-transform: uppercase;
     white-space: nowrap;
     transition: background-color linear 0.1s;
+
+    &.btn-danger {
+        background-color: $color-danger;
+    }
 }
 
 .btn:hover,
@@ -70,6 +74,11 @@ input[type='reset']:hover,
 input[type='submit']:hover {
     background-color: darken($color-primary, 5%);
     color: #fff;
+
+
+    &.btn-danger {
+        background-color: darken($color-danger, 5%);
+    }
 }
 
 .btn:focus,
@@ -260,7 +269,7 @@ input[type='text']:focus,
 input[type='url']:focus,
 textarea:focus,
 select:focus {
-    border-color:$color-primary;
+    border-color: $color-primary;
     outline: 0;
 }
 
@@ -272,7 +281,7 @@ input[type='tel']:disabled,
 input[type='text']:disabled,
 input[type='url']:disabled,
 textarea:disabled,
-select:disabled {    
+select:disabled {
     background-color: #F8F8F8;
     color: #999;
 }

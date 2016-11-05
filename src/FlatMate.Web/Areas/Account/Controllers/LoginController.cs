@@ -2,6 +2,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using FlatMate.Module.Account.Services;
 using FlatMate.Web.Areas.Account.Data;
+using FlatMate.Web.Common.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Mvc.Filters;
@@ -9,7 +11,7 @@ using prayzzz.Common.Mvc.Filters;
 namespace FlatMate.Web.Areas.Account.Controllers
 {
     [Area("Account")]
-    public class LoginController : Controller
+    public class LoginController : MvcController
     {
         private readonly ILoginService _loginService;
 
@@ -19,12 +21,14 @@ namespace FlatMate.Web.Areas.Account.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidationFilter]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(LoginViewModel model)

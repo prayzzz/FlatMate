@@ -18,7 +18,6 @@
                 <th width="25%" class="show-large">Einträge</th>
                 <th class="show-large">Öffentlich?</th>
                 <th class="icon show-large"></th>
-                <th class="icon show-large"></th>
             </tr>
         </thead>
 
@@ -30,7 +29,6 @@
                     <td class="show-large">@itemList.Items.Count</td>
                     <td class="show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?" /></td>
                     <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
-                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@itemList.Id" class="icon-24 icon-cross-circle" title="Löschen"></a></td>
                 </tr>
             }
         </tbody>

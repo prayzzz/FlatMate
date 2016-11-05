@@ -2,11 +2,13 @@
 using System.Security.Claims;
 using FlatMate.Module.Account.Models;
 using FlatMate.Web.Filter;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FlatMate.Web.Common.Base
 {
+    [Authorize]
     [ServiceFilter(typeof(MvcResultFilter))]
     public class MvcController : Controller
     {

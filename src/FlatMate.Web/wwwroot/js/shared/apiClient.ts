@@ -10,7 +10,7 @@
         statusText: string;
         responseText: string;
     }
-    
+
     /**
      * Singleton
      * new ApiV1Client() returns the singleton instance
@@ -19,7 +19,7 @@
         private static instance: ApiClient;
         private host = `${window.location.protocol}//${window.location.host}/api/v1/`;
         private notificationService = new NotificationService();
-        
+
         /**
          * Returns the singleton instance
          */
@@ -47,7 +47,12 @@
             atomic.delete(url)
                 .success(() => { if (doneCallback) doneCallback() })
                 .error((e: IApiError) => {
-                    this.notificationService.Add(NotificationType.Error, e.responseText);
+                    let message = e.responseText;
+                    if (!message || message === "") {
+                        message = e.statusText;
+                    }
+
+                    this.notificationService.Add(NotificationType.Error, message);
                     if (failCallback) failCallback(e)
                 });
         }
