@@ -56,9 +56,10 @@ namespace FlatMate.Web
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<IJsonService, JsonService>();
-            services.AddSingleton<IOwnerCheck, OwnerCheck>();
+            services.AddTransient<IOwnerCheck, OwnerCheck>();
 
+            services.AddSingleton<IJsonService, JsonService>();
+            
             services.AddSingleton<IRequestResultService, RequestResultService>();
             services.AddSingleton<ApiResultFilter, ApiResultFilter>();
             services.AddSingleton<MvcResultFilter, MvcResultFilter>();

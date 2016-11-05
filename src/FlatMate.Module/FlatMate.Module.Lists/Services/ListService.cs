@@ -145,7 +145,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"Item {itemId} not found in ItemListGroup {groupId} (ItemList {listId})");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(itemDbo))
+            if (!_ownerCheck.IsOwnedByCurrentUser(itemDbo) && !_ownerCheck.IsOwnedByCurrentUser(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
@@ -168,7 +168,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult(ErrorType.NotFound, $"ItemListGroup {groupId} not found in ItemList {listId}");
             }
 
-            if (!_ownerCheck.IsOwnedByCurrentUser(groupDbo))
+            if (!_ownerCheck.IsOwnedByCurrentUser(groupDbo) && !_ownerCheck.IsOwnedByCurrentUser(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }

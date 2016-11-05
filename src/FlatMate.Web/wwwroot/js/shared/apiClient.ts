@@ -46,10 +46,10 @@
             atomic.setContentType('application/json');
             atomic.delete(url)
                 .success(() => { if (doneCallback) doneCallback() })
-                .error((e: IApiError) => {
+                .error((e: IApiError, xhr: any) => {
                     let message = e.responseText;
                     if (!message || message === "") {
-                        message = e.statusText;
+                        message = xhr.statusText;
                     }
 
                     this.notificationService.Add(NotificationType.Error, message);
