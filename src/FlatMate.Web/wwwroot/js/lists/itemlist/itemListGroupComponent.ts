@@ -34,7 +34,7 @@
         public onCreated(): void {
             const currentUser = (new FlatMate.Account.UserService).CurrentUser;
 
-            if (this.group.userId === currentUser.id) {
+            if (this.itemlistOwner === currentUser.id || this.group.userId === currentUser.id) {
                 this.$data.isEditable = true;
             }
         }

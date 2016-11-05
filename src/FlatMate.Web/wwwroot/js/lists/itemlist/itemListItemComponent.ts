@@ -33,7 +33,7 @@
         public onCreated(): void {
             const currentUser = (new FlatMate.Account.UserService).CurrentUser;
 
-            if (this.item.userId === currentUser.id) {
+            if (this.itemlistOwner === currentUser.id || this.item.userId === currentUser.id) {
                 this.$data.isEditable = true;
             }
         }
@@ -41,7 +41,7 @@
         public showOwner(): boolean {
             const currentUser = (new FlatMate.Account.UserService).CurrentUser;
 
-            if (currentUser.id === this.itemlistOwner || currentUser.id === this.item.userId || this.itemlistOwner === this.item.userId) {
+            if (currentUser.id === this.item.userId || this.itemlistOwner === this.item.userId) {
                 return false;
             }
 
