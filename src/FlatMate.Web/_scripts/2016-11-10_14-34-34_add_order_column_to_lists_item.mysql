@@ -1,0 +1,15 @@
+--
+-- Script
+--
+
+ALTER TABLE `Lists_Item` ADD COLUMN `Order` INT NOT NULL AFTER `Value`;
+
+UPDATE `Lists_Item` SET `Order` = `Id`;
+
+--
+-- Update Info
+--
+
+
+INSERT INTO  `Infrastructure_DbScripts` (`FileName`) 
+VALUES ('2016-11-10_14-34-34_add_order_column_to_lists_item');

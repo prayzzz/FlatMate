@@ -90,7 +90,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }
@@ -120,7 +120,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }
@@ -150,7 +150,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result> DeleteGroupFromList(int listId, int groupId)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }
@@ -174,7 +174,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result> DeletList(int listId)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }
@@ -192,7 +192,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<Item>> AddItemToList(int listId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }
@@ -212,7 +212,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<ItemListGroup>(listDboResult);
             }
@@ -232,7 +232,7 @@ namespace FlatMate.Module.Lists.Services
         public async Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
-            if (listDboResult.IsSuccess)
+            if (!listDboResult.IsSuccess)
             {
                 return new ErrorResult<Item>(listDboResult);
             }

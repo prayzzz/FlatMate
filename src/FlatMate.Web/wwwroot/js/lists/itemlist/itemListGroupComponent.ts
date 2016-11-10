@@ -20,7 +20,9 @@
         }
 
         public events = {
-            'item-deleted': this.onItemDeleted
+            'item-deleted': this.onItemDeleted,
+            'move-item-up': this.onMoveItemUp,
+            'move-item-down': this.onMoveItemDown
         }
 
         public created = this.onCreated;
@@ -31,14 +33,63 @@
 
         public onCreated(): void {
             this.$data = new ItemListGroupComponentModel();
+            this.group.items = this.group.items.sort((a, b) => a.order - b.order);
         }
 
-        public showOwner(): boolean {
+        private showOwner(): boolean {
             if ((this.group.privileges && this.group.privileges.isOwned) || (this.group.userId === this.itemlist.userId)) {
                 return false;
             }
 
             return true;
+        }
+
+        private onMoveItemUp(item?: Item): void {
+            if (!item) {
+                return;
+            }
+
+            const i = this.group.items.indexOf(item)
+
+            if (i === 0) {
+                return;
+            }
+
+            const previousItem = this.group.items[i - 1];
+            const previousOrder = previousItem.order;
+
+            previousItem.order = item.order
+            item.order = previousOrder;
+
+            const client = new FlatMate.Shared.ApiClient();
+            client.put(`lists/itemlist/${item.itemListId}/group/${item.itemListGroupId}/item/${item.id}`, item);
+            client.put(`lists/itemlist/${previousItem.itemListId}/group/${previousItem.itemListGroupId}/item/${previousItem.id}`, previousItem);
+
+            this.group.items = this.group.items.sort((a, b) => a.order - b.order);
+        }
+
+        private onMoveItemDown(item?: Item): void {
+            if (!item) {
+                return;
+            }
+
+            const i = this.group.items.indexOf(item)
+
+            if (i === this.group.items.length - 1) {
+                return;
+            }
+
+            const nextItem = this.group.items[i + 1];
+            const nextOrder = nextItem.order;
+
+            nextItem.order = item.order
+            item.order = nextOrder;
+
+            const client = new FlatMate.Shared.ApiClient();
+            client.put(`lists/itemlist/${item.itemListId}/group/${item.itemListGroupId}/item/${item.id}`, item);
+            client.put(`lists/itemlist/${nextItem.itemListId}/group/${nextItem.itemListGroupId}/item/${nextItem.id}`, nextItem);
+
+            this.group.items = this.group.items.sort((a, b) => a.order - b.order);
         }
 
         private onItemDeleted(item: Item): void {
@@ -74,7 +125,8 @@
             }
 
             const item: Item = {
-                value: this.$data.newItemValue
+                value: this.$data.newItemValue,
+                order: this.group.items.length
             };
 
             const done = (data: Item) => {

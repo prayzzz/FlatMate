@@ -48,7 +48,8 @@
             }
 
             const itemGroup: ItemListGroup = {
-                name: this.$data.newGroupName
+                name: this.$data.newGroupName,
+                items: []
             };
 
             const done = (data: ItemListGroup) => {

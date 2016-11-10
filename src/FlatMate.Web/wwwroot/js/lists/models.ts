@@ -15,7 +15,7 @@
     export interface ItemListGroup {
         creationDate?: Date;
         id?: number;
-        items?: Item[];
+        items: Item[];
         itemListId?: number;
         lastModified?: Date;
         name: string;
@@ -30,6 +30,7 @@
         itemListId?: number;
         itemListGroupId?: number;
         lastModified?: Date;
+        order: number;
         userId?: number;
         user?: Account.User;
         value: string;

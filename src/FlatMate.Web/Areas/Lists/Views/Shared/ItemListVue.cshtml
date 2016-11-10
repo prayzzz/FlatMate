@@ -7,7 +7,6 @@
             <div class="cell">
                 <input type="text" placeholder="Neue Gruppe hinzufügen" v-el:itemvalue v-model.trim="newGroupName" v-on:keyup.enter="saveNewGroup" />
             </div>
-            <div class="cell collapsed"></div>
             <div class="cell icon">
                 <a class="icon-24 icon-plus-circle" v-on:click="saveNewGroup"></a>
             </div>
@@ -27,7 +26,6 @@
                     von {{group.user.userName}}
                 </div>
             </div>
-            <div class="cell icon"></div>
             <div class="cell icon">
                 <a class="icon-24 icon-cross-circle" v-on:click="deleteGroup" v-if="group.privileges.isDeletable"></a>
             </div>
@@ -36,10 +34,9 @@
         <item-list-item v-for="i in group.items" :item="i" :itemlist="itemlist" :key="i.id"></item-list-item>
 
         <div class="row">
-            <div class="cell" style="padding-left:3rem">
+            <div class="cell" style="padding-left:calc(3rem + 16px)">
                 <input type="text" placeholder="Neuen Eintrag hinzufügen" v-model.trim="newItemValue" v-on:keyup.enter="saveNewItem" />
             </div>
-            <div class="cell collapsed"></div>
             <div class="cell icon">
                 <a class="icon-24 icon-plus-circle" v-on:click="saveNewItem"></a>
             </div>
@@ -51,14 +48,24 @@
 
 <script type="text/x-template" id="item-list-item-template">
 
-    <div class="row">
-        <div class="cell" style="padding-left:3rem" v-on:click="enterEditMode">
-            <span v-if="!isEditMode">{{item.value}}</span>
-            <input type="text" v-model="item.value" v-if="isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="leaveEditMode" />
-        </div>
+    <div class="row" style="height:63px;">
         <div class="cell">
-            <div v-if="showOwner()">
-                von {{item.user.userName}}
+            <div style="display:flex; align-items:center">
+                <div style="display:flex; flex-direction:column; margin-right: 1.5rem;">
+                    <div class="icon-16">
+                        <a class="icon-16 icon-chevron-up" v-on:click="moveUp"></a>
+                    </div>
+                    <div class="icon-16">
+                        <a class="icon-16 icon-chevron-down" v-on:click="moveDown"></a>
+                    </div>
+                </div>
+                <div v-on:click="enterEditMode" style="flex:1">
+                    <span v-if="!isEditMode">{{item.value}}</span>
+                    <input type="text" v-model="item.value" v-if="isEditMode" v-el:iteminput v-on:blur="leaveEditMode" v-on:keyup.enter="leaveEditMode" />
+                </div>
+                <div v-if="showOwner()">
+                    von {{item.user.userName}}
+                </div>
             </div>
         </div>
         <div class="cell icon"></div>

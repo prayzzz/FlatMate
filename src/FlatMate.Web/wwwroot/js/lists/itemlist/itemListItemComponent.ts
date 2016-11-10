@@ -19,7 +19,9 @@
             enterEditMode: this.enterEditMode,
             leaveEditMode: this.leaveEditMode,
             deleteItem: this.deleteItem,
-            showOwner: this.showOwner
+            showOwner: this.showOwner,
+            moveUp: this.moveUp,
+            moveDown: this.moveDown
         }
 
         public created = this.onCreated;
@@ -38,6 +40,14 @@
             }
 
             return true;
+        }
+
+        private moveUp(): void {
+            this.$dispatch('move-item-up', this.item);            
+        }
+
+        private moveDown(): void {
+            this.$dispatch('move-item-down', this.item);
         }
 
         private enterEditMode(): void {

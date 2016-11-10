@@ -32,6 +32,9 @@ namespace FlatMate.Module.Lists.Models
 
         [Required]
         public string Value { get; set; }
+
+        [Required]
+        public int Order { get; set; }
     }
 
     public class ItemDbo : OwnedDbo
@@ -48,6 +51,8 @@ namespace FlatMate.Module.Lists.Models
 
         [Required]
         public string Value { get; set; }
+
+        public int Order { get; set; }
     }
 
     public class ItemMapper : IDboMapper
@@ -74,6 +79,7 @@ namespace FlatMate.Module.Lists.Models
             dbo.ItemListId = model.ItemListId;
             dbo.ItemListGroupId = model.ItemListGroupId;
             dbo.LastModified = model.LastModified;
+            dbo.Order = model.Order;
             dbo.UserId = model.UserId;
             dbo.Value = model.Value;
 
@@ -88,6 +94,7 @@ namespace FlatMate.Module.Lists.Models
             item.ItemListId = dbo.ItemListId;
             item.ItemListGroupId = dbo.ItemListGroupId;
             item.LastModified = dbo.LastModified;
+            item.Order = dbo.Order;
             item.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId).Data);
             item.UserId = dbo.UserId;
             item.Value = dbo.Value;
