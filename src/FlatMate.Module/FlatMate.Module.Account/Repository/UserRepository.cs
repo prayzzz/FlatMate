@@ -1,40 +1,35 @@
 ﻿using System;
 using System.Linq;
+using FlatMate.Common.Repository;
 using FlatMate.Module.Account.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace FlatMate.Module.Account.Repository
 {
-    public class UserRepository
+    public class UserRepository : CachedRepository<UserDbo>
     {
-        private readonly AccountContext _context;
         private readonly IMemoryCache _cache;
-        private readonly MemoryCacheEntryOptions _cacheEntryOptions;
+        private readonly AccountContext _context;
+        private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(AccountContext context, IMemoryCache cache)
+        public UserRepository(AccountContext context, ILoggerFactory loggerFactory, IMemoryCache cache)
         {
             _context = context;
+            _logger = loggerFactory.CreateLogger<UserRepository>();
             _cache = cache;
-
-            _cacheEntryOptions = new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24) };
         }
 
-        public UserDbo GetById(int id)
+        protected override IMemoryCache Cache => _cache;
+        protected override MemoryCacheEntryOptions CacheEntryOptions => new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24) };
+
+        protected override DbContext Context => _context;
+        protected override ILogger Logger => _logger;
+
+        public override IQueryable<UserDbo> GetAll()
         {
-            UserDbo user;
-            if (_cache.TryGetValue(id, out user))
-            {
-                return user;
-            }
-
-            user = _context.User.FirstOrDefault(x => x.Id == id);
-
-            if (user != null)
-            {
-                _cache.Set(id, user, _cacheEntryOptions);
-            }
-
-            return user;
+            return _context.User;
         }
     }
 }

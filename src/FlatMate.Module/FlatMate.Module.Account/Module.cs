@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FlatMate.Common.Repository;
 using FlatMate.Module.Account.Models;
 using FlatMate.Module.Account.Repository;
 using FlatMate.Module.Account.Services;
@@ -16,13 +17,13 @@ namespace FlatMate.Module.Account
     {
         public static void ConfigureServices(IServiceCollection services, IConfigurationRoot configuration)
         {
-            services.AddScoped<UserRepository, UserRepository>();
+            services.AddScoped<IRepository<UserDbo>, UserRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddSingleton<IPasswordService, PasswordService>();
-            
+
             services.AddScoped<IDboMapper, UserMapper>();
 
             services.AddDbContext<AccountContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection")));

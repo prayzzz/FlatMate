@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FlatMate.Common;
+using FlatMate.Common.Repository;
 using FlatMate.Module.Account.Models;
-using FlatMate.Module.Account.Repository;
 using FlatMate.Module.Lists.Services;
 using prayzzz.Common.Dbo;
 using prayzzz.Common.Enums;
@@ -89,10 +89,10 @@ namespace FlatMate.Module.Lists.Models
 
     public class ItemListMapper : IDboMapper
     {
-        private readonly UserRepository _userRepository;
         private readonly ItemListPrivileger _privileger;
+        private readonly IRepository<UserDbo> _userRepository;
 
-        public ItemListMapper(UserRepository userRepository, ItemListPrivileger privileger)
+        public ItemListMapper(IRepository<UserDbo> userRepository, ItemListPrivileger privileger)
         {
             _userRepository = userRepository;
             _privileger = privileger;
@@ -132,7 +132,7 @@ namespace FlatMate.Module.Lists.Models
             itemList.ListGroups = dbo.ListGroups.Select(groupDbo => ctx.Mapper.Map<ItemListGroup>(groupDbo)).ToList();
             itemList.Name = dbo.Name;
             itemList.UserId = dbo.UserId;
-            itemList.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId));
+            itemList.User = ctx.Mapper.Map<User>(_userRepository.GetById(dbo.UserId).Data);
             itemList.Privileges = _privileger.GetPrivileges(dbo);
 
             return itemList;

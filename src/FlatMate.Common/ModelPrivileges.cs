@@ -9,10 +9,10 @@
             IsDeletable = isDeletable;
         }
 
-        public bool IsOwned { get;  }
+        public bool IsDeletable { get; }
 
         public bool IsEditable { get; }
 
-        public bool IsDeletable { get; }
+        public bool IsOwned { get;  }
     }
 }

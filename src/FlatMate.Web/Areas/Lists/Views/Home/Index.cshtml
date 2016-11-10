@@ -55,7 +55,7 @@
                 <tr>
                     <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
                     <td class="show-large">@itemList.Items.Count</td>
-                    <td class="show-large">@itemList.UserId</td>
+                    <td class="show-large">@itemList.User.UserName</td>
                 </tr>
             }
         </tbody>

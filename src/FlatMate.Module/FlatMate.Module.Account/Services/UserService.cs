@@ -1,5 +1,5 @@
-﻿using FlatMate.Module.Account.Models;
-using FlatMate.Module.Account.Repository;
+﻿using FlatMate.Common.Repository;
+using FlatMate.Module.Account.Models;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
 
@@ -13,9 +13,9 @@ namespace FlatMate.Module.Account.Services
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly UserRepository _repository;
+        private readonly IRepository<UserDbo> _repository;
 
-        public UserService(UserRepository repository, IMapper mapper)
+        public UserService(IRepository<UserDbo> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

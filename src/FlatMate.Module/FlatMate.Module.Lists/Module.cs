@@ -1,4 +1,6 @@
-﻿using FlatMate.Module.Lists.Models;
+﻿using FlatMate.Common.Repository;
+using FlatMate.Module.Lists.Models;
+using FlatMate.Module.Lists.Repository;
 using FlatMate.Module.Lists.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +14,9 @@ namespace FlatMate.Module.Lists
     {
         public static void ConfigureServices(IServiceCollection services, IConfigurationRoot configuration)
         {
-            services.AddScoped<IListService, ListService>();
+            services.AddScoped<IRepository<ItemListDbo>, ItemListRepository>();
+
+            services.AddScoped<IItemListService, ItemListService>();
 
             services.AddScoped<IDboMapper, ItemMapper>();
             services.AddScoped<IDboMapper, ItemListMapper>();

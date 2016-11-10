@@ -16,9 +16,9 @@ namespace FlatMate.Web.Areas.Lists.Controllers
     [Route("api/v1/lists/itemlist")]
     public class ItemListApiController : ApiController
     {
-        private readonly IListService _listService;
+        private readonly IItemListService _listService;
 
-        public ItemListApiController(IHttpContextAccessor context, IListService listService) : base(context)
+        public ItemListApiController(IHttpContextAccessor context, IItemListService listService) : base(context)
         {
             _listService = listService;
         }

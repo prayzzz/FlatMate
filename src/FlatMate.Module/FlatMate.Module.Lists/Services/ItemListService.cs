@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlatMate.Common.Repository;
 using FlatMate.Module.Lists.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using prayzzz.Common.Dbo;
 using prayzzz.Common.Linq;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Lists.Services
 {
-    public interface IListService
+    public interface IItemListService
     {
         Task<Result<ItemList>> Create(ItemList itemlist);
         IEnumerable<ItemList> GetAll(ItemListQuery query);
@@ -27,17 +24,15 @@ namespace FlatMate.Module.Lists.Services
         Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList);
     }
 
-    public class ListService : IListService
+    public class ItemListService : IItemListService
     {
-        private readonly ListsContext _context;
-        private readonly ILogger<ListService> _logger;
         private readonly IMapper _mapper;
         private readonly ItemListPrivileger _privileger;
+        private readonly IRepository<ItemListDbo> _repository;
 
-        public ListService(ILoggerFactory loggerFactory, ListsContext context, IMapper mapper, ItemListPrivileger privileger)
+        public ItemListService(IRepository<ItemListDbo> repository, IMapper mapper, ItemListPrivileger privileger)
         {
-            _logger = loggerFactory.CreateLogger<ListService>();
-            _context = context;
+            _repository = repository;
             _mapper = mapper;
             _privileger = privileger;
         }
@@ -46,64 +41,61 @@ namespace FlatMate.Module.Lists.Services
         {
             var listDbo = _mapper.Map<ItemListDbo>(itemlist);
 
-            _context.Add(listDbo);
-
-            return await Save<ItemList, ItemListDbo>(listDbo);
+            _repository.Add(listDbo);
+            return await Save<ItemList>(listDbo);
         }
 
         public IEnumerable<ItemList> GetAll(ItemListQuery query)
         {
-            var all = _context.ItemListsFull;
+            var itemLists = _repository.GetAll();
 
             if (query != null)
             {
-                if (query.IsPublic.HasValue) all = all.Where(x => x.IsPublic == query.IsPublic.Value);
-                if (query.UserId.HasValue) all = all.Where(x => x.UserId == query.UserId.Value);
-                if (query.Order == ItemListQueryOrder.LastModified) all = all.OrderBy(x => x.LastModified, query.Direction);
-                //if (query.Limit.HasValue) all = all.Take(query.Limit.Value); // TODO add if supported by mysql
+                if (query.IsPublic.HasValue) itemLists = itemLists.Where(x => x.IsPublic == query.IsPublic.Value);
+                if (query.UserId.HasValue) itemLists = itemLists.Where(x => x.UserId == query.UserId.Value);
+                if (query.Order == ItemListQueryOrder.LastModified) itemLists = itemLists.OrderBy(x => x.LastModified, query.Direction);
             }
 
-            return all.Select(itemList => _mapper.Map<ItemList>(itemList));
+            return itemLists.Select(itemList => _mapper.Map<ItemList>(itemList));
         }
 
         public Result<ItemList> GetById(int id)
         {
-            var dbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == id);
-
-            if (dbo == null)
+            var listDbo = _repository.GetById(id);
+            if (!listDbo.IsSuccess)
             {
-                return new ErrorResult<ItemList>(ErrorType.NotFound, $"Entity {id} not found");
+                return new ErrorResult<ItemList>(listDbo);
             }
 
-            return new SuccessResult<ItemList>(_mapper.Map<ItemList>(dbo));
+            return new SuccessResult<ItemList>(_mapper.Map<ItemList>(listDbo.Data));
         }
 
         public async Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDbo = _repository.GetById(listId);
+            if (!listDbo.IsSuccess)
             {
-                return new ErrorResult<ItemList>(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<ItemList>(listDbo);
             }
 
-            if (!_privileger.IsOwned(listDbo))
+            if (!_privileger.IsOwned(listDbo.Data))
             {
                 return new ErrorResult<ItemList>(ErrorType.Unauthorized, "Unauthorized");
             }
 
             listDbo = _mapper.Map(itemList, listDbo);
-
-            return await Save<ItemList, ItemListDbo>(listDbo);
+            return await Save<ItemList>(listDbo);
         }
 
         public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult<Item>(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             var groupDbo = listDbo.ListGroups.FirstOrDefault(x => x.Id == groupId);
             if (groupDbo == null)
             {
@@ -122,17 +114,18 @@ namespace FlatMate.Module.Lists.Services
             }
 
             itemDbo = _mapper.Map(item, itemDbo);
-            return await Save<Item, ItemDbo>(itemDbo);
+            return await Save<Item>(itemDbo);
         }
 
         public async Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             var groupDbo = listDbo.ListGroups.FirstOrDefault(x => x.Id == groupId);
             if (groupDbo == null)
             {
@@ -150,18 +143,19 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
 
-            _context.Remove(itemDbo);
-            return await Save();
+            _repository.Remove(itemDbo);
+            return await _repository.Save();
         }
 
         public async Task<Result> DeleteGroupFromList(int listId, int groupId)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             var groupDbo = listDbo.ListGroups.FirstOrDefault(x => x.Id == groupId);
             if (groupDbo == null)
             {
@@ -173,37 +167,37 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
 
-            listDbo.LastModified = DateTime.Now;
-
-            _context.Remove(groupDbo);
-            return await Save();
+            _repository.Remove(groupDbo);
+            return await _repository.Save();
         }
 
         public async Task<Result> DeletList(int listId)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             if (!_privileger.IsOwned(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
             }
 
-            _context.Remove(listDbo);
-            return await Save();
+            _repository.Remove(listDbo);
+            return await _repository.Save();
         }
 
         public async Task<Result<Item>> AddItemToList(int listId, Item item)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult<Item>(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             if (!_privileger.IsEditable(listDbo))
             {
                 return new ErrorResult<Item>(ErrorType.Unauthorized, "Unauthorized");
@@ -212,17 +206,18 @@ namespace FlatMate.Module.Lists.Services
             var itemDbo = _mapper.Map<ItemDbo>(item);
             listDbo.Items.Add(itemDbo);
 
-            return await Save<Item, ItemDbo>(itemDbo);
+            return await Save<Item>(itemDbo);
         }
 
         public async Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult<ItemListGroup>(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<ItemListGroup>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             if (!_privileger.IsEditable(listDbo))
             {
                 return new ErrorResult<ItemListGroup>(ErrorType.Unauthorized, "Unauthorized");
@@ -231,17 +226,18 @@ namespace FlatMate.Module.Lists.Services
             var groupDbo = _mapper.Map<ItemListGroupDbo>(item);
             listDbo.ListGroups.Add(groupDbo);
 
-            return await Save<ItemListGroup, ItemListGroupDbo>(groupDbo);
+            return await Save<ItemListGroup>(groupDbo);
         }
 
         public async Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item)
         {
-            var listDbo = _context.ItemListsFull.FirstOrDefault(x => x.Id == listId);
-            if (listDbo == null)
+            var listDboResult = _repository.GetById(listId);
+            if (listDboResult.IsSuccess)
             {
-                return new ErrorResult<Item>(ErrorType.NotFound, $"ItemList {listId} not found");
+                return new ErrorResult<Item>(listDboResult);
             }
 
+            var listDbo = listDboResult.Data;
             var groupDbo = listDbo.ListGroups.FirstOrDefault(x => x.Id == groupId);
             if (groupDbo == null)
             {
@@ -256,55 +252,18 @@ namespace FlatMate.Module.Lists.Services
             var itemDbo = _mapper.Map<ItemDbo>(item);
             groupDbo.Items.Add(itemDbo);
 
-            return await Save<Item, ItemDbo>(itemDbo);
+            return await Save<Item>(itemDbo);
         }
 
-        private void ApplyDates()
+        private async Task<Result<TModel>> Save<TModel>(object itemDbo) where TModel : class
         {
-            var now = DateTime.Now;
-            foreach (var entry in _context.ChangeTracker.Entries().Where(x => x.State == EntityState.Added))
+            var result = await _repository.Save();
+            if (!result.IsSuccess)
             {
-                ((BaseDbo)entry.Entity).CreationDate = now;
-                ((BaseDbo)entry.Entity).LastModified = now;
+                return new ErrorResult<TModel>(result);
             }
 
-            foreach (var entry in _context.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified))
-            {
-                ((BaseDbo)entry.Entity).LastModified = now;
-            }
-        }
-
-        private async Task<Result<TModel>> Save<TModel, TDbo>(TDbo dboToReturn) where TModel : class
-        {
-            var result = await Save();
-            if (result.IsSuccess)
-            {
-                return new SuccessResult<TModel>(_mapper.Map<TModel>(dboToReturn));
-            }
-
-            return new ErrorResult<TModel>(result);
-        }
-
-        private async Task<Result> Save()
-        {
-            ApplyDates();
-
-            using (var trans = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    trans.Commit();
-                    return new SuccessResult();
-                }
-                catch (Exception ex)
-                {
-                    trans.Rollback();
-
-                    _logger.LogError(0, ex, "Failed saving entity.");
-                    return new ErrorResult(ex, "Failed saving entity.");
-                }
-            }
+            return new SuccessResult<TModel>(_mapper.Map<TModel>(itemDbo));
         }
     }
 }
