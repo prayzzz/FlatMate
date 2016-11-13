@@ -15,7 +15,7 @@ namespace FlatMate.Module.Lists.Services
 
         public bool IsEditable(ItemListDbo itemList)
         {
-            return itemList.IsPublic;
+            return itemList.IsPublic || itemList.UserId == _request.CurrentUserId;
         }
 
         public bool IsOwned(ItemListDbo itemList)
@@ -40,7 +40,22 @@ namespace FlatMate.Module.Lists.Services
 
         public bool IsEditable(ItemListGroupDbo itemListGroup)
         {
-            return itemListGroup.ItemList.IsPublic;
+            if (itemListGroup.ItemList.IsPublic)
+            {
+                return true;
+            }
+            
+            if (itemListGroup.ItemList.UserId == _request.CurrentUserId)
+            {
+                return true;
+            }
+            
+            if (itemListGroup.UserId == _request.CurrentUserId)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool IsDeletable(ItemListGroupDbo itemListGroup)
@@ -66,7 +81,22 @@ namespace FlatMate.Module.Lists.Services
 
         public bool IsEditable(ItemDbo item)
         {
-            return item.ItemList.IsPublic;
+            if (item.ItemList.IsPublic)
+            {
+                return true;
+            }
+
+            if (item.ItemList.UserId == _request.CurrentUserId)
+            {
+                return true;
+            }
+
+            if (item.UserId == _request.CurrentUserId)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool IsDeletable(ItemDbo item)

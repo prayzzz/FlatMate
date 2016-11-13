@@ -8,7 +8,7 @@ namespace FlatMate.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return Redirect("Lists");
         }
     }
 }

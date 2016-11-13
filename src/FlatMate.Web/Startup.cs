@@ -100,12 +100,8 @@ namespace FlatMate.Web
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute("areaRoute",
-                    "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapRoute(
-                    "default",
-                    "{controller=Dashboard}/{action=Index}/{id?}");
+                routes.MapRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Dashboard}/{action=Index}");
             });
         }
     }
