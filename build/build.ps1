@@ -5,7 +5,7 @@ properties {
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
     $version = "$date.$seconds"
 
-    $config = Get-Value-Or-Default $env:CONFIGURATION "Debug"
+    $config = Get-Value-Or-Default $env:CONFIGURATION "Release"
     $mainProjectDir = "src/FlatMate.Web";
 
     # MySql Database    

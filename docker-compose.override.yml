@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  flatmate.web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"

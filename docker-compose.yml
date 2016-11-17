@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  flatmate.web:
+    image: user/flatmate.web
+    build:
+      context: ./src/FlatMate.Web
+      dockerfile: Dockerfile
+      args:
+        source: ${DOCKER_BUILD_SOURCE}

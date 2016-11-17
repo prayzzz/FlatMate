@@ -11,7 +11,6 @@ namespace FlatMate.Web
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
-                .UseUrls("http://localhost:5000", "http://192.168.1.*:5001")
                 .Build();
 
             host.Run();
