@@ -37,6 +37,7 @@ namespace FlatMate.Module.Lists.Models
         public int Order { get; set; }
     }
 
+    [Table("Item")]
     public class ItemDbo : OwnedDbo
     {
         [ForeignKey("ItemListId")]

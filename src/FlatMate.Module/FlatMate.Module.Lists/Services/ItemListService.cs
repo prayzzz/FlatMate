@@ -83,8 +83,7 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<ItemList>(ErrorType.Unauthorized, "Unauthorized");
             }
 
-            listDbo = _mapper.Map(itemList, listDbo);
-            return await Save<ItemList>(listDbo);
+            return await Save<ItemList>(_mapper.Map(itemList, listDbo.Data));
         }
 
         public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)

@@ -15,8 +15,7 @@ namespace FlatMate.Module.Account
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<UserDbo>().ToTable("Account_User");
+            builder.HasDefaultSchema("Account");
         }
     }
 }

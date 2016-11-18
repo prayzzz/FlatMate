@@ -5,7 +5,7 @@ using FlatMate.Module.Lists.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySQL.Data.EntityFrameworkCore.Extensions;
+using Microsoft.EntityFrameworkCore;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Lists
@@ -24,7 +24,7 @@ namespace FlatMate.Module.Lists
 
             services.AddSingleton<ItemListPrivileger, ItemListPrivileger>();
 
-            services.AddDbContext<ListsContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ListsContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         }
 
         public static void Configure(IApplicationBuilder app)

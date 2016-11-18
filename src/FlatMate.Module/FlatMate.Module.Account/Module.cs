@@ -6,9 +6,9 @@ using FlatMate.Module.Account.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySQL.Data.EntityFrameworkCore.Extensions;
 using prayzzz.Common.Mapping;
 
 namespace FlatMate.Module.Account
@@ -26,7 +26,7 @@ namespace FlatMate.Module.Account
 
             services.AddScoped<IDboMapper, UserMapper>();
 
-            services.AddDbContext<AccountContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AccountContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         }
 
         public static void Configure(IApplicationBuilder app)

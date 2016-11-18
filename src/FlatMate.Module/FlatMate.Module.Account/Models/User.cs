@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using prayzzz.Common.Dbo;
 using prayzzz.Common.Mapping;
 
@@ -44,6 +45,7 @@ namespace FlatMate.Module.Account.Models
         public string UserName { get; set; }
     }
 
+    [Table("User")]
     public class UserDbo : BaseDbo
     {
         public string Email { get; set; }

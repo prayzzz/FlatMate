@@ -38,6 +38,7 @@ namespace FlatMate.Module.Lists.Models
         public int UserId { get; set; }
     }
 
+    [Table("ItemListGroup")]
     public class ItemListGroupDbo : OwnedDbo
     {
         [ForeignKey("ItemListId")]

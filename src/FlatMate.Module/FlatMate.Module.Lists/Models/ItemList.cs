@@ -68,6 +68,7 @@ namespace FlatMate.Module.Lists.Models
         public int UserId { get; set; }
     }
 
+    [Table("ItemList")]
     public class ItemListDbo : OwnedDbo
     {
         public string Description { get; set; }
@@ -76,8 +77,7 @@ namespace FlatMate.Module.Lists.Models
 
         [InverseProperty("ItemList")]
         public List<ItemDbo> Items { get; set; } = new List<ItemDbo>();
-
-
+        
         [InverseProperty("ItemList")]
         public List<ItemListGroupDbo> ListGroups { get; set; } = new List<ItemListGroupDbo>();
 
