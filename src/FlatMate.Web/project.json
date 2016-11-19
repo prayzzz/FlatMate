@@ -18,6 +18,7 @@
     "Microsoft.AspNetCore.Routing": "1.0.1",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "Microsoft.Extensions.Caching.Memory": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
@@ -32,14 +33,13 @@
       "type": "build"
     },
     "Autofac.Extensions.DependencyInjection": "4.0.0",
-    "MySql.Data.EntityFrameworkCore": "7.0.6-IR31",
     "Serilog": "2.3.0",
     "Serilog.Extensions.Logging": "1.2.0",
     "Serilog.Sinks.File": "3.1.0",
     "Serilog.Sinks.Literate": "2.0.0",
     "Serilog.Settings.Configuration": "2.1.0",
     "Swashbuckle": "6.0.0-beta902",
-    "prayzzz.Common": "1.0.*",
+    "prayzzz.Common": "1.0.0-*",
     "FlatMate.Module.Account": {
       "target": "project"
     },
