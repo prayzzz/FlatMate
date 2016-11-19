@@ -38,7 +38,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
 
             itemlist.Items.ForEach(item => item.UserId = CurrentUserId);
 
-            return _listService.Create(itemlist);
+            return _listService.CreateAsync(itemlist);
         }
 
         [HttpPost("{listId}/item")]
@@ -49,7 +49,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.ItemListId = listId;
             item.ItemListGroupId = null;
 
-            return _listService.AddItemToList(listId, item);
+            return _listService.AddItemToListAsync(listId, item);
         }
 
         [HttpPost("{listId}/group")]
@@ -59,7 +59,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             group.UserId = CurrentUserId;
             group.ItemListId = listId;
 
-            return _listService.AddGroupToList(listId, group);
+            return _listService.AddGroupToListAsync(listId, group);
         }
 
         [HttpPost("{listId}/group/{groupId}/item")]
@@ -70,7 +70,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.ItemListId = listId;
             item.ItemListGroupId = groupId;
 
-            return _listService.AddItemToGroup(listId, groupId, item);
+            return _listService.AddItemToGroupAsync(listId, groupId, item);
         }
 
         [HttpPut("{listId}")]
@@ -80,7 +80,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             itemList.UserId = CurrentUserId;
             itemList.Id = listId;
 
-            return _listService.UpdateItemList(listId, itemList);
+            return _listService.UpdateItemListAsync(listId, itemList);
         }
 
         [HttpPut("{listId}/group/{groupId}/item/{itemId}")]
@@ -92,25 +92,25 @@ namespace FlatMate.Web.Areas.Lists.Controllers
             item.ItemListGroupId = groupId;
             item.ItemListId = listId;
 
-            return _listService.UpdateItemInGroup(listId, groupId, itemId, item);
+            return _listService.UpdateItemInGroupAsync(listId, groupId, itemId, item);
         }
 
         [HttpDelete("{listId}/group/{groupId}/item/{itemId}")]
         public Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
         {
-            return _listService.DeleteItemFromGroup(listId, groupId, itemId);
+            return _listService.DeleteItemFromGroupAsync(listId, groupId, itemId);
         }
 
         [HttpDelete("{listId}/group/{groupId}")]
         public Task<Result> DeleteGroupFromList(int listId, int groupId)
         {
-            return _listService.DeleteGroupFromList(listId, groupId);
+            return _listService.DeleteGroupFromListAsync(listId, groupId);
         }
 
         [HttpDelete("{listId}")]
         public Task<Result> Delete(int id)
         {
-            return _listService.DeletList(id);
+            return _listService.DeletListAsync(id);
         }
 
         [HttpGet("{id}")]

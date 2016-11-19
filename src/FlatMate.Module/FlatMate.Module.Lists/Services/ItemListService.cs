@@ -11,17 +11,17 @@ namespace FlatMate.Module.Lists.Services
 {
     public interface IItemListService
     {
-        Task<Result<ItemList>> Create(ItemList itemlist);
+        Task<Result<ItemList>> CreateAsync(ItemList itemlist);
         IEnumerable<ItemList> GetAll(ItemListQuery query);
-        Task<Result<Item>> AddItemToList(int listId, Item item);
-        Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item);
-        Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item);
+        Task<Result<Item>> AddItemToListAsync(int listId, Item item);
+        Task<Result<ItemListGroup>> AddGroupToListAsync(int listId, ItemListGroup item);
+        Task<Result<Item>> AddItemToGroupAsync(int listId, int groupId, Item item);
         Result<ItemList> GetById(int id);
-        Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item);
-        Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId);
-        Task<Result> DeleteGroupFromList(int listId, int groupId);
-        Task<Result> DeletList(int listId);
-        Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList);
+        Task<Result<Item>> UpdateItemInGroupAsync(int listId, int groupId, int itemId, Item item);
+        Task<Result> DeleteItemFromGroupAsync(int listId, int groupId, int itemId);
+        Task<Result> DeleteGroupFromListAsync(int listId, int groupId);
+        Task<Result> DeletListAsync(int listId);
+        Task<Result<ItemList>> UpdateItemListAsync(int listId, ItemList itemList);
     }
 
     public class ItemListService : IItemListService
@@ -37,12 +37,12 @@ namespace FlatMate.Module.Lists.Services
             _privileger = privileger;
         }
 
-        public async Task<Result<ItemList>> Create(ItemList itemlist)
+        public async Task<Result<ItemList>> CreateAsync(ItemList itemlist)
         {
             var listDbo = _mapper.Map<ItemListDbo>(itemlist);
 
             _repository.Add(listDbo);
-            return await Save<ItemList>(listDbo);
+            return await SaveAsync<ItemList>(listDbo);
         }
 
         public IEnumerable<ItemList> GetAll(ItemListQuery query)
@@ -70,7 +70,7 @@ namespace FlatMate.Module.Lists.Services
             return new SuccessResult<ItemList>(_mapper.Map<ItemList>(listDbo.Data));
         }
 
-        public async Task<Result<ItemList>> UpdateItemList(int listId, ItemList itemList)
+        public async Task<Result<ItemList>> UpdateItemListAsync(int listId, ItemList itemList)
         {
             var listDbo = _repository.GetById(listId);
             if (!listDbo.IsSuccess)
@@ -83,10 +83,10 @@ namespace FlatMate.Module.Lists.Services
                 return new ErrorResult<ItemList>(ErrorType.Unauthorized, "Unauthorized");
             }
 
-            return await Save<ItemList>(_mapper.Map(itemList, listDbo.Data));
+            return await SaveAsync<ItemList>(_mapper.Map(itemList, listDbo.Data));
         }
 
-        public async Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, Item item)
+        public async Task<Result<Item>> UpdateItemInGroupAsync(int listId, int groupId, int itemId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -113,10 +113,10 @@ namespace FlatMate.Module.Lists.Services
             }
 
             itemDbo = _mapper.Map(item, itemDbo);
-            return await Save<Item>(itemDbo);
+            return await SaveAsync<Item>(itemDbo);
         }
 
-        public async Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
+        public async Task<Result> DeleteItemFromGroupAsync(int listId, int groupId, int itemId)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -146,7 +146,7 @@ namespace FlatMate.Module.Lists.Services
             return await _repository.Save();
         }
 
-        public async Task<Result> DeleteGroupFromList(int listId, int groupId)
+        public async Task<Result> DeleteGroupFromListAsync(int listId, int groupId)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -170,7 +170,7 @@ namespace FlatMate.Module.Lists.Services
             return await _repository.Save();
         }
 
-        public async Task<Result> DeletList(int listId)
+        public async Task<Result> DeletListAsync(int listId)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -188,7 +188,7 @@ namespace FlatMate.Module.Lists.Services
             return await _repository.Save();
         }
 
-        public async Task<Result<Item>> AddItemToList(int listId, Item item)
+        public async Task<Result<Item>> AddItemToListAsync(int listId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -205,10 +205,10 @@ namespace FlatMate.Module.Lists.Services
             var itemDbo = _mapper.Map<ItemDbo>(item);
             listDbo.Items.Add(itemDbo);
 
-            return await Save<Item>(itemDbo);
+            return await SaveAsync<Item>(itemDbo);
         }
 
-        public async Task<Result<ItemListGroup>> AddGroupToList(int listId, ItemListGroup item)
+        public async Task<Result<ItemListGroup>> AddGroupToListAsync(int listId, ItemListGroup item)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -225,10 +225,10 @@ namespace FlatMate.Module.Lists.Services
             var groupDbo = _mapper.Map<ItemListGroupDbo>(item);
             listDbo.ListGroups.Add(groupDbo);
 
-            return await Save<ItemListGroup>(groupDbo);
+            return await SaveAsync<ItemListGroup>(groupDbo);
         }
 
-        public async Task<Result<Item>> AddItemToGroup(int listId, int groupId, Item item)
+        public async Task<Result<Item>> AddItemToGroupAsync(int listId, int groupId, Item item)
         {
             var listDboResult = _repository.GetById(listId);
             if (!listDboResult.IsSuccess)
@@ -251,10 +251,10 @@ namespace FlatMate.Module.Lists.Services
             var itemDbo = _mapper.Map<ItemDbo>(item);
             groupDbo.Items.Add(itemDbo);
 
-            return await Save<Item>(itemDbo);
+            return await SaveAsync<Item>(itemDbo);
         }
 
-        private async Task<Result<TModel>> Save<TModel>(object itemDbo) where TModel : class
+        private async Task<Result<TModel>> SaveAsync<TModel>(object itemDbo) where TModel : class
         {
             var result = await _repository.Save();
             if (!result.IsSuccess)

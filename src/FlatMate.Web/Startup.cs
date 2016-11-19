@@ -28,11 +28,6 @@ namespace FlatMate.Web
                                                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                                                     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment())
-            {
-                builder.AddUserSecrets();
-            }
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
 

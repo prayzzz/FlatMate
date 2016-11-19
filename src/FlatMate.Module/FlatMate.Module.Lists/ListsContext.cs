@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using FlatMate.Module.Lists.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace FlatMate.Module.Lists
 {

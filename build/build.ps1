@@ -2,18 +2,18 @@ properties {
     Import-Module psake-contrib/teamcity.psm1
 
     $date = Get-Date -Format yyyy.MM.dd;
-    $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
-    $version = "$date.$seconds"
+    $minutes = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
+    $version = "$date.$minutes"
 
     $config = Get-Value-Or-Default $env:CONFIGURATION "Release"
     $mainProjectDir = "src/FlatMate.Web";
 
     # MySql Database    
-    $dbtype = Get-Value-Or-Default $dbtype "mysql"
-    $dbhost = Get-Value-Or-Default $dbhost "localhost"
-    $dbport = Get-Value-Or-Default $dbport 3306
-    $dbuser = Get-Value-Or-Default $dbuser "root"
-    $dbpassword = Get-Value-Or-Default $dbpassword "admin"
+    $dbtype = Get-Value-Or-Default $dbtype "mssql"
+    $dbhost = Get-Value-Or-Default $dbhost "(LocalDB)\MSSQLLocalDB"
+    # $dbport = Get-Value-Or-Default $dbport 3306
+    $dbuser = Get-Value-Or-Default $dbuser "teamcity"
+    $dbpassword = Get-Value-Or-Default $dbpassword "teamcity"
     $dbname = "ci_flatmate_$branch"
 
     # Teamcity
@@ -94,8 +94,8 @@ task Dotnet-Bundle -depends Dotnet-Restore, Compile-Typescript, Compile-Sass {
 }
 
 task Set-Version {
-    Insert-Version "$mainProjectDir/project.json"
-    Insert-Version "$mainProjectDir/appsettings.json"
+    Apply-Version "$mainProjectDir/project.json"
+    Apply-Version "$mainProjectDir/appsettings.json"
 }
 
 task Dotnet-Build -depends Dotnet-Restore, Set-Version {
@@ -103,10 +103,6 @@ task Dotnet-Build -depends Dotnet-Restore, Set-Version {
 }
 
 task Dotnet-Test -depends Dotnet-Build {
-    #Run-Test("mobtima.Common.Test")
-    #Run-Test("mobtima.Domain.Test")
-    #Run-Test("mobtima.Persistence.Test")
-    #Run-Test("mobtima.Web.Test")
 }
 
 task Dotnet-Publish -depends Dotnet-Bundle, Dotnet-Test {
@@ -134,19 +130,12 @@ task Dotnet-DbUpdate -depends Dotnet-Restore {
     $cwd = Get-Location
     Set-Location $mainProjectDir
 
-    # check for database, no exec{} to continued execution and create missing db
-    mysql --user=$dbuser --password=$dbpassword -e "`"USE $dbname"`"
-        
-    # create database
-    if ($lastexitcode -ne 0) {
-        Write-Host "Creating database $dbname"
-        exec { mysql --user=$dbuser --password=$dbpassword -e "`"CREATE DATABASE $dbname;"`" }
-
-        exec { dotnet dbupdate init --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
-    }
+    # check for database
+    Write-Host "Checking database $dbname"
+    exec { sqlcmd -b -S $dbhost -U $dbuser -P $dbpassword -Q "USE [$dbname]" }       
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --user $dbuser --password $dbpassword --database $dbname --scripts "./_scripts" }
 
     Set-Location $cwd
 }
@@ -177,4 +166,33 @@ function Get-Value-Or-Default($value, $default) {
     }
 
     return $value;
+}
+
+function Use-Object
+{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Object]
+        $InputObject,
+ 
+        [Parameter(Mandatory = $true)]
+        [scriptblock]
+        $ScriptBlock
+    )
+ 
+    try
+    {
+        . $ScriptBlock
+    }
+    finally
+    {
+        if ($null -ne $InputObject -and $InputObject -is [System.IDisposable])
+        {
+            $InputObject.Dispose()
+        }
+    }
 }
