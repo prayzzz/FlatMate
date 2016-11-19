@@ -94,8 +94,8 @@ task Dotnet-Bundle -depends Dotnet-Restore, Compile-Typescript, Compile-Sass {
 }
 
 task Set-Version {
-    Apply-Version "$mainProjectDir/project.json"
-    Apply-Version "$mainProjectDir/appsettings.json"
+    Set-Version "$mainProjectDir/project.json"
+    Set-Version "$mainProjectDir/appsettings.json"
 }
 
 task Dotnet-Build -depends Dotnet-Restore, Set-Version {
@@ -141,14 +141,14 @@ task Dotnet-DbUpdate -depends Dotnet-Restore {
 }
 
 # Inserts the current version into the given json file.
-function Insert-Version ($file) {
+function Set-Version ($file) {
     $project = ConvertFrom-Json -InputObject (Gc $file -Raw)
     $project.version = $version
     $project | ConvertTo-Json -depth 100 | Out-File $file
 }
 
 # Runs the tests in the given project
-function Run-Test ($project) {
+function Start-Test ($project) {
     if ($isTeamCity) {
         TeamCity-TestSuiteStarted $project
     }
