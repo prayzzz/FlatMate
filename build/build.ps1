@@ -1,4 +1,4 @@
-properties {
+    properties {
     Import-Module psake-contrib/teamcity.psm1
 
     $date = Get-Date -Format yyyy.MM.dd;
@@ -8,9 +8,12 @@ properties {
     $config = Get-Value-Or-Default $env:CONFIGURATION "Release"
     $mainProjectDir = "src/FlatMate.Web";
 
+    $branch = (git symbolic-ref --short -q HEAD) | Out-String
+    $branch = $branch.Trim()
+
     # MySql Database    
     $dbtype = Get-Value-Or-Default $dbtype "mssql"
-    $dbhost = Get-Value-Or-Default $dbhost "(LocalDB)\MSSQLLocalDB"
+    $dbhost = Get-Value-Or-Default $dbhost "localhost"
     # $dbport = Get-Value-Or-Default $dbport 3306
     $dbuser = Get-Value-Or-Default $dbuser "teamcity"
     $dbpassword = Get-Value-Or-Default $dbpassword "teamcity"
@@ -23,6 +26,7 @@ properties {
     # Change to root directory
     Set-Location "../"
 
+    Write-Host "Branch: $branch"
     Write-Host "Configuration: $config"
     Write-Host "Version: $version"
 }
@@ -126,13 +130,19 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
     Compress-Archive -Path $Source -DestinationPath $destinationPath
 }
 
-task Dotnet-DbUpdate -depends Dotnet-Restore {
+task Dotnet-DbUpdate -depends Dotnet-Restore  {
+    Write-Host "Type: `t`t $dbtype"
+    Write-Host "Server: `t $dbhost"
+    Write-Host "Database: `t $dbname"
+    Write-Host "User: `t`t $dbuser"
+    Write-Host ""
+
     $cwd = Get-Location
     Set-Location $mainProjectDir
 
     # check for database
     Write-Host "Checking database $dbname"
-    exec { sqlcmd -b -S $dbhost -U $dbuser -P $dbpassword -Q "USE [$dbname]" }       
+    exec { sqlcmd -b -S $dbhost -U $dbuser -P $dbpassword -Q "USE [$dbname]" } | Out-Null
     
     # executing scripts
     exec { dotnet dbupdate execute --type $dbtype --host $dbhost --user $dbuser --password $dbpassword --database $dbname --scripts "./_scripts" }
