@@ -7,12 +7,11 @@ properties {
     $liveDir = "/opt/apps/live/flatmate"
     $pidFile = "flatmate.pid"
 
-    # MySql Database    
-    $dbtype = Get-Value-Or-Default $dbtype "mysql"
+    # MsSql Database    
+    $dbtype = Get-Value-Or-Default $dbtype "mssql"
     $dbhost = Get-Value-Or-Default $dbhost "localhost"
-    $dbport = Get-Value-Or-Default $dbport 3306
-    $dbuser = Get-Value-Or-Default $dbuser "root"
-    $dbpassword = Get-Value-Or-Default $dbpassword "admin"
+    $dbuser = Get-Value-Or-Default $dbuser "teamcity"
+    $dbpassword = Get-Value-Or-Default $dbpassword "teamcity"
     $dbname = "flatmate"
 
     # Change to root directory
@@ -40,10 +39,10 @@ task Update-Database {
     exec { dotnet restore }
    
     # create backup
-    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" --backup "./_scripts/backup" }
+    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" --backup "./_scripts/backup" }
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --port $dbport --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
 
     Set-Location $cwd
 }
