@@ -31,7 +31,13 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 
 # Task
 
-task Update-Database {    
+task Update-Database {
+    Write-Host "Type: `t`t $dbtype"
+    Write-Host "Server: `t $dbhost"
+    Write-Host "Database: `t $dbname"
+    Write-Host "User: `t`t $dbuser"
+    Write-Host ""
+
     $cwd = Get-Location
     Set-Location $mainProjectDir
     Write-Host "Working directory: " (Get-Location)
