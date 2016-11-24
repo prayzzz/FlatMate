@@ -11,7 +11,7 @@
     $branch = (git symbolic-ref --short -q HEAD) | Out-String
     $branch = $branch.Trim()
 
-    # MySql Database    
+    # MsSql Database    
     $dbtype = Get-Value-Or-Default $dbtype "mssql"
     $dbhost = Get-Value-Or-Default $dbhost "localhost"
     # $dbport = Get-Value-Or-Default $dbport 3306
@@ -131,10 +131,10 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
 }
 
 task Dotnet-DbUpdate -depends Dotnet-Restore  {
-    Write-Host "Type: `t`t $dbtype"
+    Write-Host "Type: `t $dbtype"
     Write-Host "Server: `t $dbhost"
     Write-Host "Database: `t $dbname"
-    Write-Host "User: `t`t $dbuser"
+    Write-Host "User: `t $dbuser"
     Write-Host ""
 
     $cwd = Get-Location

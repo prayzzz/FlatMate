@@ -14,6 +14,10 @@ properties {
     $dbpassword = Get-Value-Or-Default $dbpassword "teamcity"
     $dbname = "flatmate"
 
+    # Directories
+    $sqlScriptDir = Get-Value-Or-Default $sqlScriptDir "./_scripts"
+    $sqlBackupDir = Get-Value-Or-Default $sqlBackupDir "./_scripts/backup"
+
     # Change to root directory
     Set-Location "../"
 }
@@ -32,10 +36,10 @@ task Deploy -depends Update-App, Update-AppSettings, Update-Database, Start {
 # Task
 
 task Update-Database {
-    Write-Host "Type: `t`t $dbtype"
+    Write-Host "Type: `t $dbtype"
     Write-Host "Server: `t $dbhost"
     Write-Host "Database: `t $dbname"
-    Write-Host "User: `t`t $dbuser"
+    Write-Host "User: `t $dbuser"
     Write-Host ""
 
     $cwd = Get-Location
@@ -45,10 +49,10 @@ task Update-Database {
     exec { dotnet restore }
    
     # create backup
-    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" --backup "./_scripts/backup" }
+    exec { dotnet dbupdate backup --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts $sqlScriptDir --backup $sqlBackupDir }
     
     # executing scripts
-    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts "./_scripts" }
+    exec { dotnet dbupdate execute --type $dbtype --host $dbhost --database $dbname --user $dbuser --password $dbpassword --scripts $sqlScriptDir }
 
     Set-Location $cwd
 }
