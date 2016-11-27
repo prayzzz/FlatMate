@@ -40,6 +40,7 @@ namespace FlatMate.Web
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            Module.Home.Module.ConfigureServices(services, Configuration);
             Module.Account.Module.ConfigureServices(services, Configuration);
             Module.Lists.Module.ConfigureServices(services, Configuration);
 
@@ -96,7 +97,7 @@ namespace FlatMate.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute("default", "{controller=Dashboard}/{action=Index}");
+                routes.MapRoute("default", "{area=Home}/{controller=Dashboard}/{action=Index}");
             });
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FlatMate.Web.Areas.Lists.Data;
 using FlatMate.Web.Common.Base;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlatMate.Web.Areas.Lists.Controllers

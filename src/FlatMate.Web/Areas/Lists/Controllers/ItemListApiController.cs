@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FlatMate.Module.Lists.Models;
 using FlatMate.Module.Lists.Services;
 using FlatMate.Web.Common.Base;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Enums;
@@ -12,7 +11,6 @@ using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
 {
-    [Authorize]
     [Route("api/v1/lists/itemlist")]
     public class ItemListApiController : ApiController
     {

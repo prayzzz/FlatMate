@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FlatMate.Common.Provider;
+using FlatMate.Module.Home.Models;
+using FlatMate.Module.Home.Provider;
 using FlatMate.Module.Lists.Models;
 using FlatMate.Module.Lists.Services;
 using Microsoft.EntityFrameworkCore.Internal;

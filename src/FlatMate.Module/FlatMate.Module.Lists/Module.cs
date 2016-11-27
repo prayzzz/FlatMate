@@ -1,5 +1,5 @@
-﻿using FlatMate.Common.Provider;
-using FlatMate.Common.Repository;
+﻿using FlatMate.Common.Repository;
+using FlatMate.Module.Home.Provider;
 using FlatMate.Module.Lists.Models;
 using FlatMate.Module.Lists.Provider;
 using FlatMate.Module.Lists.Repository;

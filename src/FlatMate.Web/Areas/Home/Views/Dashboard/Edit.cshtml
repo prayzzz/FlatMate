@@ -1,0 +1,41 @@
+﻿@model FlatMate.Web.Areas.Home.Controllers.DashboardEditModel
+@{
+    ViewData["Title"] = "Edit Dashboard";
+}
+
+<section class="container">
+
+    <div class="title">
+        <h2>Mein Dashboard bearbeiten</h2>
+    </div>
+
+    <div style="display:flex">
+        @foreach (var entry in Model.DashboardEntries)
+        {
+            <div style="width:150px; height:150px; background-color:antiquewhite; margin: 10px;">
+                <text>@entry.TypeId</text>
+            </div>
+        }
+    </div>
+
+    <dashboard-editor></dashboard-editor>
+
+</section>
+
+@section vueTemplates {
+    <script type="text/x-template" id="dashboard-editor-template">
+        @await Html.PartialAsync("DashboardVue", new FlatMate.Module.Home.Models.DashboardEntry())
+    </script>
+}
+
+@section viewData {
+    <script type="application/json" id="viewData">
+        @Html.Raw(JsonConvert.SerializeObject(Model.DashboardEntryTypes, Json.ViewSerializerSettings))
+    </script>
+}
+
+@section vueInit{
+    <script type="text/javascript">
+        FlatMate.Home.init()
+    </script>
+}

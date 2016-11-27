@@ -1,0 +1,24 @@
+﻿@model FlatMate.Module.Home.Models.DashboardEntry
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<form asp-area="" asp-controller="Dashboard" asp-action="Create" method="post">
+    <fieldset>
+        <label>Typ</label>
+        <select v-model="selectedTypeId" name="@nameof(Model.TypeId)">
+            <option v-for="type in types" v-bind:value="type.id">
+                {{ type.name }}
+            </option>
+        </select>
+
+        <label>Wert</label>
+        <select v-model="selectedValueId" name="@nameof(Model.Value)">
+            <option v-for="value in values" v-bind:value="value.value">
+                {{ value.name }}
+            </option>
+        </select>
+
+        <div class="pull-right">
+            <input type="submit" value="Hinzufügen">
+        </div>
+    </fieldset>
+</form>

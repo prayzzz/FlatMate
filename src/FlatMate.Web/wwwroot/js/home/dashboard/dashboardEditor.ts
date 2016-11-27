@@ -42,7 +42,7 @@
             }
 
             const client = new FlatMate.Shared.ApiClient();
-            client.get(`dashboard/entrytype/${value}`, done);
+            client.get(`home/dashboard/entrytype/${value}`, done);
         }
 
         private initEditor(): DashboardEditorModel {
