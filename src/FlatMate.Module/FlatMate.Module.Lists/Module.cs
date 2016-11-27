@@ -1,5 +1,7 @@
-﻿using FlatMate.Common.Repository;
+﻿using FlatMate.Common.Provider;
+using FlatMate.Common.Repository;
 using FlatMate.Module.Lists.Models;
+using FlatMate.Module.Lists.Provider;
 using FlatMate.Module.Lists.Repository;
 using FlatMate.Module.Lists.Services;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +25,7 @@ namespace FlatMate.Module.Lists
             services.AddScoped<IDboMapper, ItemListGroupMapper>();
 
             services.AddSingleton<ItemListPrivileger, ItemListPrivileger>();
+            services.AddSingleton<IDashboardEntryProvider, DashboardEntryProvider>();
 
             services.AddDbContext<ListsContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         }

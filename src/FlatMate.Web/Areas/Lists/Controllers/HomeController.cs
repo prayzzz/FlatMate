@@ -2,13 +2,11 @@
 using FlatMate.Module.Lists.Models;
 using FlatMate.Web.Areas.Lists.Data;
 using FlatMate.Web.Common.Base;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Enums;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
 {
-    [Authorize]
     [Area("Lists")]
     public class HomeController : MvcController
     {

@@ -58,7 +58,7 @@
             const previousItem = this.group.items[i - 1];
             const previousOrder = previousItem.order;
 
-            previousItem.order = item.order
+            previousItem.order = item.order;
             item.order = previousOrder;
 
             const client = new FlatMate.Shared.ApiClient();
@@ -82,7 +82,7 @@
             const nextItem = this.group.items[i + 1];
             const nextOrder = nextItem.order;
 
-            nextItem.order = item.order
+            nextItem.order = item.order;
             item.order = nextOrder;
 
             const client = new FlatMate.Shared.ApiClient();

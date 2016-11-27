@@ -6,10 +6,10 @@
     "Microsoft.EntityFrameworkCore.Relational": "1.1.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
     "prayzzz.Common": "1.0.0-*",
-    "FlatMate.Common": {
+    "FlatMate.Module.Account": {
       "target": "project"
     },
-    "FlatMate.Module.Account": {
+    "FlatMate.Common": {
       "target": "project"
     }
   },

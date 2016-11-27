@@ -19,13 +19,6 @@ namespace FlatMate.Module.Lists
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.HasDefaultSchema("List");
-
-            //builder.Entity<ItemListDbo>().ToTable("Lists_ItemList");
-            //builder.Entity<ItemListDbo>().HasMany(x => x.Items).WithOne(x => x.ItemList).HasForeignKey(x => x.ItemListId).OnDelete(DeleteBehavior.Cascade);
-            //builder.Entity<ItemListDbo>().HasMany(x => x.ListGroups).WithOne(x => x.ItemList).HasForeignKey(x => x.ItemListId).OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<ItemListGroupDbo>().ToTable("Lists_ItemListGroup");
-            //builder.Entity<ItemListGroupDbo>().HasMany(x => x.Items).WithOne(x => x.ItemListGroup).HasForeignKey(x => x.ItemListGroupId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
