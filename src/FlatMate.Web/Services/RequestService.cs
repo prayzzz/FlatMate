@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Security.Claims;
+using FlatMate.Common.Attributes;
 using Microsoft.AspNetCore.Http;
 using prayzzz.Common.Mvc.Services;
 
 namespace FlatMate.Web.Services
 {
+    [Inject(DependencyLifetime.Singleton)]
     public class RequestService : IRequestService
     {
         private readonly IHttpContextAccessor _contextAccessor;

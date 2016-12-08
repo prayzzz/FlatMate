@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.ItemListCreateVm
+﻿@model FlatMate.Web.Areas.Lists.ViewModels.ItemListCreateVm
 
 @{
     Layout = "_Layout";
@@ -6,19 +6,19 @@
 
 <section class="container">
     <div class="title">
-        <h2>Neue Liste</h2>
+        <h2>Neue ItemListe</h2>
     </div>
 
-    <form asp-area="Lists" asp-controller="ItemList" asp-action="Create" method="post">
+    <form asp-area="ItemLists" asp-controller="ItemList" asp-action="Create" method="post">
         <fieldset>
             <label asp-for="ItemList.Name"></label>
-            <input asp-for="ItemList.Name" />
+            <input asp-for="ItemList.Name"/>
 
             <label asp-for="ItemList.Description"></label>
-            <input asp-for="ItemList.Description" />
+            <input asp-for="ItemList.Description"/>
 
             <label asp-for="ItemList.IsPublic"></label>
-            <input asp-for="ItemList.IsPublic" />
+            <input asp-for="ItemList.IsPublic"/>
 
             <div class="pull-right">
                 <input type="submit" value="Speichern">

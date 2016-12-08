@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FlatMate.Module.Home.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FlatMate.Web.Areas.Home.Dto;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,32 +16,30 @@ namespace FlatMate.Web.Areas.Home.Controllers
             _dashboardApi = dashboardApi;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Create(DashboardEntryDto model)
         {
-            return View();
+            var result = await _dashboardApi.CreateEntry(model);
+
+            if (!result.IsSuccess)
+            {
+                return View("Error", new EmptyViewModel {ErrorResult = result});
+            }
+
+            return RedirectToAction("Edit");
         }
 
         public IActionResult Edit()
         {
-            var model = new DashboardEditModel();
+            var model = new DashboardEditVm();
             model.DashboardEntryTypes = _dashboardApi.GetEntryTypes().ToList();
             model.DashboardEntries = _dashboardApi.GetAll().ToList();
 
             return View(model);
         }
 
-        public IActionResult Create(DashboardEntry model)
+        public IActionResult Index()
         {
-            _dashboardApi.CreateEntry(model);
-
-            return RedirectToAction("Edit");
+            return View();
         }
-    }
-
-    public class DashboardEditModel : BaseViewModel
-    {
-        public List<DashboardEntryType> DashboardEntryTypes { get; set; } = new List<DashboardEntryType>();
-
-        public List<DashboardEntry> DashboardEntries { get; set; } = new List<DashboardEntry>();
     }
 }

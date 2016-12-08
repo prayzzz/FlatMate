@@ -12,7 +12,8 @@
     "prayzzz.Common": "1.0.0-*",
     "FlatMate.Common": {
       "target": "project"
-    }
+    },
+    "JetBrains.Annotations": "10.2.1"
   },
   "frameworks": {
     "netstandard1.6": {

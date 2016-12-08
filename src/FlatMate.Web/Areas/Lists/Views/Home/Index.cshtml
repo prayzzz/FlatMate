@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.HomeIndexVm
+﻿@model FlatMate.Web.Areas.Lists.ViewModels.HomeIndexVm
 
 @{
     Layout = "_Layout";
@@ -6,58 +6,66 @@
 
 <section class="container">
     <div class="title">
-        <h2>Meine Listen</h2>
+        <h2>Meine ItemListen</h2>
     </div>
 
-    <a asp-area="Lists" asp-controller="ItemList" asp-action="Create" class="btn">Erstellen</a>
+    <a asp-area="ItemLists" asp-controller="ItemList" asp-action="Create" class="btn">Erstellen</a>
 
     <table cellspacing="0" cellpadding="0">
         <thead>
-            <tr>
-                <th width="50%">Name</th>
-                <th width="25%" class="show-large">Einträge</th>
-                <th class="show-large">Öffentlich?</th>
-                <th class="icon show-large"></th>
-            </tr>
+        <tr>
+            <th width="50%">Name</th>
+            <th width="25%" class="show-large">Einträge</th>
+            <th class="show-large">Öffentlich?</th>
+            <th class="icon show-large"></th>
+        </tr>
         </thead>
 
         <tbody>
-            @foreach (var itemList in Model.OwnItemLists)
-            {
-                <tr>
-                    <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
-                    <td class="show-large">@itemList.Items.Count</td>
-                    <td class="show-large"><input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?" /></td>
-                    <td class="icon show-large"><a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a></td>
-                </tr>
-            }
+        @foreach (var itemList in Model.OwnItemLists)
+        {
+            <tr>
+                <td>
+                    <a asp-area="ItemLists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a>
+                </td>
+                <td class="show-large">@itemList.Groups.SelectMany(x => x.Items).Count()</td>
+                <td class="show-large">
+                    <input type="checkbox" checked="@itemList.IsPublic" disabled title="Öffentlich?"/>
+                </td>
+                <td class="icon show-large">
+                    <a asp-area="ItemLists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@itemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 
 </section>
-<section class="container" style="margin-top:5rem;">
+<section class="container" style="margin-top: 5rem;">
     <div class="title">
-        <h2>Öffentliche Listen</h2>
+        <h2>Öffentliche ItemListen</h2>
     </div>
 
     <table cellspacing="0" cellpadding="0">
         <thead>
-            <tr>
-                <th width="50%">Name</th>
-                <th width="25%" class="show-large">Einträge</th>
-                <th class="show-large">Author</th>
-            </tr>
+        <tr>
+            <th width="50%">Name</th>
+            <th width="25%" class="show-large">Einträge</th>
+            <th class="show-large">Author</th>
+        </tr>
         </thead>
 
         <tbody>
-            @foreach (var itemList in Model.PublicItemLists)
-            {
-                <tr>
-                    <td><a asp-area="Lists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a></td>
-                    <td class="show-large">@itemList.Items.Count</td>
-                    <td class="show-large">@itemList.User.UserName</td>
-                </tr>
-            }
+        @foreach (var itemList in Model.PublicItemLists)
+        {
+            <tr>
+                <td>
+                    <a asp-area="ItemLists" asp-controller="ItemList" asp-action="View" asp-route-id="@itemList.Id">@itemList.Name</a>
+                </td>
+                <td class="show-large">@itemList.Groups.SelectMany(x => x.Items).Count()</td>
+                <td class="show-large">@itemList.Owner.UserName</td>
+            </tr>
+        }
         </tbody>
     </table>
 

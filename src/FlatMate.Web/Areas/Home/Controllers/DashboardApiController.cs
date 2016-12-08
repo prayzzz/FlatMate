@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlatMate.Common.Extensions;
 using FlatMate.Module.Home.Models;
 using FlatMate.Module.Home.Provider;
 using FlatMate.Module.Home.Service;
+using FlatMate.Web.Areas.Home.Dto;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Areas.Home.Controllers
@@ -16,42 +19,49 @@ namespace FlatMate.Web.Areas.Home.Controllers
     public class DashboardApiController : ApiController
     {
         private readonly IEnumerable<IDashboardEntryProvider> _entryProvider;
+        private readonly IMapper _mapper;
         private readonly IDashboardService _service;
 
-        public DashboardApiController(IHttpContextAccessor context, IEnumerable<IDashboardEntryProvider> entryProvider, IDashboardService service)
+        public DashboardApiController(IHttpContextAccessor context, IEnumerable<IDashboardEntryProvider> entryProvider, IDashboardService service, IMapper mapper)
             : base(context)
         {
             _entryProvider = entryProvider;
             _service = service;
+            _mapper = mapper;
+        }
+
+        [HttpPost("entry")]
+        public async Task<Result<DashboardEntryDto>> CreateEntry([FromBody] DashboardEntryDto model)
+        {
+            model.Id = 0;
+            model.UserId = CurrentUserId;
+
+            var dbo = _mapper.Map<DashboardEntryDbo>(model);
+            var saveResult = await _service.CreateAsync(dbo);
+
+            return saveResult.WithDataAs(x => _mapper.Map<DashboardEntryDto>(x));
+        }
+
+        [HttpGet("entry")]
+        public IEnumerable<DashboardEntryDto> GetAll()
+        {
+            return _service.GetAll()
+                           .Where(x => x.UserId == CurrentUserId)
+                           .Select(x => _mapper.Map<DashboardEntryDto>(x));
         }
 
         [HttpGet("entrytype")]
-        [Produces(typeof(IEnumerable<DashboardEntryType>))]
-        public IEnumerable<DashboardEntryType> GetEntryTypes()
+        [Produces(typeof(IEnumerable<DashboardEntryTypeDbo>))]
+        public IEnumerable<DashboardEntryTypeDbo> GetEntryTypes()
         {
             return _entryProvider.SelectMany(x => x.GetEntryTypes());
         }
 
         [HttpGet("entrytype/{id}")]
-        [Produces(typeof(IEnumerable<DashboardEntryValue>))]
-        public IEnumerable<DashboardEntryValue> GetEntryTypeValues(Guid id)
+        [Produces(typeof(IEnumerable<DashboardEntryTypeValueDbo>))]
+        public IEnumerable<DashboardEntryTypeValueDbo> GetEntryTypeValues(Guid id)
         {
             return _entryProvider.SelectMany(x => x.GetEntryValues(CurrentUserId, id));
-        }
-
-        [HttpPost("entry")]
-        public Task<Result<DashboardEntry>> CreateEntry([FromBody] DashboardEntry model)
-        {
-            model.Id = 0;
-            model.UserId = CurrentUserId;
-
-            return _service.CreateAsync(model);
-        }
-
-        [HttpGet("entry")]
-        public IEnumerable<DashboardEntry> GetAll()
-        {
-            return _service.GetAll().Where(x => x.UserId == CurrentUserId).ToList();
         }
     }
 }

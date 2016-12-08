@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Models;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Account.Services
 {
+    [Inject(DependencyLifetime.Scoped)]
     public class LoginService : ILoginService
     {
         private readonly AccountContext _context;
@@ -15,7 +17,6 @@ namespace FlatMate.Module.Account.Services
             _context = context;
             _passwordService = passwordService;
         }
-
 
         public async Task<Result<int>> LoginAllowed(LoginUser model)
         {

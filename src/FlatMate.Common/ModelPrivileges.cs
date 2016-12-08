@@ -13,6 +13,6 @@
 
         public bool IsEditable { get; }
 
-        public bool IsOwned { get;  }
+        public bool IsOwned { get; }
     }
 }

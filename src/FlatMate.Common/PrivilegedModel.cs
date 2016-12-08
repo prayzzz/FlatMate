@@ -2,6 +2,6 @@
 {
     public class PrivilegedModel
     {
-        public ModelPrivileges Privileges { get; set; }
+        public ModelPrivileges Privileges { get; internal set; }
     }
 }

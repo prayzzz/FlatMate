@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Home.Controllers.DashboardEditModel
+﻿@model FlatMate.Web.Areas.Home.Controllers.DashboardEditVm
 @{
     ViewData["Title"] = "Edit Dashboard";
 }
@@ -9,11 +9,11 @@
         <h2>Mein Dashboard bearbeiten</h2>
     </div>
 
-    <div style="display:flex">
+    <div style="display: flex">
         @foreach (var entry in Model.DashboardEntries)
         {
-            <div style="width:150px; height:150px; background-color:antiquewhite; margin: 10px;">
-                <text>@entry.TypeId</text>
+            <div>
+                @await Component.InvokeAsync(entry.EntryType.ViewComponentName)
             </div>
         }
     </div>
@@ -24,7 +24,7 @@
 
 @section vueTemplates {
     <script type="text/x-template" id="dashboard-editor-template">
-        @await Html.PartialAsync("DashboardVue", new FlatMate.Module.Home.Models.DashboardEntry())
+        @await Html.PartialAsync("DashboardVue", new FlatMate.Module.Home.Models.DashboardEntryDbo())
     </script>
 }
 

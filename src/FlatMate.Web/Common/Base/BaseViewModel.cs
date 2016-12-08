@@ -5,7 +5,8 @@ using prayzzz.Common.Result;
 namespace FlatMate.Web.Common.Base
 {
     public class EmptyViewModel : BaseViewModel
-    {}
+    {
+    }
 
     public abstract class BaseViewModel
     {

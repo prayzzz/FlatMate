@@ -1,10 +1,12 @@
-﻿using FlatMate.Web.Services;
+﻿using FlatMate.Common.Attributes;
+using FlatMate.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Filter
 {
+    [Inject(DependencyLifetime.Singleton, typeof(ApiResultFilter))]
     public class ApiResultFilter : ActionFilterAttribute
     {
         private readonly IRequestResultService _resultService;

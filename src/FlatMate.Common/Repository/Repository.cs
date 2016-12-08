@@ -10,11 +10,12 @@ namespace FlatMate.Common.Repository
 {
     public interface IRepository<T> where T : BaseDbo
     {
-        Result<T> GetById(int id);
         void Add(T dbo);
-        void Remove<TDbo>(TDbo dbo) where TDbo : BaseDbo;
-        Task<Result> Save();
         IQueryable<T> GetAll();
+        Result<T> GetById(int id);
+        void Remove<TDbo>(TDbo dbo) where TDbo : BaseDbo;
+        Task<Result> SaveChanges();
+        void Update(T dbo);
     }
 
     public abstract class Repository<T> : IRepository<T> where T : BaseDbo
@@ -27,13 +28,21 @@ namespace FlatMate.Common.Repository
         }
 
         protected abstract DbContext Context { get; }
+
         protected abstract ILogger Logger { get; }
+
+        public void Add(T dbo)
+        {
+            Context.Add(dbo);
+        }
+
+        public abstract IQueryable<T> GetAll();
 
         public virtual Result<T> GetById(int id)
         {
             Logger.LogInformation("Get {0} with id {1}", EntityName, id);
 
-            var dbo = GetAll().FirstOrDefault(x => x.Id == id);
+            var dbo = Context.Find<T>(id);
             if (dbo == null)
             {
                 return new ErrorResult<T>(ErrorType.NotFound, $"{EntityName} #{id} not found");
@@ -42,17 +51,12 @@ namespace FlatMate.Common.Repository
             return new SuccessResult<T>(dbo);
         }
 
-        public void Add(T dbo)
-        {
-            Context.Add(dbo);
-        }
-
         public void Remove<TDbo>(TDbo dbo) where TDbo : BaseDbo
         {
             Context.Remove(dbo);
         }
 
-        public async Task<Result> Save()
+        public async Task<Result> SaveChanges()
         {
             ApplyDates();
 
@@ -75,20 +79,23 @@ namespace FlatMate.Common.Repository
             }
         }
 
-        public abstract IQueryable<T> GetAll();
+        public void Update(T dbo)
+        {
+            Context.Update(dbo);
+        }
 
         private void ApplyDates()
         {
             var now = DateTime.Now;
             foreach (var entry in Context.ChangeTracker.Entries().Where(x => x.State == EntityState.Added))
             {
-                ((BaseDbo)entry.Entity).CreationDate = now;
-                ((BaseDbo)entry.Entity).LastModified = now;
+                ((BaseDbo) entry.Entity).CreationDate = now;
+                ((BaseDbo) entry.Entity).LastModified = now;
             }
 
             foreach (var entry in Context.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified))
             {
-                ((BaseDbo)entry.Entity).LastModified = now;
+                ((BaseDbo) entry.Entity).LastModified = now;
             }
         }
     }

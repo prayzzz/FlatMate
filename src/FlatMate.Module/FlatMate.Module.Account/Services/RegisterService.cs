@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Persistence.Dbo;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Account.Services
@@ -11,6 +13,7 @@ namespace FlatMate.Module.Account.Services
         Task<Result> CreateUserAsync(RegisterUser model);
     }
 
+    [Inject(DependencyLifetime.Scoped)]
     public class RegisterService : IRegisterService
     {
         private readonly AccountContext _context;

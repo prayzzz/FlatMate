@@ -12,7 +12,8 @@
     "FlatMate.Common": {
       "target": "project"
     },
-    "FlatMate.Module.Home": "1.0.0-*"
+    "FlatMate.Module.Home": "1.0.0-*",
+    "JetBrains.Annotations": "10.2.1"
   },
   "frameworks": {
     "netstandard1.6": {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlatMate.Common.Attributes;
 using FlatMate.Common.Repository;
 using FlatMate.Module.Home.Models;
 using prayzzz.Common.Dbo;
@@ -8,6 +9,7 @@ using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Home.Repository
 {
+    [Inject(DependencyLifetime.Singleton, typeof(IRepository<DashboardEntryDbo>))]
     public class DashboardEntryRepository : IRepository<DashboardEntryDbo>
     {
         private readonly List<DashboardEntryDbo> _entries;
@@ -15,6 +17,16 @@ namespace FlatMate.Module.Home.Repository
         public DashboardEntryRepository()
         {
             _entries = new List<DashboardEntryDbo>();
+        }
+
+        public void Add(DashboardEntryDbo dbo)
+        {
+            _entries.Add(dbo);
+        }
+
+        public IQueryable<DashboardEntryDbo> GetAll()
+        {
+            return _entries.AsQueryable();
         }
 
         public Result<DashboardEntryDbo> GetById(int id)
@@ -28,24 +40,19 @@ namespace FlatMate.Module.Home.Repository
             return new SuccessResult<DashboardEntryDbo>(dbo);
         }
 
-        public void Add(DashboardEntryDbo dbo)
-        {
-            _entries.Add(dbo);
-        }
-
         public void Remove<TDbo>(TDbo dbo) where TDbo : BaseDbo
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Result> Save()
+        public Task<Result> SaveChanges()
         {
-            return Task.FromResult((Result)new SuccessResult());
+            return Task.FromResult((Result) new SuccessResult());
         }
 
-        public IQueryable<DashboardEntryDbo> GetAll()
+        public void Update(DashboardEntryDbo dbo)
         {
-            return _entries.AsQueryable();
+            throw new System.NotImplementedException();
         }
     }
 }

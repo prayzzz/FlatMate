@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.ItemListEditVm
+﻿@model FlatMate.Web.Areas.Lists.ViewModels.ItemListEditVm
 
 @{
     Layout = "_Layout";
@@ -7,47 +7,45 @@
 <section class="container">
 
     <div class="title">
-        <h2>@Model.ItemList.Name bearbeiten</h2>
+        <h2>@Model.List.Name bearbeiten</h2>
     </div>
 
-    <form asp-area="Lists" asp-controller="ItemList" asp-action="Edit">
-        <fieldset disabled="@(!Model.ItemList.Privileges.IsOwned)">
-            <input asp-for="ItemList.Id" type="hidden" />
+    <form asp-area="ItemLists" asp-controller="ItemList" asp-action="Edit">
+        <fieldset disabled="@(!Model.List.Privileges.IsOwned)">
+            <label asp-for="List.Name"></label>
+            <input asp-for="List.Name"/>
 
-            <label asp-for="ItemList.Name"></label>
-            <input asp-for="ItemList.Name" />
+            <label asp-for="List.Description"></label>
+            <input asp-for="List.Description"/>
 
-            <label asp-for="ItemList.Description"></label>
-            <input asp-for="ItemList.Description" />
+            <label asp-for="List.IsPublic"></label>
+            <input asp-for="List.IsPublic"/>
 
-            <label asp-for="ItemList.IsPublic"></label>
-            <input asp-for="ItemList.IsPublic" />
-
-            <div style="display:flex; justify-content:space-between" hide="@(!Model.ItemList.Privileges.IsEditable)">
-                <a asp-area="Lists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@Model.ItemList.Id" class="btn btn-danger" title="Löschen">Löschen</a>
+            <div style="display: flex; justify-content: space-between" hide="@(!Model.List.Privileges.IsEditable)">
+                <a asp-area="ItemLists" asp-controller="ItemList" asp-action="Delete" asp-route-id="@Model.List.Id" class="btn btn-danger" title="Löschen">Löschen</a>
                 <input type="submit" value="Speichern">
             </div>
         </fieldset>
     </form>
 
-    <hr />
+    <hr/>
 
     <item-list-editor></item-list-editor>
 
 </section>
 
 @section vueTemplates {
-    @await Html.PartialAsync("ItemListVue")
+    @await Html.PartialAsync("ItemItemListVue")
 }
 
 @section viewData {
     <script type="application/json" id="viewData">
-        @Html.Raw(JsonConvert.SerializeObject(Model.ItemList, Json.ViewSerializerSettings))
+        @Html.Raw(JsonConvert.SerializeObject(Model.List, Json.ViewSerializerSettings))
     </script>
 }
 
 @section vueInit{
     <script type="text/javascript">
-        FlatMate.Lists.init()
+        FlatMate.ItemLists.init()
     </script>
 }

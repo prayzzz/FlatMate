@@ -1,9 +1,11 @@
+using FlatMate.Common.Attributes;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FlatMate.Web.Filter
 {
+    [Inject(DependencyLifetime.Singleton, typeof(MvcResultFilter))]
     public class MvcResultFilter : ActionFilterAttribute
     {
         public override void OnActionExecuted(ActionExecutedContext context)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using FlatMate.Common.Attributes;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace FlatMate.Module.Account.Services
@@ -7,12 +8,11 @@ namespace FlatMate.Module.Account.Services
     public interface IPasswordService
     {
         string CreateSalt();
-
         string HashPassword(string salt, string password);
-
         bool VerifyPassword(string salt, string password, string expectedPassword);
     }
 
+    [Inject(DependencyLifetime.Singleton)]
     public class PasswordService : IPasswordService
     {
         public string CreateSalt()

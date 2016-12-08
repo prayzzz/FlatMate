@@ -1,4 +1,4 @@
-﻿using FlatMate.Module.Account.Models;
+﻿using FlatMate.Module.Account.Persistence.Dbo;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlatMate.Module.Account

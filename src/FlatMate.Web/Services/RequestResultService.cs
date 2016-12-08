@@ -1,4 +1,5 @@
 ﻿using System;
+using FlatMate.Common.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using prayzzz.Common.Result;
 
@@ -25,6 +26,7 @@ namespace FlatMate.Web.Services
     ///     This service creates <see cref="IActionResult" /> from <see cref="Result" /> by converting the
     ///     <see cref="ErrorType" /> into a http statuscode
     /// </summary>
+    [Inject(DependencyLifetime.Singleton)]
     public class RequestResultService : IRequestResultService
     {
         /// <summary>

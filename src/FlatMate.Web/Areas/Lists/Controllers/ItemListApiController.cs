@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FlatMate.Module.Lists.Models;
-using FlatMate.Module.Lists.Services;
+﻿using System.Linq;
+using FlatMate.Common.Extensions;
+using FlatMate.Module.Account.Domain.Services;
+using FlatMate.Module.Lists.Domain.Entities;
+using FlatMate.Module.Lists.Domain.Services;
+using FlatMate.Web.Areas.Lists.Dto;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using prayzzz.Common.Enums;
+using prayzzz.Common.Mapping;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Web.Areas.Lists.Controllers
@@ -15,166 +16,92 @@ namespace FlatMate.Web.Areas.Lists.Controllers
     public class ItemListApiController : ApiController
     {
         private readonly IItemListService _listService;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public ItemListApiController(IHttpContextAccessor context, IItemListService listService) : base(context)
+        public ItemListApiController(IHttpContextAccessor context, IItemListService listService, IUserService userService, IMapper mapper) : base(context)
         {
             _listService = listService;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        [Produces(typeof(ItemList))]
-        public Task<Result<ItemList>> CreateList([FromBody] ItemList itemlist)
+        [Produces(typeof(ListDto))]
+        public Result<ListDto> CreateList([FromBody] ListUpdateDto listDto)
         {
-            itemlist.Id = 0;
-            itemlist.UserId = CurrentUserId;
-
-            itemlist.ListGroups.ForEach(group =>
+            var currentUser = _userService.GetCurrentUser();
+            if (!currentUser.IsSuccess)
             {
-                group.UserId = CurrentUserId;
-                group.Items.ForEach(item => item.UserId = CurrentUserId);
-            });
+                return new ErrorResult<ListDto>(ErrorType.Unauthorized, "Unauthorized");
+            }
 
-            itemlist.Items.ForEach(item => item.UserId = CurrentUserId);
+            var itemList = new ItemList(0, listDto.Name, currentUser.Data);
+            itemList = _mapper.Map(listDto, itemList, new MappingContext().PutParam(nameof(IUserService), _userService));
 
-            return _listService.CreateAsync(itemlist);
-        }
-
-        [HttpPost("{listId}/item")]
-        [Produces(typeof(ItemList))]
-        public Task<Result<Item>> AddItemToList(int listId, [FromBody] Item item)
-        {
-            item.UserId = CurrentUserId;
-            item.ItemListId = listId;
-            item.ItemListGroupId = null;
-
-            return _listService.AddItemToListAsync(listId, item);
+            return _listService.Create(itemList).WithDataAs(entity => _mapper.Map<ListDto>(entity));
         }
 
         [HttpPost("{listId}/group")]
-        [Produces(typeof(ItemList))]
-        public Task<Result<ItemListGroup>> AddGroupToList(int listId, [FromBody] ItemListGroup group)
+        [Produces(typeof(ListDto))]
+        public Result<ListDto> AddGroupToList(int listId, [FromBody] GroupUpdateDto groupDto)
         {
-            group.UserId = CurrentUserId;
-            group.ItemListId = listId;
+            var currentUser = _userService.GetCurrentUser();
+            if (!currentUser.IsSuccess)
+            {
+                return new ErrorResult<ListDto>(ErrorType.Unauthorized, "Unauthorized");
+            }
 
-            return _listService.AddGroupToListAsync(listId, group);
-        }
+            var getById = _listService.GetById(listId);
+            if (!getById.IsSuccess)
+            {
+                return new ErrorResult<ListDto>(getById);
+            }
 
-        [HttpPost("{listId}/group/{groupId}/item")]
-        [Produces(typeof(ItemList))]
-        public Task<Result<Item>> AddItemToGroup(int listId, int groupId, [FromBody] Item item)
-        {
-            item.UserId = CurrentUserId;
-            item.ItemListId = listId;
-            item.ItemListGroupId = groupId;
+            var list = getById.Data;
+            var group = _mapper.Map(groupDto, new ItemListGroup(0, groupDto.Name, currentUser.Data));
 
-            return _listService.AddItemToGroupAsync(listId, groupId, item);
-        }
+            var addGroup = list.AddGroup(group);
+            if (!addGroup.IsSuccess)
+            {
+                return new ErrorResult<ListDto>(addGroup);
+            }
 
-        [HttpPut("{listId}")]
-        [Produces(typeof(ItemList))]
-        public Task<Result<ItemList>> UpdateItemList(int listId, [FromBody]ItemList itemList)
-        {
-            itemList.UserId = CurrentUserId;
-            itemList.Id = listId;
+            var update = _listService.Update(list);
+            if (!update.IsSuccess)
+            {
+                return new ErrorResult<ListDto>(update);
+            }
 
-            return _listService.UpdateItemListAsync(listId, itemList);
-        }
-
-        [HttpPut("{listId}/group/{groupId}/item/{itemId}")]
-        [Produces(typeof(ItemList))]
-        public Task<Result<Item>> UpdateItemInGroup(int listId, int groupId, int itemId, [FromBody] Item item)
-        {
-            item.UserId = CurrentUserId;
-            item.Id = itemId;
-            item.ItemListGroupId = groupId;
-            item.ItemListId = listId;
-
-            return _listService.UpdateItemInGroupAsync(listId, groupId, itemId, item);
-        }
-
-        [HttpDelete("{listId}/group/{groupId}/item/{itemId}")]
-        public Task<Result> DeleteItemFromGroup(int listId, int groupId, int itemId)
-        {
-            return _listService.DeleteItemFromGroupAsync(listId, groupId, itemId);
-        }
-
-        [HttpDelete("{listId}/group/{groupId}")]
-        public Task<Result> DeleteGroupFromList(int listId, int groupId)
-        {
-            return _listService.DeleteGroupFromListAsync(listId, groupId);
+            return new SuccessResult<ListDto>(_mapper.Map<ListDto>(update.Data));
         }
 
         [HttpDelete("{listId}")]
-        public Task<Result> Delete(int id)
+        [Produces(typeof(IActionResult))]
+        public Result DeleteList(int listId)
         {
-            return _listService.DeletListAsync(id);
+            return _listService.Delete(listId);
         }
 
         [HttpGet("{id}")]
-        [Produces(typeof(ItemList))]
-        public Result<ItemList> GetById(int id, [FromQuery]int user = 0)
+        [Produces(typeof(ListDto))]
+        public Result<ListDto> GetList(int id)
         {
-            var result = _listService.GetById(id);
-
-            if (!result.IsSuccess)
-            {
-                return result;
-            }
-
-            if (!result.Data.IsPublic && result.Data.UserId != CurrentUserId)
-            {
-                return new ErrorResult<ItemList>(ErrorType.Unauthorized, "You are now allowed to view this.");
-            }
-
-            return result;
+            return _listService.GetById(id).WithDataAs(entity => _mapper.Map<ListDto>(entity));
         }
 
-        /// <summary> 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="limit"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Produces(typeof(IEnumerable<ItemList>))]
-        public IEnumerable<ItemList> GetAll([FromQuery]int? userId = null, [FromQuery]int? limit = null)
+        [HttpPut("{listId}")]
+        [Produces(typeof(ListDto))]
+        public Result<ListDto> UpdateList(int listId, [FromBody] ListUpdateDto listDto)
         {
-            return GetAll(null, userId, limit);
-        }
-
-        /// <summary> 
-        /// </summary>
-        /// <param name="isPublic">Can only be set, if called from code</param>
-        /// <param name="userId"></param>
-        /// <param name="limit"></param>
-        /// <param name="orderField"></param>
-        /// <param name="order"></param>
-        /// <returns></returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IEnumerable<ItemList> GetAll(bool? isPublic, int? userId = null, int? limit = null, ItemListQueryOrder orderField = ItemListQueryOrder.None, OrderingDirection order = OrderingDirection.Asc)
-        {
-            // show all, if requesting own lists
-            if (isPublic == null && CurrentUserId != userId)
+            var getById = _listService.GetById(listId);
+            if (!getById.IsSuccess)
             {
-                isPublic = true;
+                return new ErrorResult<ListDto>(getById);
             }
 
-            var query = new ItemListQuery
-            {
-                IsPublic = isPublic,
-                UserId = userId,
-                Order = orderField,
-                Direction = order
-            };
-
-            var all = _listService.GetAll(query);
-
-            if (limit != null)
-            {
-                all = all.Take(limit.Value);
-            }
-
-            return all;
+            var itemList = _mapper.Map(listDto, getById.Data, new MappingContext().PutParam(nameof(IUserService), _userService));
+            return _listService.Update(itemList).WithDataAs(entity => _mapper.Map<ListDto>(entity));
         }
     }
 }

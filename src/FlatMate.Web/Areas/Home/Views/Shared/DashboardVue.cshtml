@@ -1,10 +1,10 @@
-﻿@model FlatMate.Module.Home.Models.DashboardEntry
+﻿@model FlatMate.Module.Home.Models.DashboardEntryTypeValueDbo
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <form asp-area="" asp-controller="Dashboard" asp-action="Create" method="post">
     <fieldset>
         <label>Typ</label>
-        <select v-model="selectedTypeId" name="@nameof(Model.TypeId)">
+        <select v-model="selectedTypeId" name="@nameof(Model.Type.Id)">
             <option v-for="type in types" v-bind:value="type.id">
                 {{ type.name }}
             </option>

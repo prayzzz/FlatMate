@@ -48,7 +48,7 @@ namespace FlatMate.Web.Areas.Account.Controllers
             var principal = new ClaimsPrincipal();
             principal.AddIdentity(identity);
 
-            await HttpContext.Authentication.SignInAsync("FlatMate", principal, new AuthenticationProperties { IsPersistent = true });
+            await HttpContext.Authentication.SignInAsync("FlatMate", principal, new AuthenticationProperties {IsPersistent = true});
 
             return LocalRedirectPermanent("/");
         }

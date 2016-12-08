@@ -6,8 +6,8 @@ namespace FlatMate.Module.Home.Provider
 {
     public interface IDashboardEntryProvider
     {
-        List<DashboardEntryType> GetEntryTypes();
+        IEnumerable<DashboardEntryTypeDbo> GetEntryTypes();
 
-        List<DashboardEntryValue> GetEntryValues(int currentUserId, Guid id);
+        IEnumerable<DashboardEntryTypeValueDbo> GetEntryValues(int currentUserId, Guid id);
     }
 }

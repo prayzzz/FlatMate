@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using FlatMate.Web.Areas.Lists.Data;
+using FlatMate.Web.Areas.Lists.ViewModels;
 using FlatMate.Web.Common.Base;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ItemListCreateVm model)
         {
-            var result = await _itemListApi.CreateList(model.ItemList);
+            var result = _itemListApi.CreateList(model.ItemList);
 
             if (!result.IsSuccess)
             {
@@ -32,21 +32,34 @@ namespace FlatMate.Web.Areas.Lists.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Edit", new { id = result.Data.Id });
+            return RedirectToAction("Edit", new {id = result.Data.Id});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            //var result = await _itemListApi.Delete(id);
+
+            //if (!result.IsSuccess)
+            //{
+            //    return View("Error", new EmptyViewModel { ErrorResult = result });
+            //}
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [FromForm]ItemListEditVm model)
+        public async Task<IActionResult> Edit(int id, [FromForm] ItemListEditVm model)
         {
-            var result = await _itemListApi.UpdateItemList(id, model.ItemList);
+            //var result = await _itemListApi.UpdateItemListAsync(id, model.ItemList);
 
-            if (!result.IsSuccess)
-            {
-                model.ErrorMessage = result.ErrorMessage;
-                return View(model);
-            }
+            //if (!result.IsSuccess)
+            //{
+            //    model.ErrorMessage = result.ErrorMessage;
+            //    return View(model);
+            //}
 
-            model.ItemList = result.Data;
+            //model.ItemList = result.Data;
             return View(model);
         }
 
@@ -55,28 +68,15 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         {
             var model = new ItemListEditVm();
 
-            var result = _itemListApi.GetById(id);
-            if (!result.IsSuccess)
-            {
-                model.ErrorMessage = result.ErrorMessage;
-                return View(model);
-            }
+            //var result = _itemListApi.GetById(id);
+            //if (!result.IsSuccess)
+            //{
+            //    model.ErrorMessage = result.ErrorMessage;
+            //    return View(model);
+            //}
 
-            model.ItemList = result.Data;
+            //model.ItemList = result.Data;
             return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var result = await _itemListApi.Delete(id);
-
-            if (!result.IsSuccess)
-            {
-                return View("Error", new EmptyViewModel { ErrorResult = result });
-            }
-
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -84,13 +84,13 @@ namespace FlatMate.Web.Areas.Lists.Controllers
         {
             var model = new ItemListViewVm();
 
-            var result = _itemListApi.GetById(id);
-            if (!result.IsSuccess)
-            {
-                return View("Error", new EmptyViewModel { ErrorResult = result });
-            }
+            //var result = _itemListApi.GetById(id);
+            //if (!result.IsSuccess)
+            //{
+            //    return View("Error", new EmptyViewModel { ErrorResult = result });
+            //}
 
-            model.ItemList = result.Data;
+            //model.ItemList = result.Data;
             return View(model);
         }
     }

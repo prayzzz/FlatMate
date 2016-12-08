@@ -1,4 +1,4 @@
-﻿@model FlatMate.Web.Areas.Lists.Data.ItemListViewVm
+﻿@model FlatMate.Web.Areas.Lists.ViewModels.ItemListViewVm
 
 @{
     Layout = "_Layout";
@@ -7,9 +7,11 @@
 
 <section class="container">
     <div class="title">
-        <h2>@Model.ItemList.Name <small hide="@(Model.ItemList.Privileges.IsOwned)">von @Model.ItemList.User.UserName</small></h2>
-        <div hide="@(!Model.ItemList.Privileges.IsOwned)">
-            <a asp-area="Lists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@Model.ItemList.Id" class="icon-24 icon-pen" title="Bearbeiten"></a>
+        <h2>
+            @Model.List.Name <small hide="@(Model.List.Privileges.IsOwned)">von @Model.List.Owner.UserName</small>
+        </h2>
+        <div hide="@(!Model.List.Privileges.IsOwned)">
+            <a asp-area="ItemLists" asp-controller="ItemList" asp-action="Edit" asp-route-id="@Model.List.Id" class="icon-24 icon-pen" title="Bearbeiten"></a>
         </div>
     </div>
 
@@ -18,17 +20,17 @@
 </section>
 
 @section vueTemplates {
-    @await Html.PartialAsync("ItemListVue")
+    @await Html.PartialAsync("ItemItemListVue")
 }
 
 @section viewData {
     <script type="application/json" id="viewData">
-        @Html.Raw(JsonConvert.SerializeObject(Model.ItemList, Json.ViewSerializerSettings))
+        @Html.Raw(JsonConvert.SerializeObject(Model.List, Json.ViewSerializerSettings))
     </script>
 }
 
 @section vueInit{
     <script type="text/javascript">
-        FlatMate.Lists.init()
+        FlatMate.ItemLists.init()
     </script>
 }
