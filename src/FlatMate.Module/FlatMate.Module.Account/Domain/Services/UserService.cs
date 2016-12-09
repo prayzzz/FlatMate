@@ -1,7 +1,7 @@
 using FlatMate.Common.Attributes;
-using FlatMate.Common.Repository;
 using FlatMate.Module.Account.Domain.Entities;
-using FlatMate.Module.Account.Persistence.Dbo;
+using FlatMate.Module.Account.Persistence;
+using FlatMate.Module.Account.Persistence.Repositories;
 using prayzzz.Common.Mapping;
 using prayzzz.Common.Mvc.Services;
 using prayzzz.Common.Result;
@@ -18,10 +18,10 @@ namespace FlatMate.Module.Account.Domain.Services
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<UserDbo> _repository;
+        private readonly UserRepository _repository;
         private readonly IRequestService _requestService;
 
-        public UserService(IRepository<UserDbo> repository, IRequestService requestService, IMapper mapper)
+        public UserService(UserRepository repository, IRequestService requestService, IMapper mapper)
         {
             _repository = repository;
             _requestService = requestService;

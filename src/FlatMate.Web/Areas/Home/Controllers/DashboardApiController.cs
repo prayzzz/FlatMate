@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Common.Extensions;
 using FlatMate.Module.Home.Models;
+using FlatMate.Module.Home.Persistence.Dbo;
 using FlatMate.Module.Home.Provider;
 using FlatMate.Module.Home.Service;
 using FlatMate.Web.Areas.Home.Dto;
@@ -31,13 +32,13 @@ namespace FlatMate.Web.Areas.Home.Controllers
         }
 
         [HttpPost("entry")]
-        public async Task<Result<DashboardEntryDto>> CreateEntry([FromBody] DashboardEntryDto model)
+        public Result<DashboardEntryDto> CreateEntry([FromBody] DashboardEntryDto model)
         {
             model.Id = 0;
             model.UserId = CurrentUserId;
 
             var dbo = _mapper.Map<DashboardEntryDbo>(model);
-            var saveResult = await _service.CreateAsync(dbo);
+            var saveResult = _service.Create(dbo);
 
             return saveResult.WithDataAs(x => _mapper.Map<DashboardEntryDto>(x));
         }

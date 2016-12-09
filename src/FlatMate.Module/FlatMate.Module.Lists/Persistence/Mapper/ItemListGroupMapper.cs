@@ -1,8 +1,7 @@
 using System.Linq;
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Domain.Entities;
-using FlatMate.Module.Account.Persistence.Dbo;
-using FlatMate.Module.Account.Repository;
+using FlatMate.Module.Account.Persistence.Repositories;
 using FlatMate.Module.Lists.Domain.Entities;
 using FlatMate.Module.Lists.Persistence.Dbo;
 using prayzzz.Common.Mapping;
@@ -12,11 +11,11 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
     [Inject]
     public class ItemListGroupMapper : IDboMapper
     {
-        private readonly AccountRepository _accountRepository;
+        private readonly UserRepository _userRepository;
 
-        public ItemListGroupMapper(AccountRepository accountRepository)
+        public ItemListGroupMapper(UserRepository userRepository)
         {
-            _accountRepository = accountRepository;
+            _userRepository = userRepository;
         }
 
         public void Configure(IMapperConfiguration mapper)
@@ -49,12 +48,12 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
 
         private ItemListGroup MapToEntity(ItemListGroupDbo groupDbo, MappingContext ctx)
         {
-            var owner = ctx.Mapper.Map<User>(_accountRepository.GetById<UserDbo>(groupDbo.OwnerUserId).Data);
+            var owner = ctx.Mapper.Map<User>(_userRepository.GetById(groupDbo.OwnerUserId).Data);
 
             var itemListGroup = new ItemListGroup(groupDbo.Id, groupDbo.Name, owner)
             {
                 CreationDate = groupDbo.CreationDate,
-                LastEditor = ctx.Mapper.Map<User>(_accountRepository.GetById<UserDbo>(groupDbo.LastEditorUserId).Data),
+                LastEditor = ctx.Mapper.Map<User>(_userRepository.GetById(groupDbo.LastEditorUserId).Data),
                 ModifiedDate = groupDbo.LastModified,
                 Order = groupDbo.Order
         };

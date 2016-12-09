@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Persistence;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Account.Services

@@ -1,49 +1,35 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using FlatMate.Common.Attributes;
-using FlatMate.Common.Repository;
-using FlatMate.Module.Home.Models;
+using FlatMate.Module.Home.Persistence.Dbo;
+using FlatMate.Module.Home.Persistence.Repositories;
 using prayzzz.Common.Result;
 
 namespace FlatMate.Module.Home.Service
 {
     public interface IDashboardService
     {
-        Task<Result<DashboardEntryDbo>> CreateAsync(DashboardEntryDbo entry);
+        Result<DashboardEntryDbo> Create(DashboardEntryDbo dbo);
         IEnumerable<DashboardEntryDbo> GetAll();
     }
 
     [Inject(DependencyLifetime.Scoped)]
     public class DashboardService : IDashboardService
     {
-        private readonly IRepository<DashboardEntryDbo> _repository;
+        private readonly DashboardEntryRepository _repository;
 
-        public DashboardService(IRepository<DashboardEntryDbo> repository)
+        public DashboardService(DashboardEntryRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<Result<DashboardEntryDbo>> CreateAsync(DashboardEntryDbo dbo)
+        public Result<DashboardEntryDbo> Create(DashboardEntryDbo dbo)
         {
-            _repository.Add(dbo);
-
-            return await SaveAsync(dbo);
+            return _repository.Add(dbo);
         }
 
         public IEnumerable<DashboardEntryDbo> GetAll()
         {
             return _repository.GetAll();
-        }
-
-        private async Task<Result<TDbo>> SaveAsync<TDbo>(TDbo itemDbo) where TDbo : class
-        {
-            var result = await _repository.SaveChanges();
-            if (!result.IsSuccess)
-            {
-                return new ErrorResult<TDbo>(result);
-            }
-
-            return new SuccessResult<TDbo>(itemDbo);
         }
     }
 }

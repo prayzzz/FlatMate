@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Home.Models;
+using FlatMate.Module.Home.Persistence.Dbo;
 using FlatMate.Module.Home.Provider;
 using prayzzz.Common.Mapping;
 

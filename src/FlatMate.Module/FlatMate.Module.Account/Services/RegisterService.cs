@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Models;
+using FlatMate.Module.Account.Persistence;
 using FlatMate.Module.Account.Persistence.Dbo;
 using prayzzz.Common.Result;
 

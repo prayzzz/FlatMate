@@ -17,10 +17,10 @@ namespace FlatMate.Module.Lists.Domain.Services
     [Inject]
     public class ItemListService : IItemListService
     {
-        private readonly ItemListPersistence _persistence;
+        private readonly ItemListRepository _persistence;
         private readonly IUserService _userService;
 
-        public ItemListService(ItemListPersistence persistence, IUserService userService)
+        public ItemListService(ItemListRepository persistence, IUserService userService)
         {
             _persistence = persistence;
             _userService = userService;

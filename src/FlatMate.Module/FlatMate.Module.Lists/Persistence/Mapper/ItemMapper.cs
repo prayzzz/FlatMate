@@ -1,7 +1,6 @@
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Domain.Entities;
-using FlatMate.Module.Account.Persistence.Dbo;
-using FlatMate.Module.Account.Repository;
+using FlatMate.Module.Account.Persistence.Repositories;
 using FlatMate.Module.Lists.Domain.Entities;
 using FlatMate.Module.Lists.Persistence.Dbo;
 using prayzzz.Common.Mapping;
@@ -11,11 +10,11 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
     [Inject]
     public class ItemMapper : IDboMapper
     {
-        private readonly AccountRepository _accountRepository;
+        private readonly UserRepository _userRepository;
 
-        public ItemMapper(AccountRepository accountRepository)
+        public ItemMapper(UserRepository userRepository)
         {
-            _accountRepository = accountRepository;
+            _userRepository = userRepository;
         }
 
         public void Configure(IMapperConfiguration mapper)
@@ -37,12 +36,12 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
 
         private ItemListItem MapToEntity(ItemDbo itemDbo, MappingContext ctx)
         {
-            var owner = ctx.Mapper.Map<User>(_accountRepository.GetById<UserDbo>(itemDbo.OwnerUserId).Data);
+            var owner = ctx.Mapper.Map<User>(_userRepository.GetById(itemDbo.OwnerUserId).Data);
 
             return new ItemListItem(itemDbo.Id, itemDbo.Name, owner)
             {
                 CreationDate = itemDbo.CreationDate,
-                LastEditor = ctx.Mapper.Map<User>(_accountRepository.GetById<UserDbo>(itemDbo.LastEditorUserId).Data),
+                LastEditor = ctx.Mapper.Map<User>(_userRepository.GetById(itemDbo.LastEditorUserId).Data),
                 ModifiedDate = itemDbo.LastModified,
                 Order = itemDbo.Order,
             };

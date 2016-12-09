@@ -16,9 +16,9 @@ namespace FlatMate.Web.Areas.Home.Controllers
             _dashboardApi = dashboardApi;
         }
 
-        public async Task<IActionResult> Create(DashboardEntryDto model)
+        public IActionResult Create(DashboardEntryDto model)
         {
-            var result = await _dashboardApi.CreateEntry(model);
+            var result = _dashboardApi.CreateEntry(model);
 
             if (!result.IsSuccess)
             {

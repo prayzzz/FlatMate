@@ -1,8 +1,9 @@
 using System.Linq;
 using FlatMate.Common.Attributes;
 using FlatMate.Module.Account.Domain.Entities;
+using FlatMate.Module.Account.Persistence;
 using FlatMate.Module.Account.Persistence.Dbo;
-using FlatMate.Module.Account.Repository;
+using FlatMate.Module.Account.Persistence.Repositories;
 using FlatMate.Module.Lists.Domain.Entities;
 using FlatMate.Module.Lists.Persistence.Dbo;
 using prayzzz.Common.Mapping;
@@ -12,11 +13,11 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
     [Inject]
     public class ItemListMapper : IDboMapper
     {
-        private readonly AccountRepository _accountRepository;
+        private readonly UserRepository _userRepository;
 
-        public ItemListMapper(AccountRepository accountRepository)
+        public ItemListMapper(UserRepository userRepository)
         {
-            _accountRepository = accountRepository;
+            _userRepository = userRepository;
         }
 
         public void Configure(IMapperConfiguration mapper)
@@ -25,33 +26,35 @@ namespace FlatMate.Module.Lists.Persistence.Mapper
             mapper.Configure<ItemList, ItemListDbo>(MapToDbo);
         }
 
-        private ItemListDbo MapToDbo(ItemList itemList, ItemListDbo dbo, MappingContext ctx)
+        private ItemListDbo MapToDbo(ItemList itemList, ItemListDbo listDbo, MappingContext ctx)
         {
-            dbo.Id = itemList.Id;
-            dbo.IsPublic = itemList.IsPublic;
-            dbo.Name = itemList.Name;
+            listDbo.Id = itemList.Id;
+            listDbo.IsPublic = itemList.IsPublic;
+            listDbo.Name = itemList.Name;
 
-            if (itemList.Description != null) dbo.Description = itemList.Description;
-            if (itemList.Owner != null) dbo.OwnerUserId = itemList.Owner.Id;
+            if (itemList.Description != null) listDbo.Description = itemList.Description;
+            if (itemList.Owner != null) listDbo.OwnerUserId = itemList.Owner.Id;
+            
+            listDbo.Groups.RemoveAll(groupDbo => itemList.Groups.All(g => g.Id != listDbo.Id));
 
             foreach (var listGroup in itemList.Groups)
             {
-                var groupDbo = dbo.Groups.FirstOrDefault(x => x.Id == listGroup.Id);
+                var groupDbo = listDbo.Groups.FirstOrDefault(x => x.Id == listGroup.Id);
                 if (groupDbo == null)
                 {
                     groupDbo = new ItemListGroupDbo();
-                    dbo.Groups.Add(groupDbo);
+                    listDbo.Groups.Add(groupDbo);
                 }
 
                 ctx.Mapper.Map(listGroup, groupDbo);
             }
 
-            return dbo;
+            return listDbo;
         }
 
         private ItemList MapToEntity(ItemListDbo listDbo, MappingContext ctx)
         {
-            var owner = ctx.Mapper.Map<User>(_accountRepository.GetById<UserDbo>(listDbo.OwnerUserId).Data);
+            var owner = ctx.Mapper.Map<User>(_userRepository.GetById(listDbo.OwnerUserId).Data);
 
             var itemList = new ItemList(listDbo.Id, listDbo.Name, owner)
             {

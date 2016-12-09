@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FlatMate.Module.Account.Persistence;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

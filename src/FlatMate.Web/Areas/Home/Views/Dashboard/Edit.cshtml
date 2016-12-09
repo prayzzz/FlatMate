@@ -1,4 +1,5 @@
-﻿@model FlatMate.Web.Areas.Home.Controllers.DashboardEditVm
+﻿@using FlatMate.Module.Home.Persistence.Dbo
+@model FlatMate.Web.Areas.Home.Controllers.DashboardEditVm
 @{
     ViewData["Title"] = "Edit Dashboard";
 }
@@ -24,7 +25,7 @@
 
 @section vueTemplates {
     <script type="text/x-template" id="dashboard-editor-template">
-        @await Html.PartialAsync("DashboardVue", new FlatMate.Module.Home.Models.DashboardEntryDbo())
+        @await Html.PartialAsync("DashboardVue", new DashboardEntryDbo())
     </script>
 }
 
